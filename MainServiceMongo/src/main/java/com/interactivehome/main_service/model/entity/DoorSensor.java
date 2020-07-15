@@ -1,8 +1,8 @@
 package com.interactivehome.main_service.model.entity;
 
-import com.interactivehome.main_service.model.dto.DoorSensorDTO;
+import com.interactivehome.main_service.model.dto.DoorSensorDto;
+import java.util.Date;
 import lombok.Data;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -11,16 +11,21 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Document(collection = "door_state")
 public class DoorSensor {
     @Id
-    private ObjectId id;
+    @Field("_id")
+    private String id;
 
-    @Field("state")
-    private Boolean state;
+    @Field("door_id")
+    private Integer doorId;
+
+    @Field("door_state")
+    private Boolean doorState;
 
     @Field("updated_utc")
-    private double updateUtc;
+    private Date updateUtc;
 
-    public void mapFromDto(DoorSensorDTO dto) {
-        state = dto.doorState;
-        updateUtc = System.currentTimeMillis();
+    public void mapFromDto(DoorSensorDto dto) {
+        doorId = dto.doorId;
+        doorState = dto.doorState;
+        updateUtc = new Date(System.currentTimeMillis());
     }
 }
