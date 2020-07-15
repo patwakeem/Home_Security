@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.interactivehome</groupId>
 	<artifactId>main_service</artifactId>
-	<version>2020.04.25-0</version>
+	<version>2020.07.11-0</version>
 	<name>main_service</name>
 	<description>Rest service for the smart robot</description>
 
@@ -48,7 +48,22 @@
             <version>0.0.20131108.vaadin1</version>
             <scope>compile</scope>
         </dependency>
-    </dependencies>
+    <dependency>
+      <groupId>javax.persistence</groupId>
+      <artifactId>javax.persistence-api</artifactId>
+      <version>2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <version>2.3.0.RELEASE</version>
+    </dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20180130</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>
