@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Implementation-Title: Spring Boot Actuator Starter
+Automatic-Module-Name: spring.boot.starter.actuator
+Implementation-Version: 2.1.4.RELEASE
+Built-By: Spring
+Created-By: Apache Maven 3.5.4
+Build-Jdk: 1.8.0_202
+Class-Path: /var/www/service
+Main-Class: com.interactivehome.main_service.MainServiceApplication
