@@ -56,7 +56,8 @@ public class BatteryServiceImpl implements BatteryService {
     // If the dates are not present then get the latest voltage measurement
     query.with(new org.springframework.data.domain.Sort(Direction.DESC, "updatedUtc"));
     List<Battery> batteryList = null;
-    batteryList.add(mongoTemplate.find(query, Battery.class).get(0));
+    if(mongoTemplate.find(query, Battery.class).size() > 0)
+      batteryList.add(mongoTemplate.find(query, Battery.class).get(0));
     return batteryList;
   }
 }

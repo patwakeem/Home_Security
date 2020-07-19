@@ -62,7 +62,8 @@ public class TemperatureHumidityGasServiceImpl implements TemperatureHumidityGas
     // If the dates are not present then get the latest temperature humidity gas measurements
     query.with(new Sort(Direction.DESC, "updatedUtc"));
     List<TemperatureHumidityGas> temperatureHumidityGasList = null;
-    temperatureHumidityGasList.add(mongoTemplate.find(query, TemperatureHumidityGas.class).get(0));
+    if(mongoTemplate.find(query, TemperatureHumidityGas.class).size() > 0)
+      temperatureHumidityGasList.add(mongoTemplate.find(query, TemperatureHumidityGas.class).get(0));
     return temperatureHumidityGasList;
   }
 }

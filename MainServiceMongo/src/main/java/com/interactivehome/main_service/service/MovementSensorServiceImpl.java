@@ -60,7 +60,8 @@ public class MovementSensorServiceImpl implements MovementSensorService{
     // If the dates are not present then get the latest movement sensor activity
     query.with(new Sort(Direction.DESC, "updatedUtc"));
     List<MovementSensor> movementSensorList = null;
-    movementSensorList.add(mongoTemplate.find(query, MovementSensor.class).get(0));
+    if(mongoTemplate.find(query, MovementSensor.class).size() > 0)
+      movementSensorList.add(mongoTemplate.find(query, MovementSensor.class).get(0));
     return movementSensorList;
   }
 

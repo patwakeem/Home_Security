@@ -73,7 +73,8 @@ public class DoorStateServiceImpl implements DoorStateService {
         // If the dates are not present then get the latest door state
         query.with(new Sort(Direction.DESC, "updatedUtc"));
         List<DoorSensor> doorSensorList = null;
-        doorSensorList.add(mongoTemplate.find(query, DoorSensor.class).get(0));
+        if(mongoTemplate.find(query, DoorSensor.class).size() > 0)
+            doorSensorList.add(mongoTemplate.find(query, DoorSensor.class).get(0));
         return doorSensorList;
   }
 }
