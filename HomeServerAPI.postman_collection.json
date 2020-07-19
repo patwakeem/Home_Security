@@ -223,6 +223,7 @@
 				}
 			],
 			"url": "192.168.1.159:8080/register_person",
+			"folder": "c0f06240-6581-6cef-7020-3eca24d8248d",
 			"queryParams": [],
 			"preRequestScript": null,
 			"pathVariables": {},
@@ -441,6 +442,7 @@
 				}
 			],
 			"url": "192.168.1.159:8080/door/1?fromDate='2020-07-18'&toDate='2020-07-19'",
+			"folder": "0dce5412-7da5-7db1-b054-664a5dbd9969",
 			"queryParams": [
 				{
 					"key": "fromDate",
@@ -509,6 +511,7 @@
 			"headers": "",
 			"headerData": [],
 			"url": "192.168.1.159:8080/alarm/1?fromDate='2020-07-18'&toDate='2020-07-19'",
+			"folder": "89f00a8c-178d-48d8-8b78-c9f2af26c2cf",
 			"queryParams": [
 				{
 					"key": "fromDate",
@@ -599,6 +602,7 @@
 				}
 			],
 			"url": "192.168.1.159:8080/temperature_humidity_gas",
+			"folder": "7e81564b-dd79-7486-ffea-521d05f04e31",
 			"queryParams": [],
 			"preRequestScript": null,
 			"pathVariables": {},
@@ -692,18 +696,18 @@
 					"enabled": true
 				}
 			],
-			"url": "192.168.1.159:8080/temperature_humidity_gas/1?fromDate='2020-07-12'&toDate='2020-07-14'",
+			"url": "192.168.1.159:8080/temperature_humidity_gas/1?fromDate=2020-07-18&toDate=2020-07-19",
 			"queryParams": [
 				{
 					"key": "fromDate",
-					"value": "'2020-07-12'",
+					"value": "2020-07-18",
 					"equals": true,
 					"description": "",
 					"enabled": true
 				},
 				{
 					"key": "toDate",
-					"value": "'2020-07-14'",
+					"value": "2020-07-19",
 					"equals": true,
 					"description": "",
 					"enabled": true
@@ -719,7 +723,7 @@
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1595151754908,
+			"time": 1595152651304,
 			"name": "Get temperature humidity and gas values by sensor id within date range by sensor id",
 			"description": "",
 			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
@@ -738,6 +742,7 @@
 				}
 			],
 			"url": "192.168.1.159:8080/register_persons",
+			"folder": "c0f06240-6581-6cef-7020-3eca24d8248d",
 			"queryParams": [],
 			"preRequestScript": null,
 			"pathVariables": {},
