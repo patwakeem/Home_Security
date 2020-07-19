@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class AlarmServiceImpl implements AlarmService {
   private final AlarmRepository alarmRepository;
-
   private final MongoTemplate mongoTemplate;
 
   public AlarmServiceImpl(AlarmRepository alarmRepository,
@@ -29,6 +28,7 @@ public class AlarmServiceImpl implements AlarmService {
     Alarm alarm = new Alarm();
     alarm.mapFromDto(dto);
     alarmRepository.save(alarm);
+
   }
 
   @Override
@@ -47,5 +47,16 @@ public class AlarmServiceImpl implements AlarmService {
     query.addCriteria(Criteria.where("updatedUtc").gte(fromDate).lt(toDate));
     query.with(new Sort(Direction.DESC, "updatedUtc"));
     return mongoTemplate.find(query, Alarm.class);
+  }
+
+  @Override
+  public void stopAlarm(AlarmDto dto) {
+    Alarm alarm = new Alarm();
+    // In case wrong payload passed, fix it with the proper values
+    // When the alarm goes off and we want to stop it, we set the alarmOn state to false and disarm the alarm
+    dto.setAlarmOn(false);
+    dto.setAlarmState(0);
+    alarm.mapFromDto(dto);
+    alarmRepository.save(alarm);
   }
 }

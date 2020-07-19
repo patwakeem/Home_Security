@@ -45,7 +45,9 @@ public class DoorStateController {
     @Autowired
     private AppProperties appProperties;
 
-    @Value("$(verification_process_endpoint)")
+    @Value("$(securityControllerIpPort)")
+    private String securityControllerIpPort;
+    @Value("$(verificationProcessEndpoint)")
     private String verificationProcessEndpoint;
     @Value("$(verification_process_timeout_sec)")
     private String verificationProcessTimeoutSec;
@@ -79,7 +81,7 @@ public class DoorStateController {
             HttpEntity<String> entity = new HttpEntity<>(headers);
             ResponseEntity<String> responseEntity =
                 restTemplate.exchange(
-                    appProperties.getSecurityControllerEndpoint(), HttpMethod.GET, entity, String.class);
+                    appProperties.getSecurityControllerIpPort() + appProperties.getVerificationProcessEndpoint(), HttpMethod.GET, entity, String.class);
 
             if(responseEntity.getStatusCode() == HttpStatus.OK)
             {

@@ -11,4 +11,6 @@ public interface AlarmService {
   Alarm getAlarmStateByAlarmId(Integer alarmId);
 
   List<Alarm> getAlarmStateByAlarmIdFromDateToDate(Integer alarmId, Date fromDate, Date toDate);
+
+  void stopAlarm(AlarmDto dto);
 }

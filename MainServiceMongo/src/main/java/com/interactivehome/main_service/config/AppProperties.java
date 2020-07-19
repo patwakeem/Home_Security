@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("verification")
 @Data
 public class AppProperties {
-  public String securityControllerEndpoint;
+  public String securityControllerIpPort;
+  public String verificationProcessEndpoint;
   public Integer verificationProcessTimeoutSec;
+  public String alarmStateEndpoint;
+  public String stopAlarmEndpoint;
 }
