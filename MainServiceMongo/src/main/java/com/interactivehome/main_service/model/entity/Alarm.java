@@ -1,6 +1,5 @@
 package com.interactivehome.main_service.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.interactivehome.main_service.model.dto.AlarmDto;
 import java.util.Date;
 import lombok.Data;
@@ -16,16 +15,16 @@ public class Alarm {
   @Field("_id")
   private String id;
 
-  @JsonProperty("alarm_id")
+  @Field("alarm_id")
   private Integer alarmId;
 
-  @JsonProperty("alarm_on")
+  @Field("alarm_on")
   private Boolean alarmOn;
 
-  @JsonProperty("alarm_state")
+  @Field("alarm_state")
   private Integer alarmState;
 
-  @JsonProperty("updated_utc")
+  @Field("updated_utc")
   private Date updatedUtc;
 
   public void mapFromDto(AlarmDto dto) {

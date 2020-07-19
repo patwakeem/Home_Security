@@ -16,8 +16,6 @@ public class MovementSensor {
 
   @Field("movement_sensor_id")
   private Integer movementSensorId;
-  @Field("movement_sensor_state")
-  private Boolean movementSensorState;
   @Field("movement_sensor_activated")
   private Boolean movementSensorActivated;
   @Field("updated_utc")
@@ -26,7 +24,6 @@ public class MovementSensor {
   public void mapFromDto(MovementSensorDto dto)
   {
     movementSensorId = dto.getMovementSensorId();
-    movementSensorState = dto.getMovementSensorState();
     movementSensorActivated = dto.getMovementSensorActivated();
   }
 }

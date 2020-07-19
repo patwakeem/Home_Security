@@ -8,7 +8,6 @@ import java.util.List;
 
 public interface DoorStateService {
   void saveState(DoorSensorDto dto);
-  DoorSensor getDoorStateByDoorId(Integer doorId);
 
   List<DoorSensor> getDoorStateByDoorIdFromDateToDate(Integer doorId, Date fromDate, Date toDate);
 }

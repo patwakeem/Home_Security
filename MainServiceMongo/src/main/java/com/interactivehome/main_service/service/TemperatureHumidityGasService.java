@@ -8,10 +8,6 @@ import java.util.List;
 public interface TemperatureHumidityGasService {
   void saveValues(TemperatureHumidiryGasDto dto);
 
-  List<TemperatureHumidityGas> getAll();
-
-  List<TemperatureHumidityGas> getAllBySensorId(Integer sensorId);
-
   List<TemperatureHumidityGas> getValuesBySensorIdFromDateToDate(
       Integer sensorId, Date fromDate, Date toDate);
 }
