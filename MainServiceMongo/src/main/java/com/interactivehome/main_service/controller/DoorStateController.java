@@ -111,10 +111,10 @@ public class DoorStateController {
     }
 
     @GetMapping("/door/{doorId}")
-    public List<DoorSensor> getAllDoorStateByDoorIdFromDateToDate(
+    public List<DoorSensor> getDoorStateByDoorIdFromDateToDate(
         @PathVariable Integer doorId,
-        @RequestParam(value = "fromDate", defaultValue = "2020-07-01") @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate,
-        @RequestParam(value = "toDate", defaultValue = "2020-07-14") @DateTimeFormat(pattern="yyyy-MM-dd") Date toDate)
+        @RequestParam(value = "fromDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate,
+        @RequestParam(value = "toDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date toDate)
     {
         return doorStateService.getDoorStateByDoorIdFromDateToDate(doorId, fromDate, toDate);
     }

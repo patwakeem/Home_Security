@@ -1,8 +1,8 @@
 package com.interactivehome.main_service.controller;
 
-import com.interactivehome.main_service.model.dto.AlarmDto;
-import com.interactivehome.main_service.model.entity.Alarm;
-import com.interactivehome.main_service.service.AlarmService;
+import com.interactivehome.main_service.model.dto.PersonSignInDto;
+import com.interactivehome.main_service.model.entity.PersonSignIn;
+import com.interactivehome.main_service.service.PersonSignInService;
 import java.util.Date;
 import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,25 +17,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "*")
 @RestController
-public class AlarmController {
-  private final AlarmService alarmService;
+public class PersonSignInController {
+  private final PersonSignInService personSignInService;
 
-  public AlarmController(AlarmService alarmService) {
-    this.alarmService = alarmService;
+  PersonSignInController(PersonSignInService personSignInService) {
+    this.personSignInService = personSignInService;
   }
 
-  @PostMapping("/alarm")
-  public ResponseEntity<String> postAlarmState(@RequestBody AlarmDto dto) {
-    alarmService.saveAlarmState(dto);
+  @PostMapping("/person_signin")
+  public ResponseEntity<String> postPersonSingIn(@RequestBody PersonSignInDto dto) {
+    personSignInService.savePersonSingIn(dto);
     return ResponseEntity.ok("201");
   }
 
-  @GetMapping("/alarm/{alarmId}")
-  public List<Alarm> getAlarmByAlarmIdFromDateToDate(
-      @PathVariable Integer alarmId,
+  @GetMapping("/person_signin/{rfidCardId}")
+  public List<PersonSignIn> getAllPersonSignInByRfidCardIdFromDateToDate(
+      @PathVariable String rfidCardId,
       @RequestParam(value = "fromDate", required = false, defaultValue = "2020-07-01") @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate,
       @RequestParam(value = "toDate", required = false, defaultValue = "2020-07-14") @DateTimeFormat(pattern="yyyy-MM-dd") Date toDate)
   {
-    return alarmService.getAlarmStateByAlarmIdFromDateToDate(alarmId, fromDate, toDate);
+    return personSignInService.getPersonsSignedInByRfidCardIdFromDateToDate(rfidCardId, fromDate, toDate);
   }
 }
