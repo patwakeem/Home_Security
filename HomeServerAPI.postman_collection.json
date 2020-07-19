@@ -1,0 +1,759 @@
+{
+	"id": "9384e08a-b49b-9529-32c1-fd80c6490127",
+	"name": "HomeServerAPI",
+	"description": "",
+	"order": [],
+	"folders": [
+		{
+			"name": "Alarm",
+			"description": "",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"order": [
+				"436808ce-b9ea-ff66-582f-0a86dc7a7ec9",
+				"93b8d876-1630-7a79-d355-af8328f1f84d"
+			],
+			"owner": "8613277",
+			"folders_order": [],
+			"id": "89f00a8c-178d-48d8-8b78-c9f2af26c2cf"
+		},
+		{
+			"name": "Battery",
+			"description": "",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"order": [
+				"91f8d5a9-dd5f-cf60-9d7c-de5f996364af",
+				"b933e394-c019-db31-28a2-bd3928f6150b"
+			],
+			"owner": "8613277",
+			"folders_order": [],
+			"id": "2028210e-1a23-9454-f7bd-918b6def4fa6"
+		},
+		{
+			"name": "Door Sensor",
+			"description": "",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"order": [
+				"64699f59-45f3-3c38-ca66-de59330d747c",
+				"8f3dd870-9b7c-1266-e2a9-7d753684d290"
+			],
+			"owner": "8613277",
+			"folders_order": [],
+			"id": "0dce5412-7da5-7db1-b054-664a5dbd9969"
+		},
+		{
+			"name": "Movement Sensor",
+			"description": "",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"order": [
+				"be146cdd-2e69-f404-4c43-4c569803a63d",
+				"8eb47e47-896e-0125-4db5-0ce88b880ecb"
+			],
+			"owner": "8613277",
+			"folders_order": [],
+			"id": "792cb217-625b-5ad8-058f-79f18bd01947"
+		},
+		{
+			"name": "Person",
+			"description": "",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"order": [],
+			"owner": "8613277",
+			"folders_order": [
+				"c0f06240-6581-6cef-7020-3eca24d8248d",
+				"8559d270-8046-8caf-ea46-245fc93bb1ae",
+				"f506b531-243d-4235-5f80-6ce7b08b531f"
+			],
+			"id": "26f5b3e7-0397-f393-ee01-a403ee5698eb"
+		},
+		{
+			"name": "Person Signed In",
+			"description": "",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"order": [
+				"1e3fee75-18f2-266c-5bce-990ac444aad6",
+				"70b42575-7032-bae1-26c8-046220c8ff75"
+			],
+			"owner": "8613277",
+			"folder": "26f5b3e7-0397-f393-ee01-a403ee5698eb",
+			"folders_order": [],
+			"id": "8559d270-8046-8caf-ea46-245fc93bb1ae"
+		},
+		{
+			"name": "Register person",
+			"description": "",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"order": [
+				"3a3f1f93-2f44-b61a-2ad2-ef7df70e4995",
+				"e6690ef2-5cff-e156-6269-c30ac1bfce77",
+				"8f04370d-b53b-7c3c-329a-961f1fa6202b",
+				"cc2d1b8f-1158-c257-9e6c-acfe761fc387"
+			],
+			"owner": "8613277",
+			"folder": "26f5b3e7-0397-f393-ee01-a403ee5698eb",
+			"folders_order": [],
+			"id": "c0f06240-6581-6cef-7020-3eca24d8248d"
+		},
+		{
+			"name": "Temperature Humidity Gas",
+			"description": "",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"order": [
+				"b94a33ca-c610-1ee7-e621-32a02da4fb65",
+				"da942421-2d2e-fad8-8afc-e48d9d8bf2cf"
+			],
+			"owner": "8613277",
+			"folders_order": [],
+			"id": "7e81564b-dd79-7486-ffea-521d05f04e31"
+		},
+		{
+			"name": "Verify Person",
+			"description": "",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"order": [
+				"26d92e99-0805-a56b-5d99-a9d1ac5fcd91",
+				"2e52831c-ad61-751a-1790-dd9ec1d81044"
+			],
+			"owner": "8613277",
+			"folder": "26f5b3e7-0397-f393-ee01-a403ee5698eb",
+			"folders_order": [],
+			"id": "f506b531-243d-4235-5f80-6ce7b08b531f"
+		}
+	],
+	"folders_order": [
+		"89f00a8c-178d-48d8-8b78-c9f2af26c2cf",
+		"2028210e-1a23-9454-f7bd-918b6def4fa6",
+		"0dce5412-7da5-7db1-b054-664a5dbd9969",
+		"792cb217-625b-5ad8-058f-79f18bd01947",
+		"26f5b3e7-0397-f393-ee01-a403ee5698eb",
+		"7e81564b-dd79-7486-ffea-521d05f04e31"
+	],
+	"timestamp": 1586967313045,
+	"owner": "8613277",
+	"public": false,
+	"requests": [
+		{
+			"id": "1e3fee75-18f2-266c-5bce-990ac444aad6",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://192.168.1.159:8080/person_signin",
+			"folder": "8559d270-8046-8caf-ea46-245fc93bb1ae",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1595150870339,
+			"name": "Person signed in",
+			"description": "",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"responses": [],
+			"rawModeData": "{\"name\":\"Christos\", rfid_card_id\":\"1234\", \"rfid_card_id_signed\": true}"
+		},
+		{
+			"id": "26d92e99-0805-a56b-5d99-a9d1ac5fcd91",
+			"headers": "",
+			"headerData": [],
+			"url": "192.168.1.159:8080/verify_person_by_rfid_card/1rr42r",
+			"folder": "f506b531-243d-4235-5f80-6ce7b08b531f",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1594768596096,
+			"name": "Verify person by rfid card",
+			"description": "",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"responses": [],
+			"isFromCollection": true,
+			"collectionRequestId": "26d92e99-0805-a56b-5d99-a9d1ac5fcd91"
+		},
+		{
+			"id": "2e52831c-ad61-751a-1790-dd9ec1d81044",
+			"headers": "",
+			"headerData": [],
+			"url": "192.168.1.159:8080/verify_person_by_password/asdfasf",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"data": null,
+			"dataMode": "params",
+			"name": "Verify person by password",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1594768575757,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "f506b531-243d-4235-5f80-6ce7b08b531f"
+		},
+		{
+			"id": "3a3f1f93-2f44-b61a-2ad2-ef7df70e4995",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "192.168.1.159:8080/register_person",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1595149488342,
+			"name": "Register person",
+			"description": "",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"responses": [],
+			"rawModeData": "{\"name\":\"Christos\",\"rfid_card_id\":\"1234\",\"password\":\"12345566778899\"}"
+		},
+		{
+			"id": "436808ce-b9ea-ff66-582f-0a86dc7a7ec9",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "192.168.1.159:8080/alarm",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"data": [],
+			"dataMode": "raw",
+			"name": "Add alarm entry",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1594553838133,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"isFromCollection": true,
+			"collectionRequestId": "436808ce-b9ea-ff66-582f-0a86dc7a7ec9",
+			"folder": "89f00a8c-178d-48d8-8b78-c9f2af26c2cf",
+			"rawModeData": "{\"alarm_id\":1, \"alarm_on\":0, \"alarm_state\":0}"
+		},
+		{
+			"id": "64699f59-45f3-3c38-ca66-de59330d747c",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "192.168.1.159:8080/door",
+			"folder": "0dce5412-7da5-7db1-b054-664a5dbd9969",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1594489117391,
+			"name": "Door Open",
+			"description": "Door close",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"responses": [],
+			"rawModeData": "{\"device_id\": 1, \"door_state\": false}"
+		},
+		{
+			"id": "70b42575-7032-bae1-26c8-046220c8ff75",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://192.168.1.159:8080/person_signin/1234?fromDate='2020-07-18'&toDate='2020-07-19'",
+			"queryParams": [
+				{
+					"key": "fromDate",
+					"value": "'2020-07-18'",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "toDate",
+					"value": "'2020-07-19'",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"data": [],
+			"dataMode": "raw",
+			"name": "Get person signed in",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1595142606280,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "8559d270-8046-8caf-ea46-245fc93bb1ae",
+			"rawModeData": "{\"rfid_card_id\":\"1234\", \"rfid_card_id_signed\": true}"
+		},
+		{
+			"id": "8eb47e47-896e-0125-4db5-0ce88b880ecb",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "192.168.1.159:8080/movement_sensor/1?fromDate='2020-07-18'&toDate='2020-07-19'",
+			"folder": "0dce5412-7da5-7db1-b054-664a5dbd9969",
+			"queryParams": [
+				{
+					"key": "fromDate",
+					"value": "'2020-07-18'",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "toDate",
+					"value": "'2020-07-19'",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1595148525240,
+			"name": "Get Movement Sensor Activaty",
+			"description": "",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"responses": [],
+			"rawModeData": "{\"movement_sensor_id\": 1, \"movement_sensor_activated\": true}"
+		},
+		{
+			"id": "8f04370d-b53b-7c3c-329a-961f1fa6202b",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "192.168.1.159:8080/person_rfid_card/1234",
+			"folder": "c0f06240-6581-6cef-7020-3eca24d8248d",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1595150836609,
+			"name": "Get Registered Person By Rfid Card",
+			"description": "",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"responses": [],
+			"rawModeData": "{\"name\":\"Christos\",\"rfid_card_id\":\"1234\",\"password\":\"12345566778899\"}"
+		},
+		{
+			"id": "8f3dd870-9b7c-1266-e2a9-7d753684d290",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "192.168.1.159:8080/door/1?fromDate='2020-07-18'&toDate='2020-07-19'",
+			"queryParams": [
+				{
+					"key": "fromDate",
+					"value": "'2020-07-18'",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "toDate",
+					"value": "'2020-07-19'",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1595146480052,
+			"name": "Get Door State By Door Id",
+			"description": "",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"responses": [],
+			"rawModeData": "{\"device_id\": 1, \"door_state\": true}"
+		},
+		{
+			"id": "91f8d5a9-dd5f-cf60-9d7c-de5f996364af",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "192.168.1.159:8080/battery",
+			"folder": "2028210e-1a23-9454-f7bd-918b6def4fa6",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1594489339550,
+			"name": "Battery Voltage",
+			"description": "Battery voltage of different devices",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"responses": [],
+			"rawModeData": "{\"device_id\":1,\"battery_voltage\":4.2,\"battery_percentage\":100}"
+		},
+		{
+			"id": "93b8d876-1630-7a79-d355-af8328f1f84d",
+			"headers": "",
+			"headerData": [],
+			"url": "192.168.1.159:8080/alarm/1?fromDate='2020-07-18'&toDate='2020-07-19'",
+			"queryParams": [
+				{
+					"key": "fromDate",
+					"value": "'2020-07-18'",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "toDate",
+					"value": "'2020-07-19'",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1595143372595,
+			"name": "Get all Alarm entries",
+			"description": "",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"responses": []
+		},
+		{
+			"id": "b933e394-c019-db31-28a2-bd3928f6150b",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "192.168.1.159:8080/battery/1?fromDate='2020-07-18'&toDate='2020-07-19'",
+			"queryParams": [
+				{
+					"key": "fromDate",
+					"value": "'2020-07-18'",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "toDate",
+					"value": "'2020-07-19'",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"data": [],
+			"dataMode": "raw",
+			"name": "Get Battery Voltage By BatteryId",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1595144852322,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "2028210e-1a23-9454-f7bd-918b6def4fa6",
+			"rawModeData": "{\"battery_id\":1,\"battery_voltage\":4.2,\"battery_percentage\":100}"
+		},
+		{
+			"id": "b94a33ca-c610-1ee7-e621-32a02da4fb65",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "192.168.1.159:8080/temperature_humidity_gas",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1595151703192,
+			"name": "Store temperature humidity and gas values",
+			"description": "",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"responses": [],
+			"rawModeData": "{\"sensor_id\": 1, \"temperature\": 21.0, \"humidity\": 53, \"gas_value\": 225}"
+		},
+		{
+			"id": "be146cdd-2e69-f404-4c43-4c569803a63d",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "192.168.1.159:8080/movement_sensor",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "POST",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"data": [],
+			"dataMode": "raw",
+			"name": "Movement Sensor Activated",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1595148475045,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "792cb217-625b-5ad8-058f-79f18bd01947",
+			"rawModeData": "{\"movement_sensor_id\": 1, \"movement_sensor_activated\": true}"
+		},
+		{
+			"id": "cc2d1b8f-1158-c257-9e6c-acfe761fc387",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "192.168.1.159:8080/person_password/123445566778899",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"preRequestScript": null,
+			"method": "GET",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"data": [],
+			"dataMode": "raw",
+			"name": "Get Registered Person By Password",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1595150826415,
+			"version": 2,
+			"responses": [],
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"folder": "c0f06240-6581-6cef-7020-3eca24d8248d",
+			"rawModeData": "{\"name\":\"Christos\",\"rfid_card_id\":\"1234\",\"password\":\"12345566778899\"}"
+		},
+		{
+			"id": "da942421-2d2e-fad8-8afc-e48d9d8bf2cf",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "192.168.1.159:8080/temperature_humidity_gas/1?fromDate='2020-07-12'&toDate='2020-07-14'",
+			"queryParams": [
+				{
+					"key": "fromDate",
+					"value": "'2020-07-12'",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "toDate",
+					"value": "'2020-07-14'",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1595151754908,
+			"name": "Get temperature humidity and gas values by sensor id within date range by sensor id",
+			"description": "",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"responses": [],
+			"rawModeData": "{\"sensor_id\": 1, \"temperature\": 21.4, \"humidity\": 52, \"gas_value\":298}"
+		},
+		{
+			"id": "e6690ef2-5cff-e156-6269-c30ac1bfce77",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "192.168.1.159:8080/register_persons",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1595149571643,
+			"name": "Get Registered persons",
+			"description": "",
+			"collectionId": "9384e08a-b49b-9529-32c1-fd80c6490127",
+			"responses": [],
+			"rawModeData": "{\"name\":\"Christos\",\"rfid_card_id\":\"1234\",\"password\":\"12345566778899\"}"
+		}
+	]
+}
