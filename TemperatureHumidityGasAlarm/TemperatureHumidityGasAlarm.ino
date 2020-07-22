@@ -11,7 +11,8 @@
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
 #include <DHT.h>
-#include "C:\Development\Home_Projects\Arduino\Home_Security\Common\HttpClientCommands.h"
+#include "C:\Development\Home_Projects\Arduino\Home_Security\Common\BatteryVoltage.h"
+#include "C:\Development\Home_Projects\Arduino\Home_Security\Common\ESP8266\HttpClientCommands.h"
 #include "C:\Development\Home_Projects\Arduino\Home_Security\Common\WifiConfiguration.h"
 #include "C:\Development\Home_Projects\Arduino\Home_Security\Common\HomeServerSettings.h"
 #include "C:\Development\Home_Projects\Arduino\Home_Security\Common\WifiCredentials.h"
@@ -28,7 +29,7 @@ volatile int SECURITY_ALARM_ON = 0;
 volatile int GAS_FIRE_ALARM_ON = 0;
 
 //Rest Server Resources
-const char* RES_SENSORS_VALUES = "/sensors_values";
+const char* RES_SENSORS_VALUES = "/temperature_humidity_gas";
 
 
 #define DHTTYPE DHT11     // DHT 11
@@ -40,7 +41,7 @@ DHT dht(DHT11_PIN, DHTTYPE);
 ESP8266WebServer HTTP_REST_SERVER(REST_SERVER_PORT);
 
 unsigned long LAST_POST_MILLIS;
-const unsigned int PERIOD = 3 * 1000; // check values every 10 sec
+const unsigned int PERIOD = 60 * 1000; // check values every 10 sec
 
 float LAST_TEMPERATURE_VAL;
 float LAST_HUMIDITY_VAL;
@@ -124,15 +125,6 @@ void triggerAlarm() {
     digitalWrite(SECURITY_ALARM_PIN, LOW);
 }
 
-void buzzCorrectPassword() {
-  tone(GAS_FIRE_ALARM_PIN, 500); //turn the buzzer on
-  delay(200); //wait for 5 milliseconds 
-  tone(GAS_FIRE_ALARM_PIN, 300); //turn the buzzer on
-  delay(500); //wait for 5 milliseconds 
-  noTone(GAS_FIRE_ALARM_PIN);
-  delay(3000);
-}
-
 void triggerGasFireAlarm() {
   if(GAS_FIRE_ALARM_ON == 0)
   {
@@ -176,7 +168,7 @@ void postSensorsValues()
   float humidity = h / n_measurements;  
   int gas = g / n_measurements;
 
-  if(gas >= 2)
+  if(gas >= 500)
     SECURITY_ALARM_ON = 1;
   else
     SECURITY_ALARM_ON = 0;
@@ -208,15 +200,18 @@ void postSensorsValues()
 
   StaticJsonBuffer<200> jsonBuffer;
   JsonObject& jsonObj = jsonBuffer.createObject();
+  jsonObj["sensor_id"] = 1;
   jsonObj["temperature"] = temperature;
   jsonObj["humidity"] = humidity;
-  jsonObj["gasValue"] = gas;
+  jsonObj["gas_value"] = gas;
   String body;
   jsonObj.printTo(body);
-  Serial.print("Sensors body: ");
+  Serial.print("Temperature Humidity Gas body: ");
   Serial.println(body);
   String payload;
-  int statusCode = httpPost(HOME_SERVER_ADDRESS, String(HOME_SERVER_REST_PORT), RES_SENSORS_VALUES, body, payload);
+  int statusCode = httpPost(HOME_SERVER_ADDRESS, HOME_SERVER_REST_PORT, RES_SENSORS_VALUES, body.c_str(), payload);
+  Serial.print("Response status from home server: ");
+  Serial.println(statusCode);
 }
 
 void setup() {
@@ -247,7 +242,6 @@ void setup() {
   pinMode(GAS_FIRE_ALARM_PIN, OUTPUT);
   noTone(GAS_FIRE_ALARM_PIN);
   pinMode(GAS_PIN, INPUT);
-
 
   LAST_POST_MILLIS = millis();
 

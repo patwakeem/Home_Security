@@ -34,11 +34,11 @@ typedef struct headers_{
   int size_;
 }Headers;
 */
-int httpGet(String host, String port, char *resource, String &payload)
+int httpGet(const char* host, int port, const char* resource, String &payload)
 {
   HTTPClient http;
 
-  http.begin(String("http://") + host + ":" + port + String(resource));
+  http.begin(String("http://") + host + ":" + String(port) + String(resource));
   //Send the request
   int httpCode = http.GET();
   payload = "";
@@ -52,18 +52,19 @@ int httpGet(String host, String port, char *resource, String &payload)
   return httpCode;
 }
 
-int httpPost(String host, String port, char *resource, const String& body, String& payload)
+int httpPost(const char* host, int port, const char *resource, const char* body, String& payload)
 {
   HTTPClient http;    //Declare object of class HTTPClient
 
-  http.begin(String("http://") + host + ":" + port + String(resource));
+  http.begin(String("http://") + host + ":" + String(port) + String(resource));
   http.addHeader("Content-Type", "application/json");    //Specify content-type header
 
-  int httpCode = http.POST(body.c_str());   //Send the request
+  int httpCode = http.POST(body);   //Send the request
   payload = http.getString();    //Get the response payload
 
   http.end();  //Close connection
   return httpCode;
 }
+
 
 #endif

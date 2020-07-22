@@ -40,7 +40,7 @@ const byte D6_pin = 6;
 const byte D7_pin = 7;
 const byte led_pin = 13;
 
-LiquidCrystal_I2C lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin);
+LiquidCrystal_I2C lcd(I2C_ADDR, En_pin, Rw_pin, Rs_pin, D4_pin, D5_pin, D6_pin, D7_pin);
 
 
 byte WIFI_SYMBOL_CONNECTED[] = {
@@ -74,15 +74,16 @@ byte ALARM_SYMBOL_ON[] = {
   B11011,
   B11011,
   B01110
-/*  B00100,
-  B01110,
-  B01110,
-  B01110,
-  B11111,
-  B00000,
-  B00100,
-  B00000
-*/};
+  /*  B00100,
+    B01110,
+    B01110,
+    B01110,
+    B11111,
+    B00000,
+    B00100,
+    B00000
+  */
+};
 
 byte ALARM_SYMBOL_HALF_LOCKED[] = {
   B00000,
@@ -104,15 +105,16 @@ byte ALARM_SYMBOL_OFF[] = {
   B11011,
   B11011,
   B01110
-/*  B00101,
-  B01111,
-  B01110,
-  B01110,
-  B11111,
-  B01000,
-  B10100,
-  B10000
-*/};
+  /*  B00101,
+    B01111,
+    B01110,
+    B01110,
+    B11111,
+    B01000,
+    B10100,
+    B10000
+  */
+};
 
 const uint8_t WIFI_SYMBOL_CONNECTED_CHAR = 0;
 const uint8_t WIFI_SYMBOL_DISCONNECTED_CHAR = 1;
@@ -135,10 +137,10 @@ unsigned char LCD_ROWS = 2;
 const byte ROWS = 4;
 const byte COLS = 4;
 char KEYPAD_KEYS[ROWS][COLS] = {
-  {'1','2','3','A'},
-  {'4','5','6','B'},
-  {'7','8','9','C'},
-  {'*','0','#','D'}
+  {'1', '2', '3', 'A'},
+  {'4', '5', '6', 'B'},
+  {'7', '8', '9', 'C'},
+  {'*', '0', '#', 'D'}
 };
 
 const byte ROW_PINS[ROWS] = {22, 24, 26, 28};
@@ -175,30 +177,31 @@ typedef enum controller_state_ {
   CONTROLLER_ACTIVATE_ALARM_MENU,
   CONTROLLER_DEACTIVATE_ALARM_MENU,
   CONTROLLER_FULLY_ACTIVATE_TIMEOUT
-}controller_state;
+} controller_state;
 
 typedef enum keypad_state_ {
   KEYPAD_INITIALIZED,
   KEYPAD_TYPING_STARTED,
   KEYPAD_TYPING_FINISHED
-}kpad_state;
+} kpad_state;
 
 typedef enum verification_state_ {
   VERIFICATION_INITIALIZED,
+  VERIFICATION_VALIDATING,
   VERIFICATION_AUTHORIZED,
   VERIFICATION_UNAUTHORIZED
-}verification_state;
+} verification_state;
 
 typedef enum system_alarm_state_ {
   SYSTEM_ALARM_INITIALIZED,
   SYSTEM_ALARM_DISARMED,      // The alarm is deactivated
   SYSTEM_ALARM_FULLY_ARMED,   // The alarm is activated when no one in the house. Movement sensors active
   SYSTEM_ALARM_HALF_ARMED     // The alarm is activated during night when people in the house. Movement sensors inactive
-}system_alarm_state;
+} system_alarm_state;
 
 const int VERIFY_TIMEOUT_SEC = 15;
 
-String VERIFIED_USERS;
+String VERIFIED_RFIDS;
 String VERIFIED_PASSWORDS;
 
 controller_state CTRL_STATE;
@@ -214,59 +217,54 @@ void colorLed(unsigned char red, unsigned char green, unsigned char blue)
 }
 
 // Keypad functionality ----------------------------------------------------
+/*
 bool validatePassword(String password_typed)
 {
   StaticJsonBuffer<256> jsonBuffer;
   JsonArray& passwords = jsonBuffer.parseArray(VERIFIED_PASSWORDS);
   Serial.print("passwords.size(): ");
   Serial.println(passwords.size());
-  for(int i=0; i < passwords.size(); ++i)
+  for (int i = 0; i < passwords.size(); ++i)
   {
     String password = passwords.get<String>(i);
-    if(password.equals(password_typed))
+    if (password.equals(password_typed))
       return true;
   }
   return false;
 }
-
+*/
 verification_state verifyKeypadPassword() {
 
+  // If we are waiting for the person verification do not give access to keypad
+  if(V_STATE == verification_state::VERIFICATION_VALIDATING)
+    return;
+
   char key = keypad.getKey();
-  if(key == '*' && KEYPAD_STATE != kpad_state::KEYPAD_TYPING_STARTED)
+  if (key == '*' && KEYPAD_STATE != kpad_state::KEYPAD_TYPING_STARTED)
   {
     KEYPAD_STATE = kpad_state::KEYPAD_TYPING_STARTED;
     Serial.println("Password typing started...");
   }
-  else if(key == '*' && KEYPAD_STATE == kpad_state::KEYPAD_TYPING_STARTED)
+  else if (key == '*' && KEYPAD_STATE == kpad_state::KEYPAD_TYPING_STARTED)
   {
     KEYPAD_STATE = KEYPAD_TYPING_FINISHED;
     Serial.println("Password typing finished");
   }
 
-  if(key && key != '*' && KEYPAD_STATE == kpad_state::KEYPAD_TYPING_STARTED)
+  if (key && key != '*' && KEYPAD_STATE == kpad_state::KEYPAD_TYPING_STARTED)
   {
     Serial.println(key);
     PASSWORD_TYPED += key;
     Serial.println(PASSWORD_TYPED);
   }
 
-  if(KEYPAD_STATE == kpad_state::KEYPAD_TYPING_FINISHED)
+  if (KEYPAD_STATE == kpad_state::KEYPAD_TYPING_FINISHED)
   {
-    if(validatePassword(PASSWORD_TYPED))
-    {
-      colorLed(0, 255, 0);
-      lcdClearLine(1);
-      displayMessageAt(2, 1, "Password OK!");
-      buzzCorrectPassword();
-      V_STATE = verification_state::VERIFICATION_AUTHORIZED;
-    } else {
-      colorLed(255, 0, 0);
-      lcdClearLine(1);
-      displayMessageAt(1, 1, "Wrong password!");
-      buzzWrongPassword();
-      colorLed(0, 0, 0);
-      V_STATE = verification_state::VERIFICATION_UNAUTHORIZED;
-    }
+    V_STATE = verification_state::VERIFICATION_VALIDATING;
+    String message = "@P";
+    message += PASSWORD_TYPED;
+    message += "#"; // Adding a '#' at the end of the message so we get rid of it and the end of line character
+    sendMessageToEspSerial(message.c_str());
     PASSWORD_TYPED = "";
     KEYPAD_STATE = kpad_state::KEYPAD_INITIALIZED;
   }
@@ -274,65 +272,66 @@ verification_state verifyKeypadPassword() {
 }
 
 void buzzCorrectPassword() {
-  for(int i=0;i<85;i++)
+  for (int i = 0; i < 85; i++)
   {
-    digitalWrite(BUZZER_PIN,HIGH);
+    digitalWrite(BUZZER_PIN, HIGH);
     delay(2);//wait for 1ms
-    digitalWrite(BUZZER_PIN,LOW);
+    digitalWrite(BUZZER_PIN, LOW);
     delay(2);//wait for 1ms
   }
   //output another frequency
-  for(int i=0;i<90;i++)
+  for (int i = 0; i < 90; i++)
   {
-    digitalWrite(BUZZER_PIN,HIGH);
+    digitalWrite(BUZZER_PIN, HIGH);
     delay(1);//wait for 2ms
-    digitalWrite(BUZZER_PIN,LOW);
+    digitalWrite(BUZZER_PIN, LOW);
     delay(1);//wait for 2ms
   }
-  digitalWrite(BUZZER_PIN,HIGH);
+  digitalWrite(BUZZER_PIN, HIGH);
 }
 
 void buzzWrongPassword() {
-  for(int i=0;i<40;i++)
+  for (int i = 0; i < 40; i++)
   {
-    digitalWrite(BUZZER_PIN,HIGH);
+    digitalWrite(BUZZER_PIN, HIGH);
     delay(4);//wait for 1ms
-    digitalWrite(BUZZER_PIN,LOW);
+    digitalWrite(BUZZER_PIN, LOW);
     delay(4);//wait for 1ms
   }
-  digitalWrite(BUZZER_PIN,HIGH);
+  digitalWrite(BUZZER_PIN, HIGH);
 }
 // End of keypad functionality ---------------------------------------------
 
 // RFID functionality ------------------------------------------------------
-bool validateUserId(String id)
+/*
+bool validateUserRfid(String id)
 {
   StaticJsonBuffer<256> jsonBuffer;
-  JsonArray& ids = jsonBuffer.parseArray(VERIFIED_USERS);
-  for(int i=0; i < ids.size(); ++i)
+  JsonArray& ids = jsonBuffer.parseArray(VERIFIED_RFIDS);
+  for (int i = 0; i < ids.size(); ++i)
   {
     String valid_id = ids.get<String>(i);
     Serial.print("valid_id: ");
     Serial.println(valid_id);
     Serial.print("id: ");
     Serial.println(id);
-    if(valid_id.equals(id))
+    if (valid_id.equals(id))
       return true;
   }
   return false;
 }
-
+*/
 verification_state verifyRfidCard()
 {
   // Look for new cards
-  if ( ! RFID_MFRC522.PICC_IsNewCardPresent()) 
+  if ( ! RFID_MFRC522.PICC_IsNewCardPresent())
   {
     //Serial.println("No Card present");
     V_STATE = verification_state::VERIFICATION_INITIALIZED;
     return V_STATE;
   }
   // Select one of the cards
-  if ( ! RFID_MFRC522.PICC_ReadCardSerial()) 
+  if ( ! RFID_MFRC522.PICC_ReadCardSerial())
   {
     //Serial.println("Failed reading card");
     V_STATE = verification_state::VERIFICATION_INITIALIZED;
@@ -342,37 +341,24 @@ verification_state verifyRfidCard()
   //Show UID on serial monitor
   Serial.println();
   Serial.print(" UID tag :");
-  String content= "";
+  String content = "";
   byte letter;
-  for (byte i = 0; i < RFID_MFRC522.uid.size; i++) 
+  for (byte i = 0; i < RFID_MFRC522.uid.size; i++)
   {
-     Serial.print(RFID_MFRC522.uid.uidByte[i] < 0x10 ? " 0" : " ");
-     Serial.print(RFID_MFRC522.uid.uidByte[i], HEX);
-     content.concat(String(RFID_MFRC522.uid.uidByte[i] < 0x10 ? " 0" : " "));
-     content.concat(String(RFID_MFRC522.uid.uidByte[i], HEX));
+    Serial.print(RFID_MFRC522.uid.uidByte[i] < 0x10 ? " 0" : " ");
+    Serial.print(RFID_MFRC522.uid.uidByte[i], HEX);
+    content.concat(String(RFID_MFRC522.uid.uidByte[i] < 0x10 ? " 0" : " "));
+    content.concat(String(RFID_MFRC522.uid.uidByte[i], HEX));
   }
   Serial.println();
   content.toUpperCase();
 
-  if (validateUserId(content.substring(1))) //change UID of the card that you want to give access
-  {
-    colorLed(0, 255, 0);
-    lcdClearLine(1);
-    displayMessageAt(1, 1, "Welcome Christo!");
-    buzzCorrectPassword();
-    delay(2000);
-    V_STATE = verification_state::VERIFICATION_AUTHORIZED;
-    return V_STATE;
-  }
-  else
-  {
-    colorLed(255, 0, 0);
-    lcdClearLine(1);
-    displayMessageAt(1, 1, " Access Denied ");
-    buzzWrongPassword();
-    V_STATE = verification_state::VERIFICATION_UNAUTHORIZED;
-    return V_STATE;
-  }
+  V_STATE = verification_state::VERIFICATION_VALIDATING;
+  String message = "@I";
+  message += content.substring(1);
+  message += "#"; // Adding a '#' at the end of the message so we get rid of it and the end of line character
+  sendMessageToEspSerial(message.c_str());
+  return V_STATE;
 }
 //--------------------------------------------------------------------------
 
@@ -398,15 +384,15 @@ void displayMessageAt(byte col, byte row, char* message)
 void lcdClearLine(int line)
 {
   lcd.setCursor(0, line);
-  for(int i = 0; i <= LCD_COLS; ++i)
+  for (int i = 0; i <= LCD_COLS; ++i)
     lcd.write(" ");
 }
 
 void verificationProcess()
 {
-  if(ELAPSED_SECONDS <= TIMEOUT)
+  if (ELAPSED_SECONDS <= TIMEOUT)
   {
-    if(verifyRfidCard() == verification_state::VERIFICATION_AUTHORIZED)
+    if (verifyRfidCard() == verification_state::VERIFICATION_AUTHORIZED)
     {
       CTRL_STATE = controller_state::CONTROLLER_VERIFICATION_STOPPED;
       sendMessageToEspSerial("@V1");
@@ -415,7 +401,7 @@ void verificationProcess()
       //lcd.setBacklight(LOW);
       return;
     }
-    if(verifyKeypadPassword() == verification_state::VERIFICATION_AUTHORIZED)
+    if (verifyKeypadPassword() == verification_state::VERIFICATION_AUTHORIZED)
     {
       CTRL_STATE = controller_state::CONTROLLER_VERIFICATION_STOPPED;
       sendMessageToEspSerial("@V1");
@@ -424,9 +410,9 @@ void verificationProcess()
       //lcd.setBacklight(LOW);
       return;
     }
-    if(millis() > START_TIME + (ELAPSED_SECONDS * 1000))
+    if (millis() > START_TIME + (ELAPSED_SECONDS * 1000))
     {
-      char str_sec[3] = {0,0,0};
+      char str_sec[3] = {0, 0, 0};
       sprintf(str_sec, "Alarm in %7d", SEC);
       displayMessageAt(0, 1, str_sec);
       Serial.print(str_sec);
@@ -453,12 +439,12 @@ void verificationProcess()
 
 void blinkSymbol(int col, int row, uint8_t symbol)
 {
-  if(millis() < START_BLINKING_TS + 500)
+  if (millis() < START_BLINKING_TS + 500)
     return;
 
   START_BLINKING_TS = millis();
   lcd.setCursor(col, row);
-  if(WIFI_SYMBOL_ON)
+  if (WIFI_SYMBOL_ON)
   {
     colorLed(0, 0, 0);
     WIFI_SYMBOL_ON = false;
@@ -474,12 +460,12 @@ void blinkSymbol(int col, int row, uint8_t symbol)
 
 void blinkText(int col, int row, char* text)
 {
-  if(millis() < START_BLINKING_TS + 500)
+  if (millis() < START_BLINKING_TS + 500)
     return;
 
   START_BLINKING_TS = millis();
   lcd.setCursor(col, row);
-  if(TEXT_SHOW)
+  if (TEXT_SHOW)
   {
     colorLed(0, 0, 0);
     TEXT_SHOW = false;
@@ -497,12 +483,12 @@ void blinkText(int col, int row, char* text)
 void lcdShowWifiSymbol()
 {
   lcd.setCursor(1, 0);
-  if(IS_WIFI_CONNECTED)
+  if (IS_WIFI_CONNECTED)
   {
     colorLed(0, 0, 255);
     lcd.write(WIFI_SYMBOL_CONNECTED_CHAR);
   }
-  else if(START_BLINKING_TS != 0)
+  else if (START_BLINKING_TS != 0)
   {
     blinkSymbol(1, 0, WIFI_SYMBOL_CONNECTED_CHAR);
   }
@@ -511,7 +497,7 @@ void lcdShowWifiSymbol()
 void lcdShowAlarmSymbol()
 {
   lcd.setCursor(0, 0);
-  switch(SYSTEM_ALARM_STATE)
+  switch (SYSTEM_ALARM_STATE)
   {
     case system_alarm_state::SYSTEM_ALARM_DISARMED:
       lcd.write(ALARM_SYMBOL_OFF_CHAR);
@@ -539,12 +525,12 @@ void softwareReset( uint8_t prescaller) {
   // wait for the prescaller time to expire
   // without sending the reset signal by using
   // the wdt_reset() method
-  while(1) {}
+  while (1) {}
 }
 
 void showMenu()
 {
-  switch(CTRL_STATE)
+  switch (CTRL_STATE)
   {
     case controller_state::CONTROLLER_DEACTIVATE_ALARM_MENU:
       displayMessageAt(0, 0, "ALARM OFF       ");
@@ -561,25 +547,25 @@ void showMenu()
 void checkForKeypadPressed()
 {
   char key = keypad.getKey();
-  
-  if(key)
+
+  if (key)
   {
     Serial.println(key);
   }
-  if(CTRL_STATE != CONTROLLER_DEACTIVATE_ALARM_MENU && 
+  if (CTRL_STATE != CONTROLLER_DEACTIVATE_ALARM_MENU &&
       CTRL_STATE != CONTROLLER_ACTIVATE_ALARM_MENU)
   {
-    switch(SYSTEM_ALARM_STATE)
+    switch (SYSTEM_ALARM_STATE)
     {
       case system_alarm_state::SYSTEM_ALARM_HALF_ARMED:
-        if(key == '#')
+        if (key == '#')
         {
           CTRL_STATE = controller_state::CONTROLLER_DEACTIVATE_ALARM_MENU;
           Serial.println("Showing deactivate alarm menu...");
         }
         break;
       case system_alarm_state::SYSTEM_ALARM_DISARMED:
-        if(key == '#')
+        if (key == '#')
         {
           CTRL_STATE = controller_state::CONTROLLER_ACTIVATE_ALARM_MENU;
           Serial.println("Show activate alarm menu...");
@@ -588,10 +574,10 @@ void checkForKeypadPressed()
     }
   }
 
-  switch(CTRL_STATE)
+  switch (CTRL_STATE)
   {
     case controller_state::CONTROLLER_DEACTIVATE_ALARM_MENU:
-      if(key == 'A')
+      if (key == 'A')
       {
         SYSTEM_ALARM_STATE = system_alarm_state::SYSTEM_ALARM_DISARMED;
         sendMessageToEspSerial("@A0");
@@ -599,7 +585,7 @@ void checkForKeypadPressed()
         lcdClearLine(0);
         lcdClearLine(1);
       }
-      else if(key == 'B')
+      else if (key == 'B')
       {
         CTRL_STATE = controller_state::CONTROLLER_INITIALIZED;
         lcdClearLine(0);
@@ -607,7 +593,7 @@ void checkForKeypadPressed()
       }
       break;
     case controller_state::CONTROLLER_ACTIVATE_ALARM_MENU:
-      if(key == 'A')
+      if (key == 'A')
       {
         TIMEOUT = SYSTEM_ALARM_ACTIVATION_TIMEOUT_SEC;
         START_TIME = millis();
@@ -617,10 +603,10 @@ void checkForKeypadPressed()
         lcdClearLine(0);
         lcdClearLine(1);
       }
-      else if(key == 'B')
+      else if (key == 'B')
       {
         SYSTEM_ALARM_STATE = system_alarm_state::SYSTEM_ALARM_HALF_ARMED;
-        sendMessageToEspSerial("@A2");
+        sendMessageToEspSerial("@A1");
         CTRL_STATE = controller_state::CONTROLLER_INITIALIZED;
         lcdClearLine(0);
         lcdClearLine(1);
@@ -631,11 +617,11 @@ void checkForKeypadPressed()
 
 void activateAlarmInTimeout()
 {
-  if(ELAPSED_SECONDS <= TIMEOUT && CTRL_STATE == controller_state::CONTROLLER_FULLY_ACTIVATE_TIMEOUT)
+  if (ELAPSED_SECONDS <= TIMEOUT && CTRL_STATE == controller_state::CONTROLLER_FULLY_ACTIVATE_TIMEOUT)
   {
-    if(millis() > START_TIME + (ELAPSED_SECONDS * 1000))
+    if (millis() > START_TIME + (ELAPSED_SECONDS * 1000))
     {
-      char str_sec[3] = {0,0,0};
+      char str_sec[3] = {0, 0, 0};
       sprintf(str_sec, "Activate in %4d", SEC);
       displayMessageAt(0, 1, str_sec);
       Serial.print(str_sec);
@@ -647,7 +633,7 @@ void activateAlarmInTimeout()
   else
   {
     SYSTEM_ALARM_STATE = system_alarm_state::SYSTEM_ALARM_FULLY_ARMED;
-    sendMessageToEspSerial("@A1");
+    sendMessageToEspSerial("@A2");
     CTRL_STATE = controller_state::CONTROLLER_INITIALIZED;
     lcdClearLine(0);
     lcdClearLine(1);
@@ -658,30 +644,31 @@ void checkForEspMessage()
 {
   String esp_message;
   char data = 0;
-  while(Serial3.available() && data != 10)
+  while (Serial3.available() && data != 10)
   {
-    data=Serial3.read();
+    data = Serial3.read();
     esp_message += data;
   }
-  if(esp_message.length() > 0)
+  if (esp_message.length() > 0)
   {
-     Serial.print("esp_message: ");
-     Serial.println(esp_message);
-     if(esp_message.startsWith("@"))
-       handleEspMessage(esp_message);
+    Serial.print("esp_message: ");
+    Serial.println(esp_message);
+    if (esp_message.startsWith("@"))
+      handleEspMessage(esp_message);
   }
 }
 
 void handleEspMessage(String message)
 {
-  if(message.startsWith("@C")) // Connection
+  if (message.startsWith("@C")) // Connection
   {
     colorLed(0, 0, 255);
     IS_WIFI_CONNECTED = message.charAt(2) == '1' ? true : false;
-    if(IS_WIFI_CONNECTED)
+    if (IS_WIFI_CONNECTED)
     {
       lcdShowWifiSymbol();
-      sendMessageToEspSerial("@A");
+      Serial.println("Sending @A?");
+      sendMessageToEspSerial("@A?");
     }
     else
     {
@@ -690,10 +677,10 @@ void handleEspMessage(String message)
     }
     message = "";
   }
-  if(message.startsWith("@V")) // Verification
+  else if (message.startsWith("@V")) // Verification
   {
-    if(SYSTEM_ALARM_STATE == system_alarm_state::SYSTEM_ALARM_DISARMED)
-      return;
+//    if (SYSTEM_ALARM_STATE == system_alarm_state::SYSTEM_ALARM_DISARMED)
+//      return;
     colorLed(0, 255, 0);
     String str_timeout_sec = message.substring(2, message.length() - 2);
     message = "";
@@ -705,63 +692,125 @@ void handleEspMessage(String message)
     ELAPSED_SECONDS = 0;
     CTRL_STATE = controller_state::CONTROLLER_VERIFICATION_STARTED;
   }
-  if(message.startsWith("@A")) // Alarm status
+  else if (message.startsWith("@A")) // Alarm status
   {
     colorLed(0, 255, 0);
     Serial.print("Alarm status response: ");
     Serial.println(message);
     char alarm_state = message.charAt(2);
-    switch(alarm_state)
+    switch (alarm_state)
     {
       case '0':
         SYSTEM_ALARM_STATE = system_alarm_state::SYSTEM_ALARM_DISARMED;
         break;
       case '1':
-        SYSTEM_ALARM_STATE = system_alarm_state::SYSTEM_ALARM_FULLY_ARMED;
-        break;
-      case '2':
         SYSTEM_ALARM_STATE = system_alarm_state::SYSTEM_ALARM_HALF_ARMED;
         break;
-      default:
-        SYSTEM_ALARM_STATE = system_alarm_state::SYSTEM_ALARM_INITIALIZED;
+      case '2':
+        SYSTEM_ALARM_STATE = system_alarm_state::SYSTEM_ALARM_FULLY_ARMED;
         break;
+      default:
+        // Got the wrong alarm state. Ask for the alarm state.
+        SYSTEM_ALARM_STATE = system_alarm_state::SYSTEM_ALARM_INITIALIZED;
+        Serial.println("Sending @A?");
+        sendMessageToEspSerial("@A?");
+        return;
     }
-    delay(1000);
+    // When the alarm state is being updated, send @AOK to esp controller
+    Serial.println("Sending @AOK to esp");
+    sendMessageToEspSerial("@AOK");
     //lcd.setBacklight(LOW);
     message = "";
   }
-  if(message.startsWith("@U"))
+  else if (message.startsWith("@P"))
   {
-    VERIFIED_USERS = message.substring(2, message.length() - 2);;
-    Serial.print("Verified users list: ");
-    Serial.println(VERIFIED_USERS);
+    if (message.charAt(2) == '1') // The password was correct
+    {
+      colorLed(0, 255, 0);
+      lcdClearLine(1);
+      displayMessageAt(2, 1, "Password OK!");
+      buzzCorrectPassword();
+      V_STATE = verification_state::VERIFICATION_AUTHORIZED;
+      CTRL_STATE = controller_state::CONTROLLER_VERIFICATION_STOPPED;
+      delay(500);
+      lcdClearLine(1);
+      SYSTEM_ALARM_STATE = system_alarm_state::SYSTEM_ALARM_DISARMED;
+      sendMessageToEspSerial("@A0");
+      lcdShowAlarmSymbol();
+    }
+    else if (message.charAt(2) == '0')
+    {
+      colorLed(255, 0, 0);
+      lcdClearLine(1);
+      displayMessageAt(1, 1, "Wrong password!");
+      buzzWrongPassword();
+      colorLed(0, 0, 0);
+      V_STATE = verification_state::VERIFICATION_UNAUTHORIZED;
+      CTRL_STATE = controller_state::CONTROLLER_VERIFICATION_STOPPED;
+    }
   }
-  if(message.startsWith("@P"))
+  else if(message.startsWith("@I"))
   {
-    VERIFIED_PASSWORDS = message.substring(2, message.length() - 2);;
-    Serial.print("Verified passwords list: ");
-    Serial.println(VERIFIED_PASSWORDS);
+    if (message.charAt(2) == '1') // The password was correct
+    {
+      colorLed(0, 255, 0);
+      lcdClearLine(1);
+      displayMessageAt(2, 1, "Card Verified!");
+      buzzCorrectPassword();
+      V_STATE = verification_state::VERIFICATION_AUTHORIZED;
+      CTRL_STATE = controller_state::CONTROLLER_VERIFICATION_STOPPED;
+      delay(500);
+      lcdClearLine(1);
+      SYSTEM_ALARM_STATE = system_alarm_state::SYSTEM_ALARM_DISARMED;
+      sendMessageToEspSerial("@A0");
+      lcdShowAlarmSymbol();
+    }
+    else if (message.charAt(2) == '0')
+    {
+      colorLed(255, 0, 0);
+      lcdClearLine(1);
+      displayMessageAt(1, 1, "Invalid Card!");
+      buzzWrongPassword();
+      colorLed(0, 0, 0);
+      V_STATE = verification_state::VERIFICATION_UNAUTHORIZED;
+      CTRL_STATE = controller_state::CONTROLLER_VERIFICATION_STOPPED;
+    }
   }
-  if(message.startsWith("@L")) // Alarm status
+  else if (message.startsWith("@L")) // Alarm status
   {
     Serial.print("Stop alarm received: ");
     Serial.println(message);
-    if(message.charAt(2) == '0')
+    if (message.charAt(2) == '0')
     {
       lcdClearLine(1);
       V_STATE = verification_state::VERIFICATION_AUTHORIZED;
     }
     message = "";
   }
-  if(message.startsWith("@R")) // Esp is restarting
+  else if (message.startsWith("@R")) // Esp is restarting
   {
     Serial.print("Esp is restarting: ");
     Serial.println(message);
-//    WIFI_CONNECTION_ATTEMPT++;
-//    if(WIFI_CONNECTION_ATTEMPT >= MAX_WIFI_CONNECTION_ATTEMPTS)
-//      softwareReset( WDTO_60MS);
+    //    WIFI_CONNECTION_ATTEMPT++;
+    //    if(WIFI_CONNECTION_ATTEMPT >= MAX_WIFI_CONNECTION_ATTEMPTS)
+    //      softwareReset( WDTO_60MS);
     message = "";
   }
+/*  
+ else if (message.startsWith("@U"))
+  {
+    VERIFIED_RFIDS = message.substring(2, message.length() - 2);;
+    Serial.print("Verified users list: ");
+    Serial.println(VERIFIED_RFIDS);
+  }
+*/
+/*
+  else if (message.startsWith("@P"))
+    VERIFIED_PASSWORDS = message.substring(2, message.length() - 2);;
+    Serial.print("Verified passwords list: ");
+    Serial.println(VERIFIED_PASSWORDS);
+  }
+*/
 }
 
 void setup(void)
@@ -769,8 +818,8 @@ void setup(void)
   Serial.begin(115200);
   Serial3.begin(115200);
 
-  lcd.begin (16,2); //My LCD was 16x2
-  lcd.setBacklightPin(BACKLIGHT_PIN,POSITIVE);
+  lcd.begin (16, 2); //My LCD was 16x2
+  lcd.setBacklightPin(BACKLIGHT_PIN, POSITIVE);
   lcd.setBacklight(HIGH);
   lcd.createChar(WIFI_SYMBOL_CONNECTED_CHAR, WIFI_SYMBOL_CONNECTED);
   lcd.createChar(WIFI_SYMBOL_DISCONNECTED_CHAR, WIFI_SYMBOL_DISCONNECTED);
@@ -784,15 +833,15 @@ void setup(void)
 
   rtc.halt(false);
   rtc.writeProtect(true);
-/*  DateTime dt(__DATE__, __TIME__);
-  rtc.setDOW(dt.dayOfWeek());
-  rtc.setTime(dt.hour(), dt.minute(), dt.second());
-  rtc.setDate(dt.day(), dt.month(), dt.year());
-  Serial.print("Setting date: ");
-  Serial.println(__DATE__);
-  Serial.print("Setting time: ");
-  Serial.println(__TIME__);
-*/
+  /*  DateTime dt(__DATE__, __TIME__);
+    rtc.setDOW(dt.dayOfWeek());
+    rtc.setTime(dt.hour(), dt.minute(), dt.second());
+    rtc.setDate(dt.day(), dt.month(), dt.year());
+    Serial.print("Setting date: ");
+    Serial.println(__DATE__);
+    Serial.print("Setting time: ");
+    Serial.println(__TIME__);
+  */
   initVerifyPersonResource();
   pinMode(BUZZER_PIN, OUTPUT);
   pinMode(RED_PIN, OUTPUT);
@@ -814,7 +863,7 @@ void loop(void)
 
   checkForEspMessage();
 
-  switch(CTRL_STATE)
+  switch (CTRL_STATE)
   {
     case controller_state::CONTROLLER_VERIFICATION_STARTED:
       lcdShowAlarmSymbol();
@@ -827,12 +876,12 @@ void loop(void)
       lcdShowAlarmSymbol();
       lcdShowWifiSymbol();
       lcdShowCurrentTime();
-      if(SYSTEM_ALARM_STATE != system_alarm_state::SYSTEM_ALARM_FULLY_ARMED)
+      if (SYSTEM_ALARM_STATE != system_alarm_state::SYSTEM_ALARM_FULLY_ARMED)
         checkForKeypadPressed();
       break;
     case controller_state::CONTROLLER_DEACTIVATE_ALARM_MENU:
     case controller_state::CONTROLLER_ACTIVATE_ALARM_MENU:
-      if(SYSTEM_ALARM_STATE != system_alarm_state::SYSTEM_ALARM_FULLY_ARMED)
+      if (SYSTEM_ALARM_STATE != system_alarm_state::SYSTEM_ALARM_FULLY_ARMED)
         showMenu();
       break;
     case controller_state::CONTROLLER_FULLY_ACTIVATE_TIMEOUT:
@@ -847,7 +896,7 @@ void loop(void)
       lcdShowCurrentTime();
   }
 
-  switch(V_STATE)
+  switch (V_STATE)
   {
     case verification_state::VERIFICATION_UNAUTHORIZED:
       blinkText(0, 1, "    ALARM!!! ");

@@ -1,7 +1,7 @@
 float batteryVoltage()
 {
   //For 0-25v voltage sensor
-  float correctionfactor = -.84;
+  float correctionfactor = -.71;
   float sum_v = 0.0;
    
   // two resistors 20K and 1k ohm
@@ -52,5 +52,9 @@ void setup() {
 // the loop routine runs over and over again forever:
  
 void loop() {
-batteryVoltage();
+  float v = batteryVoltage();
+  int p = (v - 3.0) * 100 / 1.2;
+  Serial.print("percentage: ");
+  Serial.print(p);
+  Serial.println("%");
 }

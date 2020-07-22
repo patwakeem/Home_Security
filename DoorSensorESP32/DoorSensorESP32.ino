@@ -2,7 +2,6 @@
  *
  * by Fabiano França (fabianofranca)
  */
-
 #include <DoorSensor.h>
 #include <ArduinoJson.h>
 #include "WiFi.h"
@@ -13,7 +12,7 @@
 #include <esp_bt.h>
 #include "driver/adc.h"
 #include "C:\Development\Home_Projects\Arduino\Home_Security\Common\BatteryVoltage.h"
-#include "C:\Development\Home_Projects\Arduino\Home_Security\Common\HttpClientCommands.h"
+#include "C:\Development\Home_Projects\Arduino\Home_Security\Common\ESP32\HttpClientCommands.h"
 #include "C:\Development\Home_Projects\Arduino\Home_Security\Common\ResetReason.h"
 #include "C:\Development\Home_Projects\Arduino\Home_Security\Common\WifiConfiguration.h"
 #include "C:\Development\Home_Projects\Arduino\Home_Security\Common\HomeServerSettings.h"
@@ -78,7 +77,6 @@ bool isFirstRun()
 }
 */
 
-
 // Voltage measurement
 // 29/04/2020 23:16   -   3.970V  -  3.0μA
 void espDeepSleep()
@@ -121,9 +119,9 @@ int getAlarmState()
   {
     retries++;
     String response = "";
-    statusCode = httpGet(HOME_SERVER_ADDRESS, String(HOME_SERVER_REST_PORT), "/alarm_state", response);
+    statusCode = httpGet(HOME_SERVER_ADDRESS, HOME_SERVER_REST_PORT, "/alarm/1", response);
 #ifdef _DEBUG
-    Serial.print(String("Return code after calling: ") + String(HOME_SERVER_ADDRESS) + String(":") + String(HOME_SERVER_REST_PORT) + String("/alarm_state statusCode: "));
+    Serial.print(String("Return code after calling: ") + String(HOME_SERVER_ADDRESS) + String(":") + String(HOME_SERVER_REST_PORT) + String("/alarm/1 statusCode: "));
     Serial.println(statusCode);
 #endif
     if(statusCode != 200)
@@ -159,15 +157,15 @@ int postDoorState(bool doorState, String& payload)
 {
   StaticJsonBuffer<200> jsonBuffer;
   JsonObject& jsonObj = jsonBuffer.createObject();
-  jsonObj["doorState"] = doorState;
-  jsonObj["updatedUtc"] = 0;
+  jsonObj["door_id"] = 1;
+  jsonObj["door_state"] = doorState;
   String body;
   jsonObj.printTo(body);
 #ifdef _DEBUG
   Serial.print("DoorState body: ");
   Serial.println(body);
 #endif
-  int statusCode = httpPost(HOME_SERVER_ADDRESS, String(HOME_SERVER_REST_PORT), "/door_state", body, payload);
+  int statusCode = httpPost(HOME_SERVER_ADDRESS, HOME_SERVER_REST_PORT, "/door", body.c_str(), payload);
   return statusCode;
 }
 
@@ -175,15 +173,17 @@ int postBatteryVoltage(String& payload)
 {
   StaticJsonBuffer<200> jsonBuffer;
   JsonObject& jsonObj = jsonBuffer.createObject();
-  jsonObj["batteryVoltage"] = batteryVoltage(A6, 30000, 7500, 3.3, 4095.0, -.6);//batteryVoltage(A0, 20000, 1000, 3.3, 4095.0, .01);
-  jsonObj["updatedUtc"] = 0;
+  float voltage = batteryVoltage(A6, 30000, 7500, 3.3, 4095.0, -.71);//batteryVoltage(A0, 20000, 1000, 3.3, 4095.0, .01);
+  jsonObj["battery_id"] = 1;
+  jsonObj["battery_voltage"] = voltage;
+  jsonObj["battery_percentage"] = (voltage - 3.0) * 100.0 / (4.2-3.0);
   String body;
   jsonObj.printTo(body);
 #ifdef _DEBUG
-  Serial.print("DoorState body: ");
+  Serial.print("Battery body: ");
   Serial.println(body);
 #endif
-  int statusCode = httpPost(HOME_SERVER_ADDRESS, String(HOME_SERVER_REST_PORT), "/battery_voltage", body, payload);
+  int statusCode = httpPost(HOME_SERVER_ADDRESS, HOME_SERVER_REST_PORT, "/battery", body.c_str(), payload);
   return statusCode;
 }
 
@@ -228,6 +228,8 @@ void setup()
 
   if(getAlarmState() == 0/* || isFirstRun()*/)
   {
+    String payload;
+    postBatteryVoltage(payload);
 #ifdef _DEBUG
     Serial.println("Alarm is disarmed. Going to deep sleep immediatelly");
 #endif
@@ -236,6 +238,7 @@ void setup()
 
   // Alarm is armed
   doorSensor.init();
+
 
 }
 
