@@ -6,12 +6,12 @@ import com.interactivehome.main_service.model.entity.DoorSensor;
 import com.interactivehome.main_service.repository.DoorStateRepository;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -52,7 +52,7 @@ public class DoorStateServiceImpl implements DoorStateService {
     @Override
     public List<DoorSensor> getDoorStateByDoorIdFromDateToDate(Integer doorId, Date fromDate, Date toDate) {
         if(fromDate != null && !fromDate.toString().isEmpty() && (toDate == null || toDate.toString().isEmpty())) {
-            toDate = java.util.Date.from(LocalDate.now().atStartOfDay()
+            toDate = java.util.Date.from(LocalDate.now().atStartOfDay().plusDays(1)
                 .atZone(ZoneId.systemDefault())
                 .toInstant());
         }
@@ -64,16 +64,17 @@ public class DoorStateServiceImpl implements DoorStateService {
         System.out.println(messageOut);
 
         Query query = new Query();
-        query.addCriteria(Criteria.where("doorId").is(doorId));
-        if((fromDate != null && toDate != null) && (!fromDate.toString().isEmpty() && !toDate.toString().isEmpty())) {
-            query.addCriteria(Criteria.where("updatedUtc").gte(fromDate).lt(toDate));
-            query.with(new Sort(Direction.DESC, "updatedUtc"));
+        query.addCriteria(Criteria.where("door_id").is(doorId));
+        if((fromDate != null && toDate != null) && (!fromDate.toString().isEmpty() && !toDate.toString().isEmpty()))
+        {
+            query.addCriteria(Criteria.where("updated_utc").gte(fromDate).lt(toDate));
+            query.with(new org.springframework.data.domain.Sort(Direction.DESC, "updated_utc"));
             return mongoTemplate.find(query, DoorSensor.class);
         }
-        // If the dates are not present then get the latest door state
-        query.with(new Sort(Direction.DESC, "updatedUtc"));
-        List<DoorSensor> doorSensorList = null;
-        if(mongoTemplate.find(query, DoorSensor.class).size() > 0)
+        // If the dates are not present then get the latest voltage measurement
+        query.with(new org.springframework.data.domain.Sort(Direction.DESC, "updated_utc"));
+        List<DoorSensor> doorSensorList = new ArrayList<>();
+        if(mongoTemplate.find(query, DoorSensor.class) != null)
             doorSensorList.add(mongoTemplate.find(query, DoorSensor.class).get(0));
         return doorSensorList;
   }

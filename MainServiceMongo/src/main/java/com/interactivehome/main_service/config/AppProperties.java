@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties("verification")
+@ConfigurationProperties("iot")
 @Data
 public class AppProperties {
   public String securityControllerIpPort;

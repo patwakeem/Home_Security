@@ -8,9 +8,12 @@ import java.util.List;
 public interface AlarmService {
   void saveAlarmState(AlarmDto dto);
 
-  Alarm getAlarmStateByAlarmId(Integer alarmId);
+  Integer getAlarmStateByAlarmId(Integer alarmId);
 
-  List<Alarm> getAlarmStateByAlarmIdFromDateToDate(Integer alarmId, Date fromDate, Date toDate);
+  Boolean getAlarmOnByAlarmId(Integer alarmId);
+
+  List<Alarm> getAlarmByAlarmIdFromDateToDate(Integer alarmId, Date fromDate, Date toDate);
 
   void stopAlarm(AlarmDto dto);
+
 }

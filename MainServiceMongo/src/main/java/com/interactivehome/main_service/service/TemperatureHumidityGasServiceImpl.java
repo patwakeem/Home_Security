@@ -5,9 +5,9 @@ import com.interactivehome.main_service.model.entity.TemperatureHumidityGas;
 import com.interactivehome.main_service.repository.TemperatureHumidityGasRepository;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -37,7 +37,7 @@ public class TemperatureHumidityGasServiceImpl implements TemperatureHumidityGas
   public List<TemperatureHumidityGas> getValuesBySensorIdFromDateToDate(
                                           Integer sensorId, Date fromDate, Date toDate) {
     if(fromDate != null && !fromDate.toString().isEmpty() && (toDate == null || toDate.toString().isEmpty()))
-      toDate = java.util.Date.from(LocalDate.now().atStartOfDay()
+      toDate = java.util.Date.from(LocalDate.now().atStartOfDay().plusDays(1)
           .atZone(ZoneId.systemDefault())
           .toInstant());
 
@@ -49,19 +49,15 @@ public class TemperatureHumidityGasServiceImpl implements TemperatureHumidityGas
 
     Query query = new Query();
     query.addCriteria(Criteria.where("sensorId").is(sensorId));
-    if((fromDate != null && toDate != null) && (!fromDate.toString().isEmpty() && !toDate.toString().isEmpty())) {
+    if((fromDate != null && toDate != null) && (!fromDate.toString().isEmpty() && !toDate.toString().isEmpty()))
+    {
       query.addCriteria(Criteria.where("updatedUtc").gte(fromDate).lt(toDate));
-      query.with(new Sort(Direction.DESC, "updatedUtc"));
+      query.with(new org.springframework.data.domain.Sort(Direction.DESC, "updatedUtc"));
       return mongoTemplate.find(query, TemperatureHumidityGas.class);
     }
-    if((fromDate != null && toDate != null) && (!fromDate.toString().isEmpty() && !toDate.toString().isEmpty())) {
-      query.addCriteria(Criteria.where("updatedUtc").gte(fromDate).lt(toDate));
-      query.with(new Sort(Direction.DESC, "updatedUtc"));
-      return mongoTemplate.find(query, TemperatureHumidityGas.class);
-    }
-    // If the dates are not present then get the latest temperature humidity gas measurements
-    query.with(new Sort(Direction.DESC, "updatedUtc"));
-    List<TemperatureHumidityGas> temperatureHumidityGasList = null;
+    // If the dates are not present then get the sensors measurements
+    query.with(new org.springframework.data.domain.Sort(Direction.DESC, "updatedUtc"));
+    List<TemperatureHumidityGas> temperatureHumidityGasList = new ArrayList<>();
     if(mongoTemplate.find(query, TemperatureHumidityGas.class).size() > 0)
       temperatureHumidityGasList.add(mongoTemplate.find(query, TemperatureHumidityGas.class).get(0));
     return temperatureHumidityGasList;

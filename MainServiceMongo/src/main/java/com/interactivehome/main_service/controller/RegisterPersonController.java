@@ -34,12 +34,12 @@ public class RegisterPersonController {
   }
 
   @GetMapping("/person_rfid_card/{rfidCardId}")
-  public RegisteredPerson getRegisteredPersonByRfidCard(@PathVariable String rfidCardId) {
-    return registeredPersonService.getRegisteredPersonByRfidCardId(rfidCardId);
+  public String getRegisteredPersonByRfidCard(@PathVariable String rfidCardId) {
+    return registeredPersonService.getRegisteredPersonNameByRfidCardId(rfidCardId);
   }
 
   @GetMapping("/person_password/{password}")
-  public RegisteredPerson getRegisteredPersonByPassword(@PathVariable String password) {
-    return registeredPersonService.getRegisteredPersonByPassword(password);
+  public String getRegisteredPersonByPassword(@PathVariable String password) {
+    return registeredPersonService.getRegisteredNamePersonByPassword(password);
   }
 }

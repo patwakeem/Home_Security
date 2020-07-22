@@ -51,29 +51,32 @@ public class AlarmController {
 
   @PostMapping("/alarm")
   public ResponseEntity postAlarmState(@RequestBody AlarmDto dto) {
-    alarmService.saveAlarmState(dto);
-
+    System.out.println("Got request for postAlarmState: " + dto.toString());
     try {
       HttpHeaders requestHeaders = new HttpHeaders();
       requestHeaders.setContentType(MediaType.APPLICATION_JSON);
       JSONObject jsonObject = new JSONObject();
       try {
-        jsonObject.put("alarm_state", dto.getAlarmState());
+        jsonObject.put("system_alarm_state", dto.getAlarmState());
       }
       catch (JSONException e) {
-        System.out.println(e.toString());
+        System.out.println("Error while building json value 'alarm_state'. " + e.toString());
       }
-      HttpEntity<JSONObject> requestEntity = new HttpEntity<>(jsonObject, requestHeaders);
-      ResponseEntity<String> responseEntity =
-          restTemplate.exchange(
-              appProperties.getSecurityControllerIpPort() + appProperties.getAlarmStateEndpoint(),
-              HttpMethod.POST,
-              requestEntity,
-              String.class);
+      HttpEntity<String> requestEntity = new HttpEntity<String>(jsonObject.toString(), requestHeaders);
+      System.out.println("Securitly controller alarm state endpoint: " +
+          appProperties.getSecurityControllerIpPort() + appProperties.getAlarmStateEndpoint() +
+          ". \n Payload: \n" + jsonObject.toString());
+          ResponseEntity<String> responseEntity = restTemplate.
+              postForEntity(appProperties.getSecurityControllerIpPort() +
+                  appProperties.getAlarmStateEndpoint(),
+                  requestEntity,
+                  String.class);
 
       if(responseEntity.getStatusCode() == HttpStatus.OK)
       {
+        // Update the alarm state in the database only when the security controller has been updated successfully
         System.out.println("The alarm state in the security controller has been updated successfully");
+        alarmService.saveAlarmState(dto);
         return ResponseEntity.ok("200");
       }
       else
@@ -99,10 +102,22 @@ public class AlarmController {
   @GetMapping("/alarm/{alarmId}")
   public List<Alarm> getAlarmByAlarmIdFromDateToDate(
       @PathVariable Integer alarmId,
-      @RequestParam(value = "fromDate", required = false, defaultValue = "2020-07-01") @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate,
-      @RequestParam(value = "toDate", required = false, defaultValue = "2020-07-14") @DateTimeFormat(pattern="yyyy-MM-dd") Date toDate)
+      @RequestParam(value = "fromDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate,
+      @RequestParam(value = "toDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date toDate)
   {
-    return alarmService.getAlarmStateByAlarmIdFromDateToDate(alarmId, fromDate, toDate);
+    return alarmService.getAlarmByAlarmIdFromDateToDate(alarmId, fromDate, toDate);
+  }
+
+  @GetMapping("/alarm_state/{alarmId}")
+  public Integer getAlarmStateByAlarmId(@PathVariable Integer alarmId)
+  {
+    return alarmService.getAlarmStateByAlarmId(alarmId);
+  }
+
+  @GetMapping("/alarm_on/{alarmId}")
+  public Boolean getAlarmOnByAlarmId(@PathVariable Integer alarmId)
+  {
+    return alarmService.getAlarmOnByAlarmId(alarmId);
   }
 
   @PostMapping("/stop_alarm/{alarmId}")

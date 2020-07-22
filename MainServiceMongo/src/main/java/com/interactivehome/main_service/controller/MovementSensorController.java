@@ -1,7 +1,6 @@
 package com.interactivehome.main_service.controller;
 
 import com.interactivehome.main_service.model.dto.MovementSensorDto;
-import com.interactivehome.main_service.model.entity.Alarm;
 import com.interactivehome.main_service.model.entity.MovementSensor;
 import com.interactivehome.main_service.service.AlarmService;
 import com.interactivehome.main_service.service.MovementSensorService;
@@ -39,9 +38,9 @@ public class MovementSensorController {
   @PostMapping("/movement_sensor")
   public ResponseEntity<String> postMovementSensorState(@RequestBody MovementSensorDto movementSensorDto)
   {
-    Alarm alarm = alarmService.getAlarmStateByAlarmId(1);
-    System.out.println("Alarm state is : " + alarm.getAlarmState().toString());
-    if(alarm.getAlarmState() == 0) {
+    Integer alarmState = alarmService.getAlarmStateByAlarmId(1);
+    System.out.println("Alarm state is : " + alarmState.toString());
+    if(alarmState == 0) {
       System.out.println("The alarm is deactivated.");
       return ResponseEntity.ok("200");
     }

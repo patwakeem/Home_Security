@@ -5,6 +5,7 @@ import com.interactivehome.main_service.model.entity.MovementSensor;
 import com.interactivehome.main_service.repository.MovementSensorRepository;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.springframework.data.domain.Sort;
@@ -32,14 +33,13 @@ public class MovementSensorServiceImpl implements MovementSensorService{
     mongoTemplate.save(movementSensor);
 
     // If a movement is caught and the alarm is armed, then buzz the alarm
-    if(dto.getMovementSensorActivated())
-      buzzAlarm();
+    buzzAlarm();
   }
 
   @Override
   public List<MovementSensor> getMovementSensorActivityByMovementSensorId(Integer movementSensorId, Date fromDate, Date toDate) {
     if(fromDate != null && !fromDate.toString().isEmpty() && (toDate == null || toDate.toString().isEmpty())) {
-      toDate = java.util.Date.from(LocalDate.now().atStartOfDay()
+      toDate = java.util.Date.from(LocalDate.now().atStartOfDay().plusDays(1)
           .atZone(ZoneId.systemDefault())
           .toInstant());
     }
@@ -59,7 +59,7 @@ public class MovementSensorServiceImpl implements MovementSensorService{
     }
     // If the dates are not present then get the latest movement sensor activity
     query.with(new Sort(Direction.DESC, "updatedUtc"));
-    List<MovementSensor> movementSensorList = null;
+    List<MovementSensor> movementSensorList = new ArrayList<>();
     if(mongoTemplate.find(query, MovementSensor.class).size() > 0)
       movementSensorList.add(mongoTemplate.find(query, MovementSensor.class).get(0));
     return movementSensorList;

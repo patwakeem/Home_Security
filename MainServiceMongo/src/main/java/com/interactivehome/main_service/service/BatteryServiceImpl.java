@@ -5,6 +5,7 @@ import com.interactivehome.main_service.model.entity.Battery;
 import com.interactivehome.main_service.repository.BatteryRepository;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.springframework.data.domain.Sort.Direction;
@@ -34,7 +35,7 @@ public class BatteryServiceImpl implements BatteryService {
   @Override
   public List<Battery> getVoltageByBatteryIdFromDateToDate(Integer batteryId, Date fromDate, Date toDate) {
     if(fromDate != null && !fromDate.toString().isEmpty() && (toDate == null || toDate.toString().isEmpty())) {
-      toDate = java.util.Date.from(LocalDate.now().atStartOfDay()
+      toDate = java.util.Date.from(LocalDate.now().atStartOfDay().plusDays(1)
           .atZone(ZoneId.systemDefault())
           .toInstant());
     }
@@ -55,7 +56,7 @@ public class BatteryServiceImpl implements BatteryService {
     }
     // If the dates are not present then get the latest voltage measurement
     query.with(new org.springframework.data.domain.Sort(Direction.DESC, "updatedUtc"));
-    List<Battery> batteryList = null;
+    List<Battery> batteryList = new ArrayList<>();
     if(mongoTemplate.find(query, Battery.class).size() > 0)
       batteryList.add(mongoTemplate.find(query, Battery.class).get(0));
     return batteryList;

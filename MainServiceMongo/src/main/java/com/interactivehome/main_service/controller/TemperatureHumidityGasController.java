@@ -33,8 +33,8 @@ public class TemperatureHumidityGasController {
   @GetMapping("/temperature_humidity_gas/{sensorId}")
   public List<TemperatureHumidityGas> getAllTemperatureHumidityGasBySensorIdFromDateToDate(
       @PathVariable Integer sensorId,
-      @RequestParam(value = "fromDate", defaultValue = "2020-07-01") @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate,
-      @RequestParam(value = "toDate", defaultValue = "2020-07-14") @DateTimeFormat(pattern="yyyy-MM-dd") Date toDate)
+      @RequestParam(value = "fromDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate,
+      @RequestParam(value = "toDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date toDate)
   {
     return temperatureHumidityGasService.getValuesBySensorIdFromDateToDate(sensorId, fromDate, toDate);
   }
