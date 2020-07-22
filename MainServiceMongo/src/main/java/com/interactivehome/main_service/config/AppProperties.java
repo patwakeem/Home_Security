@@ -5,9 +5,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties("verification")
+@ConfigurationProperties("iot")
 @Data
 public class AppProperties {
-  public String securityControllerEndpoint;
+  public String securityControllerIpPort;
+  public String verificationProcessEndpoint;
   public Integer verificationProcessTimeoutSec;
+  public String alarmStateEndpoint;
+  public String stopAlarmEndpoint;
 }

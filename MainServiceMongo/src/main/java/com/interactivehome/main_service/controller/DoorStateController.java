@@ -3,13 +3,11 @@ package com.interactivehome.main_service.controller;
 
 import com.interactivehome.main_service.config.AppProperties;
 import com.interactivehome.main_service.model.dto.DoorSensorDto;
-import com.interactivehome.main_service.model.entity.Alarm;
 import com.interactivehome.main_service.model.entity.DoorSensor;
 import com.interactivehome.main_service.service.AlarmService;
 import com.interactivehome.main_service.service.DoorStateService;
 import com.interactivehome.main_service.utils.CountdownTimer;
 import io.micrometer.core.instrument.util.StringEscapeUtils;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -22,7 +20,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,7 +42,9 @@ public class DoorStateController {
     @Autowired
     private AppProperties appProperties;
 
-    @Value("$(verification_process_endpoint)")
+    @Value("$(securityControllerIpPort)")
+    private String securityControllerIpPort;
+    @Value("$(verificationProcessEndpoint)")
     private String verificationProcessEndpoint;
     @Value("$(verification_process_timeout_sec)")
     private String verificationProcessTimeoutSec;
@@ -61,9 +60,12 @@ public class DoorStateController {
 
     @PostMapping("/door")
     public ResponseEntity<String> postDoorState(@RequestBody DoorSensorDto doorSensorDto) {
-        Alarm alarm = alarmService.getAlarmStateByAlarmId(1);
-        System.out.println("Alarm state is : " + alarm.getAlarmState().toString());
-        if(alarm.getAlarmState() == 0) {
+
+        Integer alarmState = alarmService.getAlarmStateByAlarmId(1);
+        if(alarmState == null)
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("The alarm is not set");
+        System.out.println("Alarm state is : " + alarmState.toString());
+        if(alarmState == 0) {
             System.out.println("The alarm is deactivated.");
             return ResponseEntity.ok("200");
         }
@@ -75,11 +77,16 @@ public class DoorStateController {
         // If the door opens and the alarm is armed then trigger the initiation of the verification process
         try {
             HttpHeaders headers = new HttpHeaders();
-            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
             HttpEntity<String> entity = new HttpEntity<>(headers);
+            System.out.println("Security controller verification process endpoint: " +
+                appProperties.getSecurityControllerIpPort() + appProperties.getVerificationProcessEndpoint());
             ResponseEntity<String> responseEntity =
                 restTemplate.exchange(
-                    appProperties.getSecurityControllerEndpoint(), HttpMethod.GET, entity, String.class);
+                    appProperties.getSecurityControllerIpPort()
+                        + appProperties.getVerificationProcessEndpoint(),
+                    HttpMethod.GET,
+                    entity,
+                    String.class);
 
             if(responseEntity.getStatusCode() == HttpStatus.OK)
             {

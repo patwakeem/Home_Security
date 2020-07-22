@@ -1,5 +1,7 @@
 package com.interactivehome.main_service.model.entity;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.interactivehome.main_service.model.dto.DoorSensorDto;
 import java.util.Date;
 import lombok.Data;
@@ -8,7 +10,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @Data
-@Document(collection = "door_state")
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+@Document(collection = "door")
 public class DoorSensor {
     @Id
     @Field("_id")
