@@ -1,0 +1,156 @@
+{
+	"info": {
+		"_postman_id": "024d48f0-d9c3-4378-904c-e8e0550b85dd",
+		"name": "Controllers APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Stop main controller alarm",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "192.168.1.109:8080/stop_alarm",
+					"host": [
+						"192",
+						"168",
+						"1",
+						"109"
+					],
+					"port": "8080",
+					"path": [
+						"stop_alarm"
+					]
+				},
+				"description": "Stop main controller alarm"
+			},
+			"response": []
+		},
+		{
+			"name": "Initiate verification process",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "192.168.1.109:8080/initiate_verification_process",
+					"host": [
+						"192",
+						"168",
+						"1",
+						"109"
+					],
+					"port": "8080",
+					"path": [
+						"initiate_verification_process"
+					]
+				},
+				"description": "Initiate verification process"
+			},
+			"response": []
+		},
+		{
+			"name": "Restart security controller",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "192.168.1.154:8080/esp_restart",
+					"host": [
+						"192",
+						"168",
+						"1",
+						"154"
+					],
+					"port": "8080",
+					"path": [
+						"esp_restart"
+					]
+				},
+				"description": "Restart security controller"
+			},
+			"response": []
+		},
+		{
+			"name": "Trigger alarm",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"disabled": false
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"alarm_on\":0,\"gas_fire_alarm_on\":0}"
+				},
+				"url": {
+					"raw": "http://192.168.1.154:8080/trigger_alarm",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"1",
+						"154"
+					],
+					"port": "8080",
+					"path": [
+						"trigger_alarm"
+					]
+				},
+				"description": "Trigger alarm"
+			},
+			"response": []
+		},
+		{
+			"name": "Set system alarm state to the security controller",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"system_alarm_state\": 2}\n"
+				},
+				"url": {
+					"raw": "192.168.1.109:8080/alarm_state",
+					"host": [
+						"192",
+						"168",
+						"1",
+						"109"
+					],
+					"port": "8080",
+					"path": [
+						"alarm_state"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

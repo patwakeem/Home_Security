@@ -1,4 +1,3 @@
-#include <DoorSensor.h>
 #include <ArduinoJson.h>
 #include "WiFi.h"
 #include "rom/rtc.h"
@@ -7,6 +6,7 @@
 #include <esp_wifi.h>
 #include <esp_bt.h>
 #include "driver/adc.h"
+#include <PIRSensor.h>
 #include "C:\Development\Home_Projects\Arduino\Home_Security\Common\BatteryVoltage.h"
 #include "C:\Development\Home_Projects\Arduino\Home_Security\Common\ESP32\HttpClientCommands.h"
 #include "C:\Development\Home_Projects\Arduino\Home_Security\Common\ResetReason.h"
@@ -14,12 +14,16 @@
 #include "C:\Development\Home_Projects\Arduino\Home_Security\Common\HomeServerSettings.h"
 #include "C:\Development\Home_Projects\Arduino\Home_Security\Common\WifiCredentials.h"
 
-const int buzzerPin = 5;
-const int doorSensorPin = 2;
-DoorSensor doorSensor(doorSensorPin);
-
 #define BUTTON_PIN_BITMASK 0x0004 // GPIO 2
+
+int movementSensorPin = 2;
+
+const char* RES_MOVEMENT_SENSOR = "/movement_sensor";
+int MOVEMENT_SENSOR_ID = 1;
+int BATTERY_ID = 2;
 #define _DEBUG
+
+PIRSensor movementSensor(movementSensorPin);
 /*
 struct {
   byte data[4];
@@ -86,11 +90,6 @@ void espDeepSleep()
   esp_deep_sleep_start();
 }
 
-void doorBuzzer(bool buzz)
-{
-  digitalWrite(buzzerPin, buzz ? HIGH : LOW);
-}
-
 int initWifi()
 {
   int retries = 0;
@@ -149,19 +148,20 @@ int getAlarmState()
   return alarmState;
 }
 
-int postDoorState(bool doorState, String& payload)
+int postMovementEvent(String& payload)
 {
   StaticJsonBuffer<200> jsonBuffer;
   JsonObject& jsonObj = jsonBuffer.createObject();
-  jsonObj["door_id"] = 1;
-  jsonObj["door_state"] = doorState;
+  jsonObj["movement_sensor_id"] = MOVEMENT_SENSOR_ID;
   String body;
   jsonObj.printTo(body);
 #ifdef _DEBUG
-  Serial.print("DoorState body: ");
+  Serial.print("Sensor body: ");
   Serial.println(body);
 #endif
-  int statusCode = httpPost(HOME_SERVER_ADDRESS, HOME_SERVER_REST_PORT, "/door", body.c_str(), payload);
+  int statusCode = httpPost(HOME_SERVER_ADDRESS, HOME_SERVER_REST_PORT, RES_MOVEMENT_SENSOR, body.c_str(), payload);
+  Serial.print("Response code from home server after posting movement sensor event: ");
+  Serial.println(statusCode);
   return statusCode;
 }
 
@@ -170,7 +170,7 @@ int postBatteryVoltage(String& payload)
   StaticJsonBuffer<200> jsonBuffer;
   JsonObject& jsonObj = jsonBuffer.createObject();
   float voltage = batteryVoltage(A6, 30000, 7500, 3.3, 4095.0, -.71);//batteryVoltage(A0, 20000, 1000, 3.3, 4095.0, .01);
-  jsonObj["battery_id"] = 1;
+  jsonObj["battery_id"] = BATTERY_ID;
   jsonObj["battery_voltage"] = voltage;
   jsonObj["battery_percentage"] = (voltage - 3.0) * 100.0 / (4.2-3.0);
   String body;
@@ -220,84 +220,28 @@ void setup()
     ESP.restart();
   }
 
-  pinMode(buzzerPin, OUTPUT);
-
+  pinMode(movementSensorPin, INPUT);
   if(getAlarmState() == 0/* || isFirstRun()*/)
   {
     String payload;
     postBatteryVoltage(payload);
 #ifdef _DEBUG
-    Serial.println("Alarm is disarmed. Going to deep sleep immediatelly");
+//    Serial.println("Alarm is disarmed. Going to deep sleep immediatelly");
 #endif
-    espDeepSleep();
+//    espDeepSleep();
   }
-
-  // Alarm is armed
-  doorSensor.init();
-
-
 }
 
 void loop()
 {
-  // Wait for door to close
-  bool doorState = doorSensor.is_door_closed();
-#ifdef _DEBUG
-  Serial.print("Door is: ");
-  Serial.println(doorState ? "opened" : "closed");
-#endif
   String payload;
-  if(doorState > 0)
-  {
-    postDoorState(doorState, payload);
-    postBatteryVoltage(payload);
-  }
-  long maxDoorOpenedPeriod = 60000; // The door can be open only for 1 min when the alarm is activated. Then a buzzer kicks off
-  long doorOpenedMillis = millis();
-  long currentMillis = millis();
-  while(doorState > 0)
-  {
-    doorState = doorSensor.is_door_closed();
-#ifdef _DEBUG
-    Serial.print("doorState: ");
-    Serial.println(doorState);
-#endif
-    if(!doorState)
-    {
-      doorBuzzer(false);
-#ifdef _DEBUG
-      Serial.println("CLOSED DOOR");
-#endif
-      break;
-    }
-    long currentMillis = millis();
-    if(currentMillis - doorOpenedMillis >= maxDoorOpenedPeriod)
-    {
-      doorBuzzer(true);
-    }
-    delay(1000);
-  }
-#ifdef _DEBUG
-  Serial.print("doorState: ");
-  Serial.println(doorState);
-#endif
-  if(!doorState)
-  {
-    int statusCode = postDoorState(doorState, payload);
-#ifdef _DEBUG
-    Serial.print("Post door_state response code: ");
-    Serial.println(statusCode);
-    Serial.print("Post door_state payload: ");
-    Serial.println(payload);
-#endif
-    statusCode = postBatteryVoltage(payload);
-#ifdef _DEBUG
-    Serial.print("Post battery_voltage response code: ");
-    Serial.println(statusCode);
-    Serial.print("Post battery_voltage payload: ");
-    Serial.println(payload);
-    Serial.println("Door sensor is going back to deep sleep mode...");
-#endif
-    espDeepSleep();
-  }
+  postMovementEvent(payload);
+  postBatteryVoltage(payload);
+  bool movement = movementSensor.isMovementCaught();
+  Serial.print("sensor value: ");
+  Serial.println(movement ? "movement" : "nothing");
+
+//  if(movement <= 0)
+//    espDeepSleep();
+  delay(1000);
 }

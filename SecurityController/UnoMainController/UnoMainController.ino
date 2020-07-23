@@ -746,7 +746,6 @@ void handleEspMessage(String message)
       buzzWrongPassword();
       colorLed(0, 0, 0);
       V_STATE = verification_state::VERIFICATION_UNAUTHORIZED;
-      CTRL_STATE = controller_state::CONTROLLER_VERIFICATION_STOPPED;
     }
   }
   else if(message.startsWith("@I"))
@@ -773,7 +772,6 @@ void handleEspMessage(String message)
       buzzWrongPassword();
       colorLed(0, 0, 0);
       V_STATE = verification_state::VERIFICATION_UNAUTHORIZED;
-      CTRL_STATE = controller_state::CONTROLLER_VERIFICATION_STOPPED;
     }
   }
   else if (message.startsWith("@L")) // Alarm status
