@@ -62,7 +62,7 @@ public class AlarmController {
       catch (JSONException e) {
         System.out.println("Error while building json value 'alarm_state'. " + e.toString());
       }
-      HttpEntity<String> requestEntity = new HttpEntity<String>(jsonObject.toString(), requestHeaders);
+      HttpEntity<String> requestEntity = new HttpEntity<>(jsonObject.toString(), requestHeaders);
       System.out.println("Securitly controller alarm state endpoint: " +
           appProperties.getSecurityControllerIpPort() + appProperties.getAlarmStateEndpoint() +
           ". \n Payload: \n" + jsonObject.toString());
@@ -122,22 +122,27 @@ public class AlarmController {
 
   @PostMapping("/stop_alarm/{alarmId}")
   public ResponseEntity postStopAlarm(@RequestBody AlarmDto dto) {
-    alarmService.stopAlarm(dto);
 
+    // First stop the alarm at the security controller
     try {
+      System.out.println("Stop alarm request address: " + appProperties.getSecurityControllerIpPort() + appProperties.getAlarmStateEndpoint());
       HttpHeaders requestHeaders = new HttpHeaders();
       requestHeaders.setContentType(MediaType.APPLICATION_JSON);
       HttpEntity<String> requestEntity = new HttpEntity<>(requestHeaders);
       ResponseEntity<String> responseEntity =
           restTemplate.exchange(
-              appProperties.getSecurityControllerIpPort() + appProperties.getAlarmStateEndpoint(),
+              appProperties.getSecurityControllerIpPort() + appProperties.getStopAlarmEndpoint(),
               HttpMethod.GET,
               requestEntity,
               String.class);
 
+      System.out.println("Get stop alarm " + responseEntity.getStatusCode().toString());
       if(responseEntity.getStatusCode() == HttpStatus.OK)
       {
         System.out.println("The alarm stopped successfully in the security controller");
+        System.out.println("Saving stop alarm");
+        //alarmService.stopAlarm(dto);
+        postAlarmState(dto);
         return ResponseEntity.ok("200");
       }
       else
@@ -146,6 +151,8 @@ public class AlarmController {
             responseEntity.getStatusCode() + ": " + responseEntity.getBody());
         return responseEntity;
       }
+
+
     }
     catch (RuntimeException exception) {
       System.out.println("Runtime exception: " + exception.getMessage());
@@ -156,7 +163,7 @@ public class AlarmController {
       } catch (JSONException e) {
         System.out.println(e.toString());
       }
-      return new ResponseEntity<>(payload, HttpStatus.INTERNAL_SERVER_ERROR);
+      return new ResponseEntity<>(payload.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

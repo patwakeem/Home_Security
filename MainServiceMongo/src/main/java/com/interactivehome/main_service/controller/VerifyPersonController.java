@@ -3,6 +3,7 @@ package com.interactivehome.main_service.controller;
 import com.interactivehome.main_service.model.dto.PasswordDto;
 import com.interactivehome.main_service.model.dto.RfidCardDto;
 import com.interactivehome.main_service.service.RegisteredPersonService;
+import com.interactivehome.main_service.utils.CountdownTimer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,9 @@ public class VerifyPersonController {
   @Autowired
   private RegisteredPersonService registeredPersonService;
 
+  @Autowired
+  CountdownTimer countdownTimer;
+
   @PostMapping(value = "/verify_person_by_rfid_card")
   public ResponseEntity<String> getRegisteredPersonByRfidCardId(@RequestBody RfidCardDto dto) throws JSONException {
     String personName = registeredPersonService.getRegisteredPersonNameByRfidCardId(dto.getRfidCardId());
@@ -31,6 +35,7 @@ public class VerifyPersonController {
       jsonObjectPerson.put("rfid_card_id", registeredPerson.getRfidCardId());
 */
       System.out.println("Got person name: " + personName);
+      countdownTimer.verificationTimerStop();
       return ResponseEntity.ok("success:" + "true," + "name:" + personName);
     }
 
@@ -54,6 +59,7 @@ public class VerifyPersonController {
       jsonObjectPerson.put("rfid_card_id", registeredPerson.getRfidCardId());
 */
       System.out.println("Got person name: " + personName);
+      countdownTimer.verificationTimerStop();
       return ResponseEntity.ok("success:" + "true," + "name:" + personName);
     }
 

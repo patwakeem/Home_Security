@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<title>W3.CSS Template</title>
+<title>Smart Home</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="//cdn.rawgit.com/Mikhus/canvas-gauges/gh-pages/download/2.1.7/all/gauge.min.js"></script> 
 
 <style>
 html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
@@ -168,6 +169,12 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     <h5><b><i class="fa fa-dashboard"></i> Smart Home Dashboard</b></h5>
   </header>
 
+  <div class="w3-panel w3-red w3-border" id="alarm_on_panel">
+	<h3>Warning! The alarm is activated!</h3>
+	<div class="w3-button w3-white w3-border w3-border-red w3-round-large w3-hover-dark-grey" id="btn_stop_alarm" onclick="onBtnStop()">Stop Alarm</div>
+  </div>
+
+  <hr>
   <div class="w3-row-padding w3-margin-bottom">
     <div class="w3-quarter">
 			<div class="container">
@@ -219,6 +226,57 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
   </div>
 
   <hr>
+  <div>
+    <canvas data-type="radial-gauge"
+            data-value="0"
+            data-width="200"
+            data-height="200"
+            data-bar-width="800"
+            data-bar-shadow="1"
+            data-color-bar-progress="rgba(200,50,50,.75)"
+            data-color-bar="#eaa"
+            data-border-shadow-width="0"
+            data-border-inner-width="0"
+            data-border-outer-width="0"
+            data-border-middle-width="0"
+            data-highlights="false"
+            data-value-box-stroke="0"
+            data-color-value-box-shadow="0"
+            data-value-box-border-radius="0"
+            data-value-text-shadow="0"
+            data-color-value-box-background="transparent"
+            data-needle="false"
+    ></canvas>
+
+    <canvas data-type="linear-gauge"
+            data-width="60"
+            data-height="200"
+            data-border-radius="20"
+            data-borders="0"
+            data-bar-begin-circle="false"
+            data-title="Temperature"
+            data-units="°C"
+            data-minor-ticks="10"
+            data-value="99"
+            data-min-value="-30"
+            data-max-value="30"
+            data-major-ticks="-30, -20, -10, 0, 10, 20, 30"
+            data-highlights='[
+                {"from":-30, "to":0, "color": "blue"},
+                {"from": 0, "to": 30, "color": "red"}
+            ]'
+            data-tick-side="right"
+            data-number-side="right"
+            data-needle-side="right"
+            data-animation-rule="bounce"
+            data-animation-duration="750"
+            data-bar-stroke-width="5"
+            data-value-box-border-radius="0"
+            data-value-text-shadow="false"
+    ></canvas>
+  </div>
+  <br>
+  <hr>
   <div class="w3-container">
     <h5>General Stats</h5>
     <p>New Visitors</p>
@@ -231,25 +289,25 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
       <div class="w3-container w3-center w3-padding w3-orange" style="width:50%">50%</div>
     </div>
 
-  <hr>
-  <div class="w3-container">
-    <h5>Recent Users</h5>
-    <ul class="w3-ul w3-card-4 w3-white">
-      <li class="w3-padding-16">
-        <img src="/w3images/avatar2.png" class="w3-left w3-circle w3-margin-right" style="width:35px">
-        <span class="w3-xlarge">Christos</span><br>
-      </li>
-      <li class="w3-padding-16">
-        <img src="/w3images/avatar5.png" class="w3-left w3-circle w3-margin-right" style="width:35px">
-        <span class="w3-xlarge">Dimitris</span><br>
-      </li>
-    </ul>
-  </div>
-  <hr>
-
+    <hr>
+    <div class="w3-container">
+      <h5>Recent Users</h5>
+      <ul class="w3-ul w3-card-4 w3-white">
+        <li class="w3-padding-16">
+          <img src="/w3images/avatar2.png" class="w3-left w3-circle w3-margin-right" style="width:35px">
+          <span class="w3-xlarge">Christos</span><br>
+        </li>
+        <li class="w3-padding-16">
+          <img src="/w3images/avatar5.png" class="w3-left w3-circle w3-margin-right" style="width:35px">
+          <span class="w3-xlarge">Dimitris</span><br>
+        </li>
+      </ul>
+    </div>
+    <hr>
 
   <!-- End page content -->
-</div>
+  </div>
+</div> <!-- w3-main -->
 
 <script>
 // Get the Sidebar
@@ -278,8 +336,8 @@ function w3_close() {
 setInterval(update_alarm_state, 1000);
 function update_alarm_state()
 {
-		xmlhttp = new XMLHttpRequest();
-		xmlhttp.onreadystatechange = function() {
+	xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			switch(this.responseText)
 			{
@@ -299,6 +357,41 @@ function update_alarm_state()
 	xmlhttp.send();
 }
 
+setInterval(update_alarm_on, 1000);
+function update_alarm_on()
+{
+	xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			if(xmlhttp.responseText === 'true')
+			{
+				document.getElementById("alarm_on_panel").style.display='block';
+			}
+			else
+			{
+				document.getElementById("alarm_on_panel").style.display='none';
+			}
+		}
+	};
+	xmlhttp.open("GET","http://interactivehome.ddns.net:8080/alarm_on/1",true);
+	xmlhttp.send();
+}
+
+function onBtnStop()
+{
+	var xhr = new XMLHttpRequest();
+	var url = "http://interactivehome.ddns.net:8080/stop_alarm/1";
+	xhr.open("POST", url);
+	xhr.setRequestHeader("Content-Type", "application/json");
+	xhr.onreadystatechange = function () {
+		if (xhr.readyState === 4 && xhr.responseText === '200') {
+			document.getElementById("alarm_on_panel").visible = false;
+		}
+	};
+	var data = JSON.stringify({alarm_id: 1, alarm_on: false, alarm_state: 0});
+	xhr.send(data);
+}
+
 $( "input" ).on( "change", function() {
 	switch($( "input:checked" ).val()) {
 		case "disarmed":
@@ -309,7 +402,6 @@ $( "input" ).on( "change", function() {
 			xhr.onreadystatechange = function () {
 					if (xhr.readyState === 4 && xhr.responseText === '200') {
 						document.getElementByName("radio").disabled = false;
-						alert("re-enable");
 					}
 					else {
 						document.getElementByName("radio").disabled = true;
@@ -326,7 +418,6 @@ $( "input" ).on( "change", function() {
 			xhr.onreadystatechange = function () {
 					if (xhr.readyState === 4 && xhr.responseText === '200') {
 						document.getElementByName("radio").disabled = false;
-						alert("re-enable");
 					}
 					else {
 						document.getElementByName("radio").disabled = true;
@@ -343,7 +434,6 @@ $( "input" ).on( "change", function() {
 			xhr.onreadystatechange = function () {
 					if (xhr.readyState === 4 && xhr.responseText === '200') {
 						document.getElementByName("radio").disabled = false;
-						alert("re-enable");
 					}
 					else {
 						document.getElementByName("radio").disabled = true;
