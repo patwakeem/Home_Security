@@ -10,7 +10,6 @@ import com.interactivehome.main_service.utils.CountdownTimer;
 import io.micrometer.core.instrument.util.StringEscapeUtils;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +41,9 @@ public class DoorStateController {
     @Autowired
     private AppProperties appProperties;
 
+    @Autowired
+    CountdownTimer countdownTimer;
+
     @Value("$(securityControllerIpPort)")
     private String securityControllerIpPort;
     @Value("$(verificationProcessEndpoint)")
@@ -50,7 +52,6 @@ public class DoorStateController {
     private String verificationProcessTimeoutSec;
 
     private RestTemplate restTemplate;
-    private Timer timer;
 
     public DoorStateController(DoorStateService doorStateService,
                                 RestTemplate restTemplate) {
@@ -90,7 +91,6 @@ public class DoorStateController {
 
             if(responseEntity.getStatusCode() == HttpStatus.OK)
             {
-                CountdownTimer countdownTimer = new CountdownTimer(restTemplate);
                 countdownTimer.verificationTimerStart(appProperties.getVerificationProcessTimeoutSec());
                 return ResponseEntity.ok("201");
             }

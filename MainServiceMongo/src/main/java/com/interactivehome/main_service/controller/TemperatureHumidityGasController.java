@@ -29,7 +29,7 @@ public class TemperatureHumidityGasController {
     temperatureHumidityGasService.saveValues(dto);
     return ResponseEntity.ok("201");
   }
-
+  
   @GetMapping("/temperature_humidity_gas/{sensorId}")
   public List<TemperatureHumidityGas> getAllTemperatureHumidityGasBySensorIdFromDateToDate(
       @PathVariable Integer sensorId,

@@ -1,24 +1,28 @@
 package com.interactivehome.main_service.utils;
 
 import com.interactivehome.main_service.model.dto.AlarmDto;
+import com.interactivehome.main_service.service.AlarmService;
 import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+@Component
 public class CountdownTimer extends Timer
 {
-    private final RestTemplate restTemplate;
+    @Autowired
+    private AlarmService alarmService;
 
-    public CountdownTimer(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
+    @Autowired
+    private RestTemplate restTemplate;
 
     private enum timer_state {
         started,
@@ -44,6 +48,7 @@ public class CountdownTimer extends Timer
         if(timerState == timer_state.started) {
             this.cancel();
             timerState = timer_state.stopped;
+            System.out.println("The countdown timer is forced to stop!");
         }
     }
 
@@ -63,11 +68,15 @@ public class CountdownTimer extends Timer
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
             HttpEntity<String> entity = new HttpEntity<>(headers);
             AlarmDto alarmDTO = new AlarmDto();
+            alarmDTO.setAlarmId(1);
+            alarmDTO.setAlarmState(2);
             alarmDTO.setAlarmOn(true);
+            alarmService.saveAlarmState(alarmDTO);
+
             HttpEntity<AlarmDto> requestUpdate = new HttpEntity<>(alarmDTO, headers);
 
             ResponseEntity<Void> response =
-                restTemplate.exchange(alarmControllerTriggerAlarm, HttpMethod.PUT, requestUpdate, Void.class);
+                restTemplate.exchange(alarmControllerTriggerAlarm, HttpMethod.POST, requestUpdate, Void.class);
             if (response.getStatusCode() != HttpStatus.OK) {
                 System.out.println("Error response from security controller. " +
                     response.getStatusCode() + ": " + requestUpdate.getBody());
