@@ -1,0 +1,34 @@
+setup unix home server
+
+1. Install MongoDb
+ a. Import the public key used by the package management system.
+	 sudo wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
+ b. Create a list file for MongoDB
+     echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+ c. Reload local package database
+     sudo apt-get update
+ d. Install the MongoDB packages
+     sudo apt-get install -y mongodb-org
+ e. Start MongoDB
+     sudo systemctl start mongod
+ f. Verify that MongoDB has started successfully
+     sudo systemctl status mongod
+ g. Optional - Ensure MongoDB will start at system startup
+     sudo systemctl enable mongod
+
+2. Create an admin user in MongoDB
+ a. Type the following:
+     # mongo
+	 > use admin
+	 > db.createUser( { user: "myUserAdmin", pwd: "abc123", roles: [ { role: "userAdminAnyDatabase", db: "admin" } ] } )
+
+3. Install Java OpenJdk 11
+ a. sudo apt-get install openjdk-11-jdk
+
+4. Install and setup Apache webserver
+ a. https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-20-04
+
+5. Create a service
+ a. https://dzone.com/articles/run-your-java-application-as-a-service-on-ubuntu
+ b. Use 'nohup' so the service keeps running after the user logs out.
+    https://www.codercrunch.com/post/1190641310/what-is-nohup-command-and-how-is-it-used

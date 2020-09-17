@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.interactivehome</groupId>
 	<artifactId>main_service</artifactId>
-	<version>2020.08.24-0</version>
+	<version>2020.09.06-0</version>
 	<name>main_service</name>
 	<description>Rest service for the smart robot</description>
 
