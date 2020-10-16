@@ -67,14 +67,14 @@ public class DoorStateServiceImpl implements DoorStateService {
         query.addCriteria(Criteria.where("door_id").is(doorId));
         if((fromDate != null && toDate != null) && (!fromDate.toString().isEmpty() && !toDate.toString().isEmpty()))
         {
-            query.addCriteria(Criteria.where("updated_utc").gte(fromDate).lt(toDate));
+            query.addCriteria(Criteria.where("updated_utc").gte(fromDate).lte(toDate));
             query.with(new org.springframework.data.domain.Sort(Direction.DESC, "updated_utc"));
             return mongoTemplate.find(query, DoorSensor.class);
         }
         // If the dates are not present then get the latest voltage measurement
         query.with(new org.springframework.data.domain.Sort(Direction.DESC, "updated_utc"));
         List<DoorSensor> doorSensorList = new ArrayList<>();
-        if(mongoTemplate.find(query, DoorSensor.class) != null)
+        if(mongoTemplate.find(query, DoorSensor.class) != null && mongoTemplate.find(query, DoorSensor.class).size() > 0)
             doorSensorList.add(mongoTemplate.find(query, DoorSensor.class).get(0));
         return doorSensorList;
   }

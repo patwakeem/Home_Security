@@ -51,7 +51,7 @@ public class TemperatureHumidityGasServiceImpl implements TemperatureHumidityGas
     query.addCriteria(Criteria.where("sensorId").is(sensorId));
     if((fromDate != null && toDate != null) && (!fromDate.toString().isEmpty() && !toDate.toString().isEmpty()))
     {
-      query.addCriteria(Criteria.where("updatedUtc").gte(fromDate).lt(toDate));
+      query.addCriteria(Criteria.where("updatedUtc").gte(fromDate).lte(toDate));
       query.with(new org.springframework.data.domain.Sort(Direction.DESC, "updatedUtc"));
       return mongoTemplate.find(query, TemperatureHumidityGas.class);
     }

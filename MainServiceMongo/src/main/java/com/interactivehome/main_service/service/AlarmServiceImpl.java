@@ -89,14 +89,14 @@ public class AlarmServiceImpl implements AlarmService {
     query.addCriteria(Criteria.where("alarm_id").is(alarmId));
     if((fromDate != null && toDate != null) && (!fromDate.toString().isEmpty() && !toDate.toString().isEmpty()))
     {
-      query.addCriteria(Criteria.where("updated_utc").gte(fromDate).lt(toDate));
+      query.addCriteria(Criteria.where("updated_utc").gte(fromDate).lte(toDate));
       query.with(new org.springframework.data.domain.Sort(Direction.DESC, "updated_utc"));
       return mongoTemplate.find(query, Alarm.class);
     }
     // If the dates are not present then get the latest voltage measurement
     query.with(new org.springframework.data.domain.Sort(Direction.DESC, "updated_utc"));
     List<Alarm> alarmList = new ArrayList<>();
-    if(mongoTemplate.find(query, Alarm.class) != null)
+    if(mongoTemplate.find(query, Alarm.class) != null && mongoTemplate.find(query, Alarm.class).size() > 0)
       alarmList.add(mongoTemplate.find(query, Alarm.class).get(0));
     return alarmList;
 
