@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>com.interactivehome</groupId>
 	<artifactId>main_service</artifactId>
-	<version>2020.09.06-0</version>
+	<version>2020.10.16-0</version>
 	<name>main_service</name>
-	<description>Rest service for the smart robot</description>
+	<description>Main REST service for IoT</description>
 
 	<properties>
 		<java.version>11</java.version>
