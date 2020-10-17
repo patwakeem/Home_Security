@@ -53,7 +53,7 @@ public class MovementSensorServiceImpl implements MovementSensorService{
     Query query = new Query();
     query.addCriteria(Criteria.where("movementSensorId").is(movementSensorId));
     if((fromDate != null && toDate != null) && (!fromDate.toString().isEmpty() && !toDate.toString().isEmpty())) {
-      query.addCriteria(Criteria.where("updatedUtc").gte(fromDate).lt(toDate));
+      query.addCriteria(Criteria.where("updatedUtc").gte(fromDate).lte(toDate));
       query.with(new Sort(Direction.DESC, "updatedUtc"));
       return mongoTemplate.find(query, MovementSensor.class);
     }

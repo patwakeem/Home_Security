@@ -1,25 +1,59 @@
 <template>
-  <v-app id="inspire">
+  <v-app id="smarthome">
     <v-navigation-drawer
       v-model="drawer"
       app
       clipped
     >
       <v-list dense>
-        <v-list-item link>
+        <v-list-item to="/">
+          <v-list-item-action>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>
+              Main
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item to="/dashboard">
           <v-list-item-action>
             <v-icon>mdi-view-dashboard</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Dashboard</v-list-item-title>
+            <v-list-item-title>
+              Dashboard
+            </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link>
+        <v-list-item to="/users">
           <v-list-item-action>
-            <v-icon>mdi-cog</v-icon>
+            <v-icon>mdi-account-multiple</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Settings</v-list-item-title>
+            <v-list-item-title>
+              Users/Groups
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item to="/sensors">
+          <v-list-item-action>
+            <v-icon>mdi-remote</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>
+              Sensors
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item to="/cameras">
+          <v-list-item-action>
+            <v-icon>mdi-video</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>
+              Cameras
+            </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -30,36 +64,11 @@
       clipped-left
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>Application</v-toolbar-title>
+      <v-toolbar-title>Home Security</v-toolbar-title>
     </v-app-bar>
 
     <v-main>
-      <v-container
-        class="fill-height"
-        fluid
-      >
-        <v-row
-          align="center"
-          justify="center"
-        >
-          <v-col class="shrink">
-            <v-tooltip right>
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  :href="source"
-                  icon
-                  large
-                  target="_blank"
-                  v-on="on"
-                >
-                  <v-icon large>mdi-code-tags</v-icon>
-                </v-btn>
-              </template>
-              <span>Source</span>
-            </v-tooltip>
-          </v-col>
-        </v-row>
-      </v-container>
+      <router-view/>
     </v-main>
 
     <v-footer app>
@@ -69,15 +78,18 @@
 </template>
 
 <script>
+
 export default {
-  props: {
-    source: String,
-  },
+  name: 'app',
   data: () => ({
     drawer: null,
   }),
-  created() {
-    this.$vuetify.theme.dark = true;
-  },
 };
 </script>
+
+<style scoped>
+.nav-link {
+  text-decoration: none;
+  color: inherit;
+}
+</style>
