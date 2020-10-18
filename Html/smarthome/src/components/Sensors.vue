@@ -24,6 +24,7 @@
                           single-line
                           ></v-text-field>
           </v-card-text>
+        </v-card>
         <v-col cols="12" class="pa-0 fill-height" justify-self='center'>
           <v-row
             align="center"
