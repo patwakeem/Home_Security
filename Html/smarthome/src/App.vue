@@ -84,6 +84,9 @@ export default {
   data: () => ({
     drawer: null,
   }),
+  async created() {
+    this.$vuetify.theme.dark = true;
+  },
 };
 </script>
 
