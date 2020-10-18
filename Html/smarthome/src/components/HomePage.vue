@@ -101,18 +101,17 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="6" lg="4" md="6" sm="12">
+      <v-col cols="6" lg="3" md="4" sm="12" xs="12">
         <v-card
-          elevation="4"
-          height="350">
+          elevation="4">
           <v-card-title class="justify-center">
-            Temperature
+            Temperature (&#176;C)
             <v-card-text v-if="temperature != null">
               <div class="d-flex flex-column justify-space-between align-center">
                 <v-progress-circular class="temperature-progress"
                   :rotate="180"
-                  :size="200"
-                  :width="60"
+                  :size="170"
+                  :width="50"
                   min="-40"
                   max="40"
                   :value="temperature"
@@ -134,18 +133,17 @@
           </v-card-title>
         </v-card>
       </v-col>
-      <v-col cols="6" lg="4" md="6" sm="12">
+      <v-col cols="6" lg="3" md="4" sm="12" xs="12">
         <v-card
-          elevation="4"
-          height="350">
+          elevation="4">
           <v-card-title class="justify-center">
             Humidity
             <v-card-text v-if="humidity != null">
               <div class="d-flex flex-column justify-space-between align-center">
                 <v-progress-circular class="humidity-progress"
                   :rotate="180"
-                  :size="200"
-                  :width="60"
+                  :size="170"
+                  :width="50"
                   :value="humidity"
                 >
                   {{ humidity }}%
@@ -165,18 +163,17 @@
           </v-card-title>
         </v-card>
       </v-col>
-      <v-col cols="6" lg="4" md="6" sm="12">
+      <v-col cols="6" lg="3" md="4" sm="12" xs="12">
         <v-card
-          elevation="4"
-          height="350">
+          elevation="4">
           <v-card-title class="justify-center">
             Air
             <v-card-text v-if="air != null">
               <div class="d-flex flex-column justify-space-between align-center">
                 <v-progress-circular class="air-progress"
                   :rotate="180"
-                  :size="200"
-                  :width="60"
+                  :size="170"
+                  :width="50"
                   :value="airPercent"
                   :min="150"
                   :max="800"
@@ -302,7 +299,7 @@ export default {
 <style scoped>
 .v-progress-circular {
   margin: 1rem;
-  font-size: 40px;
+  font-size: 250%;
 }
 .v-progress-circular.temperature-progress {
   color:green;
