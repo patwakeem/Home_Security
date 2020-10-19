@@ -105,7 +105,7 @@
         <v-card
           elevation="4">
           <v-card-title class="justify-center">
-            Temperature (&#176;C)
+            Temp (&#176;C)
             <v-card-text v-if="temperature != null">
               <div class="d-flex flex-column justify-space-between align-center">
                 <v-progress-circular class="temperature-progress"
@@ -204,26 +204,23 @@ export default {
   name: 'Dashboard',
   data() {
     return {
+      alarmId: 1,
       alarmOn: null,
       alarmState: null,
       temperature: null,
       humidity: null,
       air: null,
       airPercent: null,
-      windowSize: {
-        x: 0,
-        y: 0,
-      },
     };
   },
   async created() {
     this.$vuetify.theme.dark = true;
     setInterval(this.getAlarm, 1000);
-    setInterval(this.getSensorValues, 1000);
+    setInterval(this.getSensorValues(1), 1000);
   },
   methods: {
     getAlarm() {
-      fetch('http://interactivehome.ddns.net:8080/alarm/1')
+      fetch(`http://interactivehome.ddns.net:8080/alarm/${this.alarmId}`)
         .then(async (response) => {
           const data = await response.json();
 
@@ -243,8 +240,8 @@ export default {
         });
     },
 
-    getSensorValues() {
-      fetch('http://interactivehome.ddns.net:8080/temperature_humidity_gas/1')
+    getSensorValues(sensorId) {
+      fetch(`http://interactivehome.ddns.net:8080/temperature_humidity_gas/${this.alarmId}/${sensorId}`)
         .then(async (response) => {
           const data = await response.json();
 

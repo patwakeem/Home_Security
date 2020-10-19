@@ -1,6 +1,6 @@
 <template>
-  <v-container fluid class="full-height">
-    <v-row class="fill-height">
+  <v-container>
+    <v-row>
       <v-col
         cols="12"
         sm="10"
@@ -8,7 +8,7 @@
         lg="6"
         xl="4"
       >
-        <v-card class="mb-6" outlined>
+        <v-card>
           <v-card-title>
             Title
           </v-card-title>
@@ -25,6 +25,24 @@
                           ></v-text-field>
           </v-card-text>
         </v-card>
+        <v-col cols="12" class="pa-0 fill-height" justify-self='center'>
+          <v-row
+            align="center"
+            justify="center"
+            class="fill-height"
+          >
+            <v-card outlined>
+              <v-card-title>
+                Why is there extra whitespace below this v-card?
+              </v-card-title>
+              <v-card-text>
+                <div class="subtitle-2">
+                  Centered card
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-row>
+        </v-col>
         <v-col cols="12" class="pa-0 fill-height" justify-self='center'>
           <v-row
             align="center"
