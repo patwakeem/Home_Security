@@ -1,8 +1,8 @@
 package com.interactivehome.main_service.controller;
 
-import com.interactivehome.main_service.model.dto.TemperatureHumidiryGasDto;
-import com.interactivehome.main_service.model.entity.TemperatureHumidityGas;
-import com.interactivehome.main_service.service.TemperatureHumidityGasService;
+import com.interactivehome.main_service.model.dto.TemperatureHumidiryGasSensorStateDto;
+import com.interactivehome.main_service.model.entity.TemperatureHumidityGasSensorState;
+import com.interactivehome.main_service.service.TemperatureHumidityGasSensorStateService;
 import java.util.Date;
 import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,24 +18,25 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*")
 @RestController
 public class TemperatureHumidityGasController {
-  private final TemperatureHumidityGasService temperatureHumidityGasService;
+  private final TemperatureHumidityGasSensorStateService temperatureHumidityGasSensorStateService;
 
-  public TemperatureHumidityGasController(TemperatureHumidityGasService temperatureHumidityGasService) {
-    this.temperatureHumidityGasService = temperatureHumidityGasService;
+  public TemperatureHumidityGasController(TemperatureHumidityGasSensorStateService temperatureHumidityGasSensorStateService) {
+    this.temperatureHumidityGasSensorStateService = temperatureHumidityGasSensorStateService;
   }
 
   @PostMapping("/temperature_humidity_gas")
-  public ResponseEntity<String> postValues(@RequestBody TemperatureHumidiryGasDto dto) {
-    temperatureHumidityGasService.saveValues(dto);
+  public ResponseEntity<String> postValues(@RequestBody TemperatureHumidiryGasSensorStateDto dto) {
+    temperatureHumidityGasSensorStateService.saveValues(dto);
     return ResponseEntity.ok("201");
   }
   
-  @GetMapping("/temperature_humidity_gas/{sensorId}")
-  public List<TemperatureHumidityGas> getAllTemperatureHumidityGasBySensorIdFromDateToDate(
+  @GetMapping("/temperature_humidity_gas/{alarmId}/{sensorId}")
+  public List<TemperatureHumidityGasSensorState> getAllTemperatureHumidityGasByAlarmIdAndSensorIdFromDateToDate(
+      @PathVariable Integer alarmId,
       @PathVariable Integer sensorId,
       @RequestParam(value = "fromDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate,
       @RequestParam(value = "toDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date toDate)
   {
-    return temperatureHumidityGasService.getValuesBySensorIdFromDateToDate(sensorId, fromDate, toDate);
+    return temperatureHumidityGasSensorStateService.getValuesByAlarmIdAndSensorIdFromDateToDate(alarmId, sensorId, fromDate, toDate);
   }
 }

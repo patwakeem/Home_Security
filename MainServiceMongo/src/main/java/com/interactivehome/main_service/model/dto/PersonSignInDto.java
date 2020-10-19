@@ -9,6 +9,8 @@ import lombok.Data;
 public class PersonSignInDto {
   @JsonProperty("rfid_card_id")
   public String rfidCardId;
+  @JsonProperty("alarm_id")
+  public Integer alarmId;
   @JsonProperty("rfid_card_id_signed")
   public Boolean rfidCardIdSigned;
 }

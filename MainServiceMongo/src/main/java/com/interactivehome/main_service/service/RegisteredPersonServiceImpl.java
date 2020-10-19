@@ -5,7 +5,10 @@ import com.interactivehome.main_service.model.dto.RegisteredPersonDto;
 import com.interactivehome.main_service.model.entity.RegisteredPerson;
 import com.interactivehome.main_service.repository.RegisteredPersonRepository;
 import java.util.List;
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -35,14 +38,19 @@ public class RegisteredPersonServiceImpl implements RegisteredPersonService {
   }
 
   @Override
-  public List<RegisteredPerson> getAllRegisteredPersons() {
-    return mongoTemplate.findAll(RegisteredPerson.class);
+  public List<RegisteredPerson> getAllRegisteredPersonsByAlarmId(Integer alarmId) {
+    Query query = new Query();
+    query.addCriteria(Criteria.where("alarm_id").is(alarmId));
+    query.with(new org.springframework.data.domain.Sort(Sort.Direction.DESC, "updated_utc"));
+
+    return mongoTemplate.find(query, RegisteredPerson.class);
   }
 
   @Override
-  public RegisteredPerson getRegisteredPersonByPassword(String password) {
+  public RegisteredPerson getRegisteredPersonByAlarmIdAndPassword(Integer alarmId, String password) {
     String name = "";
     Query query = new Query();
+    query.addCriteria(Criteria.where("alarm_id").is(alarmId));
     query.addCriteria(Criteria.where("password").is(password));
     RegisteredPerson registeredPerson = new RegisteredPerson();
     if(mongoTemplate.findOne(query, RegisteredPerson.class) != null)
@@ -53,10 +61,10 @@ public class RegisteredPersonServiceImpl implements RegisteredPersonService {
   }
 
   @Override
-  public RegisteredPerson getRegisteredPersonByRfidCardId(String rfidCardId) {
-    String name = "";
+  public RegisteredPerson getRegisteredPersonByAlarmIdAndRfidCardId(Integer alarmId, String rfidCardId) {
     Query query = new Query();
-    query.addCriteria(Criteria.where("rfidCardId").is(rfidCardId));
+    query.addCriteria(Criteria.where("alarm_id").is(alarmId));
+    query.addCriteria(Criteria.where("rfid_card_id").is(rfidCardId));
     RegisteredPerson registeredPerson = new RegisteredPerson();
     if(mongoTemplate.findOne(query, RegisteredPerson.class) != null)
     {
@@ -66,14 +74,15 @@ public class RegisteredPersonServiceImpl implements RegisteredPersonService {
   }
 
   @Override
-  public String getRegisteredPersonNameByRfidCardId(String rfidCardId) {
+  public String getRegisteredPersonNameByAlarmIdAndRfidCardId(Integer alarmId, String rfidCardId) {
     String name = "";
     Query query = new Query();
-    query.addCriteria(Criteria.where("rfidCardId").is(rfidCardId));
+    query.addCriteria(Criteria.where("alarm_id").is(alarmId));
+    query.addCriteria(Criteria.where("rfid_card_id").is(rfidCardId));
     if(mongoTemplate.findOne(query, RegisteredPerson.class) != null)
     {
       RegisteredPerson registeredPerson = mongoTemplate.findOne(query, RegisteredPerson.class);
-      name = registeredPerson.getName();
+      name = registeredPerson != null ? registeredPerson.getName() : "";
 
       // Store the signing in of the person to the database
       PersonSignInDto personSignInDto = new PersonSignInDto();
@@ -85,14 +94,15 @@ public class RegisteredPersonServiceImpl implements RegisteredPersonService {
   }
 
   @Override
-  public String getRegisteredNamePersonByPassword(String password) {
+  public String getRegisteredNamePersonByAlarmIdAndPassword(Integer alarmId, String password) {
     String name = "";
     Query query = new Query();
+    query.addCriteria(Criteria.where("alarm_id").is(alarmId));
     query.addCriteria(Criteria.where("password").is(password));
     if(mongoTemplate.findOne(query, RegisteredPerson.class) != null)
     {
       RegisteredPerson registeredPerson = mongoTemplate.findOne(query, RegisteredPerson.class);
-      name = registeredPerson.getName();
+      name = Objects.requireNonNull(registeredPerson).getName() != null ? registeredPerson.getName() : "";
 
       // Store the signing in of the person to the database
       PersonSignInDto personSignInDto = new PersonSignInDto();

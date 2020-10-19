@@ -1,6 +1,6 @@
 package com.interactivehome.main_service.service;
 
-import com.interactivehome.main_service.model.dto.AlarmDto;
+import com.interactivehome.main_service.model.dto.AlarmStateDto;
 import com.interactivehome.main_service.model.entity.Alarm;
 import com.interactivehome.main_service.repository.AlarmRepository;
 import java.time.LocalDate;
@@ -27,7 +27,7 @@ public class AlarmServiceImpl implements AlarmService {
   }
 
   @Override
-  public void saveAlarmState(AlarmDto dto) {
+  public void saveAlarmState(AlarmStateDto dto) {
     Alarm alarm = new Alarm();
     alarm.mapFromDto(dto);
     alarmRepository.save(alarm);
@@ -96,14 +96,14 @@ public class AlarmServiceImpl implements AlarmService {
     // If the dates are not present then get the latest voltage measurement
     query.with(new org.springframework.data.domain.Sort(Direction.DESC, "updated_utc"));
     List<Alarm> alarmList = new ArrayList<>();
-    if(mongoTemplate.find(query, Alarm.class) != null && mongoTemplate.find(query, Alarm.class).size() > 0)
+    if(mongoTemplate.find(query, Alarm.class).size() > 0)
       alarmList.add(mongoTemplate.find(query, Alarm.class).get(0));
     return alarmList;
 
   }
 
   @Override
-  public void stopAlarm(AlarmDto dto) {
+  public void stopAlarm(AlarmStateDto dto) {
     Alarm alarm = new Alarm();
     // In case wrong payload passed, fix it with the proper values
     // When the alarm goes off and we want to stop it, we set the alarmOn state to false and disarm the alarm

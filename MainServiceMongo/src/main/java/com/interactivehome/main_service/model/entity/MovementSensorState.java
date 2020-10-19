@@ -1,8 +1,9 @@
 package com.interactivehome.main_service.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.interactivehome.main_service.model.dto.MovementSensorDto;
+import com.interactivehome.main_service.model.dto.MovementSensorStateDto;
 import java.util.Date;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -12,19 +13,35 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @Document(collection = "movement_sensor")
-public class MovementSensor {
+public class MovementSensorState {
   @Id
   @Field("_id")
   private String id;
 
   @Field("movement_sensor_id")
   private Integer movementSensorId;
+
+  @Field("alarm_id")
+  private Integer alarmId;
+
+  @Field("movement_caught")
+  private Boolean movementCaught;
+
+  @Field("battery_voltage")
+  private Float batteryVoltage;
+  @Field("battery_percentage")
+  private Integer batteryPercentage;
+
   @Field("updated_utc")
   private Date updatedUtc;
 
-  public void mapFromDto(MovementSensorDto dto)
+  public void mapFromDto(MovementSensorStateDto dto)
   {
-    movementSensorId = dto.getMovementSensorId();
+    alarmId = dto.alarmId;
+    movementSensorId = dto.movementSensorId;
+    movementCaught = dto.movementCaught;
+    batteryVoltage = dto.batteryVoltage;
+    batteryPercentage = dto.batteryPercentage;
     updatedUtc = new Date(System.currentTimeMillis());
   }
 }

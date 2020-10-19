@@ -23,8 +23,8 @@ public class VerifyPersonController {
   CountdownTimer countdownTimer;
 
   @PostMapping(value = "/verify_person_by_rfid_card")
-  public ResponseEntity<String> getRegisteredPersonByRfidCardId(@RequestBody RfidCardDto dto) throws JSONException {
-    String personName = registeredPersonService.getRegisteredPersonNameByRfidCardId(dto.getRfidCardId());
+  public ResponseEntity<String> getRegisteredPersonByAlarmIdAndRfidCardId(@RequestBody RfidCardDto dto) {
+    String personName = registeredPersonService.getRegisteredPersonNameByAlarmIdAndRfidCardId(dto.alarmId, dto.getRfidCardId());
     if(!personName.isEmpty()) {
 /*
       JSONObject jsonObject = new JSONObject();
@@ -47,8 +47,8 @@ public class VerifyPersonController {
 
   @PostMapping(value = "/verify_person_by_password")
   public ResponseEntity<String> getRegisteredPersonByPassword(@RequestBody PasswordDto dto) {
-    String personName = "";
-    personName = registeredPersonService.getRegisteredNamePersonByPassword(dto.getPassword());
+    String personName;
+    personName = registeredPersonService.getRegisteredNamePersonByAlarmIdAndPassword(dto.alarmId, dto.getPassword());
     if(!personName.isEmpty()) {
 /*
       JSONObject jsonObject = new JSONObject();

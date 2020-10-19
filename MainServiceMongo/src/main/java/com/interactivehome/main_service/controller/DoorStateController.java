@@ -2,10 +2,10 @@ package com.interactivehome.main_service.controller;
 
 
 import com.interactivehome.main_service.config.AppProperties;
-import com.interactivehome.main_service.model.dto.DoorSensorDto;
-import com.interactivehome.main_service.model.entity.DoorSensor;
+import com.interactivehome.main_service.model.dto.DoorSensorStateDto;
+import com.interactivehome.main_service.model.entity.DoorSensorState;
 import com.interactivehome.main_service.service.AlarmService;
-import com.interactivehome.main_service.service.DoorStateService;
+import com.interactivehome.main_service.service.DoorSensorStateService;
 import com.interactivehome.main_service.utils.CountdownTimer;
 import io.micrometer.core.instrument.util.StringEscapeUtils;
 import java.util.Date;
@@ -20,20 +20,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 @CrossOrigin(origins = "*")
 @RestController
 public class DoorStateController {
 
-    private final DoorStateService doorStateService;
+    private final DoorSensorStateService doorSensorStateService;
 
     @Autowired
     private AlarmService alarmService;
@@ -53,16 +47,16 @@ public class DoorStateController {
 
     private RestTemplate restTemplate;
 
-    public DoorStateController(DoorStateService doorStateService,
-                                RestTemplate restTemplate) {
-        this.doorStateService = doorStateService;
+    public DoorStateController(DoorSensorStateService doorSensorStateService,
+                               RestTemplate restTemplate) {
+        this.doorSensorStateService = doorSensorStateService;
         this.restTemplate = restTemplate;
     }
 
     @PostMapping("/door")
-    public ResponseEntity<String> postDoorState(@RequestBody DoorSensorDto doorSensorDto) {
+    public ResponseEntity<String> postDoorState(@RequestBody DoorSensorStateDto doorSensorStateDto) {
 
-        Integer alarmState = alarmService.getAlarmStateByAlarmId(1);
+        Integer alarmState = alarmService.getAlarmStateByAlarmId(doorSensorStateDto.alarmId);
         if(alarmState == null)
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("The alarm is not set");
         System.out.println("Alarm state is : " + alarmState.toString());
@@ -71,8 +65,8 @@ public class DoorStateController {
             return ResponseEntity.ok("200");
         }
 
-        doorStateService.saveState(doorSensorDto);
-        if(!doorSensorDto.getDoorState())
+        doorSensorStateService.saveState(doorSensorStateDto);
+        if(!doorSensorStateDto.getDoorState())
             return ResponseEntity.ok("201");
 
         // If the door opens and the alarm is armed then trigger the initiation of the verification process
@@ -117,12 +111,21 @@ public class DoorStateController {
         }
     }
 
-    @GetMapping("/door/{doorId}")
-    public List<DoorSensor> getDoorStateByDoorIdFromDateToDate(
+    @PutMapping("/doorbattery")
+    public ResponseEntity<String> postDoorBatteryVoltage(@RequestBody DoorSensorStateDto doorSensorStateDto) {
+
+        doorSensorStateService.saveBatteryVoltage(doorSensorStateDto);
+
+        return ResponseEntity.ok("200");
+    }
+
+    @GetMapping("/door/{alarmId}/{doorId}")
+    public List<DoorSensorState> getDoorStateByAlarmIdAndDoorIdFromDateToDate(
+        @PathVariable Integer alarmId,
         @PathVariable Integer doorId,
         @RequestParam(value = "fromDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate,
         @RequestParam(value = "toDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date toDate)
     {
-        return doorStateService.getDoorStateByDoorIdFromDateToDate(doorId, fromDate, toDate);
+        return doorSensorStateService.getDoorStateByAlarmIdAndDoorIdFromDateToDate(alarmId, doorId, fromDate, toDate);
     }
 }

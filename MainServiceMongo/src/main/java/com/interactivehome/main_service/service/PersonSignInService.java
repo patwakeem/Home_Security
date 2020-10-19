@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface PersonSignInService {
   void savePersonSingIn(PersonSignInDto dto);
-  List<PersonSignIn> getPersonsSignedInByRfidCardIdFromDateToDate(String rfidCardId, Date fromDate, Date toDate);
+  List<PersonSignIn> getPersonsSignedInByAlarmIdAndRfidCardIdFromDateToDate(Integer alarmId, String rfidCardId, Date fromDate, Date toDate);
 }

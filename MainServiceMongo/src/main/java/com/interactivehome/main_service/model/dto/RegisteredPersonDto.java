@@ -7,8 +7,10 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RegisteredPersonDto {
-  private String name;
+  public String name;
   @JsonProperty("rfid_card_id")
-  private String rfidCardId;
-  private String password;
+  public String rfidCardId;
+  @JsonProperty("alarm_id")
+  public Integer alarmId;
+  public String password;
 }

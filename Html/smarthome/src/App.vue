@@ -56,6 +56,16 @@
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item to="/settings">
+          <v-list-item-action>
+            <v-icon>mdi-cog</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>
+              Settings
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -84,6 +94,9 @@ export default {
   data: () => ({
     drawer: null,
   }),
+  async created() {
+    this.$vuetify.theme.dark = true;
+  },
 };
 </script>
 

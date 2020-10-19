@@ -30,12 +30,13 @@ public class PersonSignInController {
     return ResponseEntity.ok("201");
   }
 
-  @GetMapping("/person_signin/{rfidCardId}")
+  @GetMapping("/person_signin/{alarmId}/{rfidCardId}")
   public List<PersonSignIn> getAllPersonSignInByRfidCardIdFromDateToDate(
+      @PathVariable Integer alarmId,
       @PathVariable String rfidCardId,
       @RequestParam(value = "fromDate", required = false, defaultValue = "2020-07-01") @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate,
       @RequestParam(value = "toDate", required = false, defaultValue = "2020-07-14") @DateTimeFormat(pattern="yyyy-MM-dd") Date toDate)
   {
-    return personSignInService.getPersonsSignedInByRfidCardIdFromDateToDate(rfidCardId, fromDate, toDate);
+    return personSignInService.getPersonsSignedInByAlarmIdAndRfidCardIdFromDateToDate(alarmId, rfidCardId, fromDate, toDate);
   }
 }
