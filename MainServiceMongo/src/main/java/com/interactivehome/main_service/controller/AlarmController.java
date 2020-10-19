@@ -1,7 +1,7 @@
 package com.interactivehome.main_service.controller;
 
 import com.interactivehome.main_service.config.AppProperties;
-import com.interactivehome.main_service.model.dto.AlarmDto;
+import com.interactivehome.main_service.model.dto.AlarmStateDto;
 import com.interactivehome.main_service.model.entity.Alarm;
 import com.interactivehome.main_service.service.AlarmService;
 import io.micrometer.core.instrument.util.StringEscapeUtils;
@@ -50,7 +50,7 @@ public class AlarmController {
   }
 
   @PostMapping("/alarm")
-  public ResponseEntity postAlarmState(@RequestBody AlarmDto dto) {
+  public ResponseEntity postAlarmState(@RequestBody AlarmStateDto dto) {
     System.out.println("Got request for postAlarmState: " + dto.toString());
     try {
       HttpHeaders requestHeaders = new HttpHeaders();
@@ -100,7 +100,7 @@ public class AlarmController {
   }
 
   @GetMapping("/alarm/{alarmId}")
-  public List<Alarm> getAlarmByAlarmIdFromDateToDate(
+  public List<Alarm> getAlarmByProfileIdFromDateToDate(
       @PathVariable Integer alarmId,
       @RequestParam(value = "fromDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate,
       @RequestParam(value = "toDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date toDate)
@@ -109,19 +109,19 @@ public class AlarmController {
   }
 
   @GetMapping("/alarm_state/{alarmId}")
-  public Integer getAlarmStateByAlarmId(@PathVariable Integer alarmId)
+  public Integer getAlarmStateByProfileId(@PathVariable Integer alarmId)
   {
     return alarmService.getAlarmStateByAlarmId(alarmId);
   }
 
   @GetMapping("/alarm_on/{alarmId}")
-  public Boolean getAlarmOnByAlarmId(@PathVariable Integer alarmId)
+  public Boolean getAlarmOnByProfileId(@PathVariable Integer alarmId)
   {
     return alarmService.getAlarmOnByAlarmId(alarmId);
   }
 
   @PostMapping("/stop_alarm/{alarmId}")
-  public ResponseEntity postStopAlarm(@RequestBody AlarmDto dto) {
+  public ResponseEntity postStopAlarm(@RequestBody AlarmStateDto dto) {
 
     // First stop the alarm at the security controller
     try {

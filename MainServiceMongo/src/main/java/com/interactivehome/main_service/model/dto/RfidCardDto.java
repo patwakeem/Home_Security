@@ -9,4 +9,6 @@ import lombok.Data;
 public class RfidCardDto {
   @JsonProperty("rfid_card_id")
   public String rfidCardId;
+  @JsonProperty("alarm_id")
+  public Integer alarmId;
 }

@@ -18,8 +18,12 @@ public class RegisteredPerson {
   private String id;
 
   private String name;
+
   @Field("rfid_card_id")
   private String rfidCardId;
+  @Field("alarm_id")
+  private Integer alarmId;
+
   private String password;
   @Field("updated_utc")
   private Date updatedUtc;
@@ -27,6 +31,7 @@ public class RegisteredPerson {
   public void mapFromDto(RegisteredPersonDto dto)
   {
     name = dto.getName();
+    alarmId = dto.alarmId;
     rfidCardId = dto.getRfidCardId();
     password = dto.getPassword();
     updatedUtc = new Date(System.currentTimeMillis());

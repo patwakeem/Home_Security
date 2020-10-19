@@ -7,6 +7,8 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PasswordDto {
+  @JsonProperty("alarm_id")
+  public Integer alarmId;
   @JsonProperty("password")
   public String password;
 }

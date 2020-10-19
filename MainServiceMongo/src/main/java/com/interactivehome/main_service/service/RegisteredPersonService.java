@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface RegisteredPersonService {
   void savePerson(RegisteredPersonDto dto);
-  List<RegisteredPerson> getAllRegisteredPersons();
-  RegisteredPerson getRegisteredPersonByPassword(String password);
-  RegisteredPerson getRegisteredPersonByRfidCardId(String rfidCardId);
-  String getRegisteredPersonNameByRfidCardId(String rfidCardId);
-  String getRegisteredNamePersonByPassword(String password);
+  List<RegisteredPerson> getAllRegisteredPersonsByAlarmId(Integer alarmId);
+  RegisteredPerson getRegisteredPersonByAlarmIdAndPassword(Integer alarmId, String password);
+  RegisteredPerson getRegisteredPersonByAlarmIdAndRfidCardId(Integer alarmId, String rfidCardId);
+  String getRegisteredPersonNameByAlarmIdAndRfidCardId(Integer alarmId, String rfidCardId);
+  String getRegisteredNamePersonByAlarmIdAndPassword(Integer alarmId, String password);
 }

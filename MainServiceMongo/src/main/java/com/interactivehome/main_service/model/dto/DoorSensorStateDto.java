@@ -6,9 +6,15 @@ import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class DoorSensorDto {
+public class DoorSensorStateDto {
     @JsonProperty("door_id")
     public Integer doorId;
+    @JsonProperty("alarm_id")
+    public Integer alarmId;
     @JsonProperty("door_state")
     public Boolean doorState;
+    @JsonProperty("battery_voltage")
+    public Float batteryVoltage;
+    @JsonProperty("battery_percentage")
+    public Integer batteryPercentage;
 }

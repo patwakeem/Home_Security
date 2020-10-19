@@ -28,18 +28,18 @@ public class RegisterPersonController {
     return ResponseEntity.ok("201");
   }
 
-  @GetMapping("/persons")
-  public List<RegisteredPerson> getRegisteredPersons() {
-    return registeredPersonService.getAllRegisteredPersons();
+  @GetMapping("/persons/{alarmId}")
+  public List<RegisteredPerson> getRegisteredPersonsByAlarmId(@PathVariable Integer alarmId) {
+    return registeredPersonService.getAllRegisteredPersonsByAlarmId(alarmId);
   }
 
-  @GetMapping("/person_rfid_card/{rfidCardId}")
-  public String getRegisteredPersonByRfidCard(@PathVariable String rfidCardId) {
-    return registeredPersonService.getRegisteredPersonNameByRfidCardId(rfidCardId);
+  @GetMapping("/person_rfid_card/{alarmId}/{rfidCardId}")
+  public String getRegisteredPersonByAlarmIdAndRfidCard(@PathVariable Integer alarmId, @PathVariable String rfidCardId) {
+    return registeredPersonService.getRegisteredPersonNameByAlarmIdAndRfidCardId(alarmId, rfidCardId);
   }
 
-  @GetMapping("/person_password/{password}")
-  public String getRegisteredPersonByPassword(@PathVariable String password) {
-    return registeredPersonService.getRegisteredNamePersonByPassword(password);
+  @GetMapping("/person_password/{alarmId}/{password}")
+  public String getRegisteredPersonByAlarmIdAndPassword(@PathVariable Integer alarmId, @PathVariable String password) {
+    return registeredPersonService.getRegisteredNamePersonByAlarmIdAndPassword(alarmId, password);
   }
 }

@@ -1,6 +1,6 @@
 package com.interactivehome.main_service.utils;
 
-import com.interactivehome.main_service.model.dto.AlarmDto;
+import com.interactivehome.main_service.model.dto.AlarmStateDto;
 import com.interactivehome.main_service.service.AlarmService;
 import java.util.Collections;
 import java.util.Timer;
@@ -67,13 +67,13 @@ public class CountdownTimer extends Timer
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
             HttpEntity<String> entity = new HttpEntity<>(headers);
-            AlarmDto alarmDTO = new AlarmDto();
-            alarmDTO.setAlarmId(1);
-            alarmDTO.setAlarmState(2);
-            alarmDTO.setAlarmOn(true);
-            alarmService.saveAlarmState(alarmDTO);
+            AlarmStateDto alarmStateDTO = new AlarmStateDto();
+            alarmStateDTO.setAlarmId(1);
+            alarmStateDTO.setAlarmState(2);
+            alarmStateDTO.setAlarmOn(true);
+            alarmService.saveAlarmState(alarmStateDTO);
 
-            HttpEntity<AlarmDto> requestUpdate = new HttpEntity<>(alarmDTO, headers);
+            HttpEntity<AlarmStateDto> requestUpdate = new HttpEntity<>(alarmStateDTO, headers);
 
             ResponseEntity<Void> response =
                 restTemplate.exchange(alarmControllerTriggerAlarm, HttpMethod.POST, requestUpdate, Void.class);

@@ -1,10 +1,9 @@
 package com.interactivehome.main_service.repository;
 
-import com.interactivehome.main_service.model.entity.MovementSensor;
+import com.interactivehome.main_service.model.entity.DoorSensorState;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MovementSensorRepository extends MongoRepository<MovementSensor, String> {
-
+public interface DoorSensorStateRepository extends MongoRepository<DoorSensorState, String> {
 }

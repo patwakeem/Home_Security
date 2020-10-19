@@ -1,9 +1,9 @@
 package com.interactivehome.main_service.controller;
 
-import com.interactivehome.main_service.model.dto.MovementSensorDto;
-import com.interactivehome.main_service.model.entity.MovementSensor;
+import com.interactivehome.main_service.model.dto.MovementSensorStateDto;
+import com.interactivehome.main_service.model.entity.MovementSensorState;
 import com.interactivehome.main_service.service.AlarmService;
-import com.interactivehome.main_service.service.MovementSensorService;
+import com.interactivehome.main_service.service.MovementSensorStateService;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,39 +22,40 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 public class MovementSensorController {
 
-  private final MovementSensorService movementSensorService;
+  private final MovementSensorStateService movementSensorStateService;
 
   @Autowired
   private AlarmService alarmService;
 
   private final RestTemplate restTemplate;
 
-  MovementSensorController(MovementSensorService movementSensorService,
-                            RestTemplate restTemplate) {
-    this.movementSensorService = movementSensorService;
+  MovementSensorController(MovementSensorStateService movementSensorStateService,
+                           RestTemplate restTemplate) {
+    this.movementSensorStateService = movementSensorStateService;
     this.restTemplate = restTemplate;
   }
 
   @PostMapping("/movement_sensor")
-  public ResponseEntity<String> postMovementSensorState(@RequestBody MovementSensorDto movementSensorDto)
+  public ResponseEntity<String> postMovementSensorState(@RequestBody MovementSensorStateDto movementSensorStateDto)
   {
-    Integer alarmState = alarmService.getAlarmStateByAlarmId(1);
+    Integer alarmState = alarmService.getAlarmStateByAlarmId(movementSensorStateDto.alarmId);
     System.out.println("Alarm state is : " + alarmState.toString());
     if(alarmState == 0) {
       System.out.println("The alarm is deactivated.");
       return ResponseEntity.ok("200");
     }
 
-    movementSensorService.saveState(movementSensorDto);
+    movementSensorStateService.saveState(movementSensorStateDto);
     return ResponseEntity.ok("201");
   }
 
-  @GetMapping("movement_sensor/{movementSensorId}")
-  public List<MovementSensor> getMovementSensorActivityByMovementSensorIdFromDateToDate(
+  @GetMapping("movement_sensor/{alarmId}/{movementSensorId}")
+  public List<MovementSensorState> getMovementSensorActivityByAlarmIdAndMovementSensorIdFromDateToDate(
+      @PathVariable Integer alarmId,
       @PathVariable Integer movementSensorId,
       @RequestParam(value = "fromDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate,
       @RequestParam(value = "toDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date toDate) {
 
-    return movementSensorService.getMovementSensorActivityByMovementSensorId(movementSensorId, fromDate, toDate);
+    return movementSensorStateService.getMovementSensorActivityByAlarmIdAndMovementSensorId(alarmId, movementSensorId, fromDate, toDate);
   }
 }
