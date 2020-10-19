@@ -211,6 +211,9 @@ export default {
       humidity: null,
       air: null,
       airPercent: null,
+      temHumAirSensors: null,
+      doorSensors: null,
+      movementSensors: null,
     };
   },
   async created() {
