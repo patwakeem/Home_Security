@@ -13,49 +13,15 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="6" lg="4" md="6" sm="12" xs="12">
-          <v-card class="vcard" fill-height v-on:click="arm(0)"
-            elevation="4"
-          >
-            <v-card-title class="justify-center">
-              Disarm
-              <v-card-text v-if="alarmState == 0 && alarmState != null">
-                <div class="d-flex flex-column justify-space-between align-center">
-                  <v-img class="image" src="../assets/disarm.png"/>
-                </div>
-              </v-card-text>
-              <v-card-text v-else-if="alarmState != 0 && alarmState != null">
-                <div class="d-flex flex-column justify-space-between align-center">
-                  <v-img src="../assets/disarm_disabled.png"/>
-                </div>
-              </v-card-text>
-              <v-card-text v-if="alarmState == null">
-                <div class="d-flex flex-column justify-space-between align-center">
-                  <v-progress-circular
-                    :size="70"
-                    :width="7"
-                    color="grey"
-                    indeterminate
-                  ></v-progress-circular>
-                </div>
-              </v-card-text>
-            </v-card-title>
-          </v-card>
-      </v-col>
-      <v-col cols="6" lg="4" md="6" sm="12" xs="12">
-        <v-card class="vcard" fill-height v-on:click="arm(1)"
-          elevation="4"
-        >
-          <v-card-title class="justify-center">
-            Arm In
-            <v-card-text v-if="alarmState == 1 && alarmState != null">
+    <v-row justify="center">
+      <v-col cols="8" xs="12">
+        <v-card elevation="4">
+          <v-card-title class="activeAlarm justify-center">
+             {{alarmStateObjects[this.selectedAlarmObject].title}}
+            <v-card-text v-if="alarmState != null">
               <div class="d-flex flex-column justify-space-between align-center">
-                <v-img class="image" src="../assets/arm_away.png"/>
+                <v-img :src="alarmStateObjects[this.selectedAlarmObject].src"/>
               </div>
-            </v-card-text>
-            <v-card-text v-else-if="alarmState != 1 && alarmState != null">
-              <v-img class="image" src="../assets/arm_away_disabled.png"/>
             </v-card-text>
             <v-card-text v-if="alarmState == null">
               <div class="d-flex flex-column justify-space-between align-center">
@@ -70,20 +36,18 @@
           </v-card-title>
         </v-card>
       </v-col>
-      <v-col cols="6" lg="4" md="6" sm="12" xs="12">
-        <v-card class="vcard" fill-height v-on:click="arm(2)"
+    </v-row>
+    <v-row justify="center">
+      <v-col cols="4" xs="6"
+       v-for="(unselectedAlarm, index) in unselectedAlarmObjects" :key="index">
+        <v-card class="vcard" fill-height @click="arm(unselectedAlarm.alarmState)"
           elevation="4"
         >
-          <v-card-title class="justify-center">
-            Arm Away
-            <v-card-text v-if="alarmState == 2 && alarmState != null">
+          <v-card-title class="inactiveAlarm justify-center">
+            {{unselectedAlarm.title}}
+            <v-card-text v-if="alarmState != null">
               <div class="d-flex flex-column justify-space-between align-center">
-                <v-img class="image" src="../assets/arm_away.png"/>
-              </div>
-            </v-card-text>
-            <v-card-text v-else-if="alarmState != 2 && alarmState != null">
-              <div class="d-flex flex-column justify-space-between align-center">
-                <v-img class="image" src="../assets/arm_away_disabled.png"/>
+                <v-img :src="unselectedAlarm.src"/>
               </div>
             </v-card-text>
             <v-card-text v-if="alarmState == null">
@@ -97,6 +61,19 @@
               </div>
             </v-card-text>
           </v-card-title>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-card
+          height="100%"
+          >
+            <v-card-title class="justify-center">
+              <h2>
+                Kitchen Sensors
+              </h2>
+            </v-card-title>
         </v-card>
       </v-col>
     </v-row>
@@ -200,6 +177,8 @@
 </template>
 
 <script>
+import alarmStateObjects from '../data/alarmState';
+
 export default {
   name: 'Dashboard',
   data() {
@@ -214,14 +193,40 @@ export default {
       temHumAirSensors: null,
       doorSensors: null,
       movementSensors: null,
+      selectedAlarmObject: -1,
+      unselectedAlarmObjects: [],
+      alarmStateObjects,
     };
   },
+
   async created() {
     this.$vuetify.theme.dark = true;
     setInterval(this.getAlarm, 1000);
     setInterval(this.getSensorValues(1), 1000);
   },
   methods: {
+    setSelectedAlarmState() {
+      this.unselectedAlarmObjects = [];
+      switch (this.alarmState) {
+        case 0:
+          this.selectedAlarmObject = 0;
+          this.unselectedAlarmObjects.push({ ...alarmStateObjects[4] });
+          this.unselectedAlarmObjects.push({ ...alarmStateObjects[5] });
+          break;
+        case 1:
+          this.selectedAlarmObject = 1;
+          this.unselectedAlarmObjects.push({ ...alarmStateObjects[3] });
+          this.unselectedAlarmObjects.push({ ...alarmStateObjects[5] });
+          break;
+        case 2:
+          this.selectedAlarmObject = 2;
+          this.unselectedAlarmObjects.push({ ...alarmStateObjects[3] });
+          this.unselectedAlarmObjects.push({ ...alarmStateObjects[4] });
+          break;
+        default:
+      }
+    },
+
     getAlarm() {
       fetch(`http://interactivehome.ddns.net:8080/alarm/${this.alarmId}`)
         .then(async (response) => {
@@ -236,6 +241,7 @@ export default {
 
           this.alarmOn = data[0].alarm_on;
           this.alarmState = data[0].alarm_state;
+          this.setSelectedAlarmState();
         })
         .catch((error) => {
           this.errorMessage = error;
@@ -292,6 +298,11 @@ export default {
         });
     },
   },
+
+  getImgUrl(alarmStateImg) {
+    const images = require.context('../assets/', false, /\.png$/);
+    return images(`./${alarmStateImg}.png`);
+  },
 };
 </script>
 
@@ -309,5 +320,11 @@ export default {
 }
 .v-progress-circular.air-progress {
   color:yellow;
+}
+.activeAlarm {
+  font-size: 4.5vmax;
+}
+.inactiveAlarm {
+  font-size: 2vmax;
 }
 </style>
