@@ -20,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 @CrossOrigin(origins = "*")
 @RestController
-public class MovementSensorController {
+public class MovementSensorStateController {
 
   private final MovementSensorStateService movementSensorStateService;
 
@@ -29,8 +29,8 @@ public class MovementSensorController {
 
   private final RestTemplate restTemplate;
 
-  MovementSensorController(MovementSensorStateService movementSensorStateService,
-                           RestTemplate restTemplate) {
+  MovementSensorStateController(MovementSensorStateService movementSensorStateService,
+                                RestTemplate restTemplate) {
     this.movementSensorStateService = movementSensorStateService;
     this.restTemplate = restTemplate;
   }
@@ -49,13 +49,13 @@ public class MovementSensorController {
     return ResponseEntity.ok("201");
   }
 
-  @GetMapping("movement_sensor/{alarmId}/{movementSensorId}")
-  public List<MovementSensorState> getMovementSensorActivityByAlarmIdAndMovementSensorIdFromDateToDate(
+  @GetMapping("movement_sensor_state/{alarmId}/{sensorId}")
+  public List<MovementSensorState> getSensorActivityByAlarmIdAndSensorIdFromDateToDate(
       @PathVariable Integer alarmId,
-      @PathVariable Integer movementSensorId,
+      @PathVariable Integer sensorId,
       @RequestParam(value = "fromDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate,
       @RequestParam(value = "toDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date toDate) {
 
-    return movementSensorStateService.getMovementSensorActivityByAlarmIdAndMovementSensorId(alarmId, movementSensorId, fromDate, toDate);
+    return movementSensorStateService.getSensorActivityByAlarmIdAndSensorId(alarmId, sensorId, fromDate, toDate);
   }
 }

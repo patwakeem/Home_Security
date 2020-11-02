@@ -17,4 +17,8 @@ public class TemperatureHumidityGasSensorDto {
     @JsonProperty("battery_powered")
     public Boolean batteryPowered;
     public Boolean enabled;
+    @JsonProperty("arm_in")
+    public Boolean armIn;
+    @JsonProperty("arm_away")
+    public Boolean armAway;
 }

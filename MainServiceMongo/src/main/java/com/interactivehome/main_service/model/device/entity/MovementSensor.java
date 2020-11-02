@@ -1,6 +1,5 @@
 package com.interactivehome.main_service.model.device.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.interactivehome.main_service.model.device.dto.MovementSensorDto;
@@ -19,8 +18,8 @@ public class MovementSensor {
     @Field("_id")
     private String id;
 
-    @Field("movement_sensor_id")
-    private Integer movementSensorId;
+    @Field("sensor_id")
+    private Integer sensorId;
 
     @Field("alarm_id")
     private Integer alarmId;
@@ -33,17 +32,23 @@ public class MovementSensor {
     private Boolean enabled;
     @Field("battery_powered")
     private Boolean batteryPowered;
+    @Field("arm_in")
+    private Boolean armIn;
+    @Field("arm_away")
+    private Boolean armAway;
     @Field("created_utc")
     private Date createdUtc;
 
     public void mapFromDto(MovementSensorDto dto)
     {
         alarmId = dto.alarmId;
-        movementSensorId = dto.movementSensorId;
+        sensorId = dto.sensorId;
         description = dto.description;
         deviceIdentifier = dto.deviceIdentifier;
         enabled = dto.enabled;
         batteryPowered = dto.batteryPowered;
+        armIn = dto.armIn;
+        armAway = dto.armAway;
         createdUtc = new Date(System.currentTimeMillis());
     }
 }

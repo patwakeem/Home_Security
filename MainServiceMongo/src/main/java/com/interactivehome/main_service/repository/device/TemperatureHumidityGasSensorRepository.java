@@ -5,5 +5,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TemperatureHumidityGasSensorRepository extends MongoRepository<String, TemperatureHumidityGasSensor> {
+public interface TemperatureHumidityGasSensorRepository extends MongoRepository<TemperatureHumidityGasSensor, String> {
 }

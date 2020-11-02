@@ -5,10 +5,10 @@
         <v-card
           height="100%"
           >
-            <v-card-title class="justify-center">
-              <h2>
+            <v-card-title class="title-text justify-center">
+              <div class="d-flex flex-column justify-space-between align-center">
                 Security Alarm
-              </h2>
+              </div>
             </v-card-title>
         </v-card>
       </v-col>
@@ -16,7 +16,7 @@
     <v-row justify="center">
       <v-col cols="8" xs="12">
         <v-card elevation="4">
-          <v-card-title class="activeAlarm justify-center">
+          <v-card-title class="active-alarm justify-center">
              {{alarmStateObjects[this.selectedAlarmObject].title}}
             <v-card-text v-if="alarmState != null">
               <div class="d-flex flex-column justify-space-between align-center">
@@ -40,10 +40,10 @@
     <v-row justify="center">
       <v-col cols="4" xs="6"
        v-for="(unselectedAlarm, index) in unselectedAlarmObjects" :key="index">
-        <v-card class="vcard" fill-height @click="arm(unselectedAlarm.alarmState)"
+        <v-card fill-height @click="arm(unselectedAlarm.alarmState)"
           elevation="4"
         >
-          <v-card-title class="inactiveAlarm justify-center">
+          <v-card-title class="inactive-alarm justify-center">
             {{unselectedAlarm.title}}
             <v-card-text v-if="alarmState != null">
               <div class="d-flex flex-column justify-space-between align-center">
@@ -140,7 +140,7 @@
           </v-card-title>
         </v-card>
       </v-col>
-      <v-col cols="6" lg="3" md="4" sm="12" xs="12">
+      <v-col cols="6" lg="3" md="4" sm="12" x="12">
         <v-card
           elevation="4">
           <v-card-title class="justify-center">
@@ -183,16 +183,17 @@ export default {
   name: 'Dashboard',
   data() {
     return {
-      alarmId: 1,
+      alarmId: 0,
+      sensorId: 0,
       alarmOn: null,
       alarmState: null,
       temperature: null,
       humidity: null,
       air: null,
       airPercent: null,
-      temHumAirSensors: null,
-      doorSensors: null,
-      movementSensors: null,
+      // temHumAirSensors,
+      // doorSensors,
+      // movementSensors,
       selectedAlarmObject: -1,
       unselectedAlarmObjects: [],
       alarmStateObjects,
@@ -201,10 +202,14 @@ export default {
 
   async created() {
     this.$vuetify.theme.dark = true;
+    this.getAlarm();
+    setInterval(this.getActiveAlarm, 1000);
     setInterval(this.getAlarm, 1000);
-    setInterval(this.getSensorValues(1), 1000);
+    setInterval(this.getSensorValues, 1000);
   },
+
   methods: {
+
     setSelectedAlarmState() {
       this.unselectedAlarmObjects = [];
       switch (this.alarmState) {
@@ -225,6 +230,26 @@ export default {
           break;
         default:
       }
+    },
+
+    getActiveAlarm() {
+      fetch('http://interactivehome.ddns.net:8080/active_alarm_system')
+        .then(async (response) => {
+          const data = await response.json();
+
+          // check for error response
+          if (!response.ok) {
+          // get error message from body or default to response statusText
+            const error = (data && data.message) || response.statusText;
+            alert(error);
+          }
+
+          this.alarmId = data.alarm_id;
+        })
+        .catch((error) => {
+          this.errorMessage = error;
+          console.error('There was an error!', error);
+        });
     },
 
     getAlarm() {
@@ -249,8 +274,8 @@ export default {
         });
     },
 
-    getSensorValues(sensorId) {
-      fetch(`http://interactivehome.ddns.net:8080/temperature_humidity_gas/${this.alarmId}/${sensorId}`)
+    getSensorValues() {
+      fetch(`http://interactivehome.ddns.net:8080/temperature_humidity_gas_state/${this.alarmId}/${this.sensorId}`)
         .then(async (response) => {
           const data = await response.json();
 
@@ -321,10 +346,13 @@ export default {
 .v-progress-circular.air-progress {
   color:yellow;
 }
-.activeAlarm {
-  font-size: 4.5vmax;
+.title-text {
+  font-size: 5vmin;
 }
-.inactiveAlarm {
-  font-size: 2vmax;
+.active-alarm {
+  font-size: 4.5vmin;
+}
+.inactive-alarm {
+  font-size: 3vmin;
 }
 </style>

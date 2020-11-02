@@ -63,7 +63,7 @@ public class AlarmController {
         System.out.println("Error while building json value 'alarm_state'. " + e.toString());
       }
       HttpEntity<String> requestEntity = new HttpEntity<>(jsonObject.toString(), requestHeaders);
-      System.out.println("Securitly controller alarm state endpoint: " +
+      System.out.println("Security controller alarm state endpoint: " +
           appProperties.getSecurityControllerIpPort() + appProperties.getAlarmStateEndpoint() +
           ". \n Payload: \n" + jsonObject.toString());
           ResponseEntity<String> responseEntity = restTemplate.

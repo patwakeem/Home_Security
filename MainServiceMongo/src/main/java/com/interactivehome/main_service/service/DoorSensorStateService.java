@@ -9,8 +9,8 @@ import java.util.List;
 public interface DoorSensorStateService {
   void saveState(DoorSensorStateDto dto);
 
-  List<DoorSensorState> getDoorStateByAlarmIdAndDoorIdFromDateToDate(Integer alarmId, Integer doorId, Date fromDate, Date toDate);
-  DoorSensorState getLastDoorByAlarmIdAndDoorId(DoorSensorStateDto doorSensorStateDto);
+  List<DoorSensorState> getDoorStateByAlarmIdAndSensorIdFromDateToDate(Integer alarmId, Integer sensorId, Date fromDate, Date toDate);
+  DoorSensorState getLastDoorStateByAlarmIdAndSensorId(DoorSensorStateDto doorSensorStateDto);
 
 
   void saveBatteryVoltage(DoorSensorStateDto doorSensorStateDto);

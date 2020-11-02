@@ -7,8 +7,8 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MovementSensorStateDto {
-    @JsonProperty("movement_sensor_id")
-    public Integer movementSensorId;
+    @JsonProperty("sensor_id")
+    public Integer sensorId;
     @JsonProperty("alarm_id")
     public Integer alarmId;
     @JsonProperty("movement_caught")

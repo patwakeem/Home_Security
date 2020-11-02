@@ -1,6 +1,5 @@
 package com.interactivehome.main_service.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.interactivehome.main_service.model.dto.MovementSensorStateDto;
@@ -12,14 +11,14 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-@Document(collection = "movement_sensor")
+@Document(collection = "movement_sensor_state")
 public class MovementSensorState {
   @Id
   @Field("_id")
   private String id;
 
-  @Field("movement_sensor_id")
-  private Integer movementSensorId;
+  @Field("sensor_id")
+  private Integer sensorId;
 
   @Field("alarm_id")
   private Integer alarmId;
@@ -38,7 +37,7 @@ public class MovementSensorState {
   public void mapFromDto(MovementSensorStateDto dto)
   {
     alarmId = dto.alarmId;
-    movementSensorId = dto.movementSensorId;
+    sensorId = dto.sensorId;
     movementCaught = dto.movementCaught;
     batteryVoltage = dto.batteryVoltage;
     batteryPercentage = dto.batteryPercentage;

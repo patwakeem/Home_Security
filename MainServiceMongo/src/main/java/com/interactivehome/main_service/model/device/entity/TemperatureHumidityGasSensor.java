@@ -1,6 +1,5 @@
 package com.interactivehome.main_service.model.device.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.interactivehome.main_service.model.device.dto.TemperatureHumidityGasSensorDto;
@@ -13,7 +12,7 @@ import java.util.Date;
 
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-@Document(collection = "temperature_humidity_gas")
+@Document(collection = "temperature_humidity_gas_sensor")
 public class TemperatureHumidityGasSensor {
     @Id
     @Field("_id")
@@ -32,6 +31,10 @@ public class TemperatureHumidityGasSensor {
     private Boolean batteryPowered;
     @Field("enabled")
     private Boolean enabled;
+    @Field("arm_in")
+    private Boolean armIn;
+    @Field("arm_away")
+    private Boolean armAway;
     @Field("created_utc")
     private Date createdUtc;
 
@@ -42,6 +45,8 @@ public class TemperatureHumidityGasSensor {
         description = dto.description;
         deviceIdentifier = dto.deviceIdentifier;
         batteryPowered = dto.batteryPowered;
+        armIn = dto.armIn;
+        armAway = dto.armAway;
         createdUtc = new Date(System.currentTimeMillis());
     }
 }

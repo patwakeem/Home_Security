@@ -2,7 +2,7 @@ package com.interactivehome.main_service.model.device.entity;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.interactivehome.main_service.model.device.dto.DoorSensorDto;
+import com.interactivehome.main_service.model.device.dto.AlarmSystemDto;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -12,14 +12,11 @@ import java.util.Date;
 
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-@Document(collection = "door_sensor")
-public class DoorSensor {
+@Document(collection = "alarm_system")
+public class AlarmSystem {
     @Id
     @Field("_id")
     private String id;
-
-    @Field("sensor_id")
-    private Integer sensorId;
 
     @Field("alarm_id")
     private Integer alarmId;
@@ -30,30 +27,17 @@ public class DoorSensor {
     @Field("description")
     private String description;
 
-    @Field("device_identifier")
-    private String deviceIdentifier;
-
-    @Field("battery_powered")
-    private Boolean batteryPowered;
-
-    @Field("arm_in")
-    private Boolean armIn;
-
-    @Field("arm_away")
-    private Boolean armAway;
+    @Field("active_alarm")
+    private Boolean activeAlarm;
 
     @Field("created_utc")
     private Date createdUtc;
 
-    public void mapFromDto(DoorSensorDto dto) {
+    public void mapFromDto(AlarmSystemDto dto) {
         alarmId = dto.alarmId;
-        sensorId = dto.sensorId;
         enabled = dto.enabled;
         description = dto.description;
-        deviceIdentifier = dto.deviceIdentifier;
-        batteryPowered = dto.batteryPowered;
-        armIn = dto.armIn;
-        armAway = dto.armAway;
+        activeAlarm = dto.activeAlarm;
         createdUtc = new Date(System.currentTimeMillis());
     }
 }

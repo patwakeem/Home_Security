@@ -11,14 +11,14 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-@Document(collection = "door")
+@Document(collection = "door_sensor_state")
 public class DoorSensorState {
     @Id
     @Field("_id")
     private String id;
 
-    @Field("door_id")
-    private Integer doorId;
+    @Field("sensor_id")
+    private Integer sensorId;
 
     @Field("alarm_id")
     private Integer alarmId;
@@ -37,7 +37,7 @@ public class DoorSensorState {
 
     public void mapFromDto(DoorSensorStateDto dto) {
         alarmId = dto.alarmId;
-        doorId = dto.doorId;
+        sensorId = dto.sensorId;
         doorState = dto.doorState;
         batteryVoltage = dto.batteryVoltage;
         batteryPercentage = dto.batteryPercentage;

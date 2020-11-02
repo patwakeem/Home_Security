@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-@Document(collection = "temperature_humidity_gas")
+@Document(collection = "temperature_humidity_gas_state")
 public class TemperatureHumidityGasSensorState {
   @Id
   @Field("_id")
