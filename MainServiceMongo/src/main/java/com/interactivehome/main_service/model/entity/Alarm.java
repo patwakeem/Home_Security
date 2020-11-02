@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-@Document(collection = "alarm")
+@Document(collection = "alarm_state")
 public class Alarm {
   @Id
   @Field("_id")

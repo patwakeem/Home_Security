@@ -1,22 +1,43 @@
-getSensorValues(sensorId) {
-    fetch(`http://interactivehome.ddns.net:8080/temperature_humidity_gas/${this.alarmId}/${sensorId}`)
+function getTemHumAirSensors() {
+  let alarmId = 0;
+  fetch('http://interactivehome.ddns.net:8080/active_alarm_system')
     .then(async (response) => {
-        const data = await response.json();
+      const data = await response.json();
 
-        // check for error response
-        if (!response.ok) {
-        // get error message from body or default to response statusText
+      // check for error response
+      if (!response.ok) {
+      // get error message from body or default to response statusText
         const error = (data && data.message) || response.statusText;
         alert(error);
-        }
+      }
 
-        this.temperature = data[0].temperature;
-        this.humidity = data[0].humidity;
-        this.air = data[0].gas_value;
-        this.airPercent = (100 * this.air) / 1024;
+      alarmId = data.alarm_id;
+      alert(alarmId);
     })
     .catch((error) => {
-        this.errorMessage = error;
-        console.error('There was an error!', error);
+      this.errorMessage = error;
+      console.error('There was an error!', error);
     });
-};
+
+  fetch(`http://interactivehome.ddns.net:8080/t_h_g_sensors/${alarmId}`)
+    .then(async (response) => {
+      const data = await response.json();
+
+      // check for error response
+      if (!response.ok) {
+      // get error message from body or default to response statusText
+        const error = (data && data.message) || response.statusText;
+        alert(error);
+      }
+
+      alert(data);
+    })
+    .catch((error) => {
+      this.errorMessage = error;
+      console.error('There was an error!', error);
+    });
+}
+
+const temHumAirSensors = getTemHumAirSensors();
+
+export default temHumAirSensors;

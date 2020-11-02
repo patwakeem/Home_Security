@@ -37,9 +37,9 @@ public class MovementSensorStateServiceImpl implements MovementSensorStateServic
   }
 
   @Override
-  public List<MovementSensorState> getMovementSensorActivityByAlarmIdAndMovementSensorId(
+  public List<MovementSensorState> getSensorActivityByAlarmIdAndSensorId(
           Integer alarmId,
-          Integer movementSensorId,
+          Integer sensorId,
           Date fromDate,
           Date toDate) {
 
@@ -50,14 +50,14 @@ public class MovementSensorStateServiceImpl implements MovementSensorStateServic
     }
 
     String messageOut;
-    messageOut = "Get movement activity by movement sensro id: " + movementSensorId;
+    messageOut = "Get movement activity by movement sensor id: " + sensorId;
     if(fromDate != null && toDate != null)
       messageOut += " from date: " + fromDate.toString() + ", to date : " + toDate.toString();
     System.out.println(messageOut);
 
     Query query = new Query();
     query.addCriteria(Criteria.where("alarm_id").is(alarmId));
-    query.addCriteria(Criteria.where("movement_sensor_id").is(movementSensorId));
+    query.addCriteria(Criteria.where("sensor_id").is(sensorId));
     if((fromDate != null && toDate != null) && (!fromDate.toString().isEmpty() && !toDate.toString().isEmpty())) {
       query.addCriteria(Criteria.where("updated_utc").gte(fromDate).lte(toDate));
       query.with(new Sort(Direction.DESC, "updated_utc"));

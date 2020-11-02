@@ -90,7 +90,7 @@
 <script>
 
 export default {
-  name: 'app',
+  name: 'smarthomeApp',
   data: () => ({
     drawer: null,
   }),

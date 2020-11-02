@@ -34,6 +34,11 @@ const routes = [
     name: 'Cameras',
     component: Cameras,
   },
+  {
+    path: '/settings',
+    name: 'Settings',
+    component: Cameras,
+  },
 ];
 
 const router = new VueRouter({

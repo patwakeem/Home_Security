@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface MovementSensorStateService {
   void saveState(MovementSensorStateDto dto);
-  List<MovementSensorState> getMovementSensorActivityByAlarmIdAndMovementSensorId(Integer alarmId, Integer movementSensorId, Date fromDate, Date toDate);
+  List<MovementSensorState> getSensorActivityByAlarmIdAndSensorId(Integer alarmId, Integer sensorId, Date fromDate, Date toDate);
 
   void buzzAlarm();
 }

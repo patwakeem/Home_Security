@@ -24,13 +24,13 @@ public class TemperatureHumidityGasController {
     this.temperatureHumidityGasSensorStateService = temperatureHumidityGasSensorStateService;
   }
 
-  @PostMapping("/temperature_humidity_gas")
+  @PostMapping("/temperature_humidity_gas_state")
   public ResponseEntity<String> postValues(@RequestBody TemperatureHumidiryGasSensorStateDto dto) {
     temperatureHumidityGasSensorStateService.saveValues(dto);
     return ResponseEntity.ok("201");
   }
   
-  @GetMapping("/temperature_humidity_gas/{alarmId}/{sensorId}")
+  @GetMapping("/temperature_humidity_gas_state/{alarmId}/{sensorId}")
   public List<TemperatureHumidityGasSensorState> getAllTemperatureHumidityGasByAlarmIdAndSensorIdFromDateToDate(
       @PathVariable Integer alarmId,
       @PathVariable Integer sensorId,

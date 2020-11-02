@@ -119,13 +119,13 @@ public class DoorStateController {
         return ResponseEntity.ok("200");
     }
 
-    @GetMapping("/door/{alarmId}/{doorId}")
-    public List<DoorSensorState> getDoorStateByAlarmIdAndDoorIdFromDateToDate(
+    @GetMapping("/door/{alarmId}/{sensorId}")
+    public List<DoorSensorState> getDoorStateByAlarmIdAndSensorIdFromDateToDate(
         @PathVariable Integer alarmId,
-        @PathVariable Integer doorId,
+        @PathVariable Integer sensorId,
         @RequestParam(value = "fromDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate,
         @RequestParam(value = "toDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date toDate)
     {
-        return doorSensorStateService.getDoorStateByAlarmIdAndDoorIdFromDateToDate(alarmId, doorId, fromDate, toDate);
+        return doorSensorStateService.getDoorStateByAlarmIdAndSensorIdFromDateToDate(alarmId, sensorId, fromDate, toDate);
     }
 }

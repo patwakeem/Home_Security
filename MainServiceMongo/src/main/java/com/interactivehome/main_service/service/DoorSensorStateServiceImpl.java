@@ -50,7 +50,7 @@ public class DoorSensorStateServiceImpl implements DoorSensorStateService {
     }
 
     @Override
-    public List<DoorSensorState> getDoorStateByAlarmIdAndDoorIdFromDateToDate(Integer alarmId, Integer doorId, Date fromDate, Date toDate) {
+    public List<DoorSensorState> getDoorStateByAlarmIdAndSensorIdFromDateToDate(Integer alarmId, Integer sensorId, Date fromDate, Date toDate) {
         if(fromDate != null && !fromDate.toString().isEmpty() && (toDate == null || toDate.toString().isEmpty())) {
             toDate = java.util.Date.from(LocalDate.now().atStartOfDay().plusDays(1)
                 .atZone(ZoneId.systemDefault())
@@ -58,14 +58,14 @@ public class DoorSensorStateServiceImpl implements DoorSensorStateService {
         }
 
         String messageOut;
-        messageOut = "Get door state by door id: " + doorId;
+        messageOut = "Get door state by door id: " + sensorId;
         if(fromDate != null && toDate != null)
             messageOut += " from date: " + fromDate.toString() + ", to date : " + toDate.toString();
         System.out.println(messageOut);
 
         Query query = new Query();
         query.addCriteria(Criteria.where("alarm_id").is(alarmId));
-        query.addCriteria(Criteria.where("door_id").is(doorId));
+        query.addCriteria(Criteria.where("sensor_id").is(sensorId));
         if((fromDate != null && toDate != null) && (!fromDate.toString().isEmpty() && !toDate.toString().isEmpty()))
         {
             query.addCriteria(Criteria.where("updated_utc").gte(fromDate).lte(toDate));
@@ -81,11 +81,11 @@ public class DoorSensorStateServiceImpl implements DoorSensorStateService {
     }
 
     @Override
-    public DoorSensorState getLastDoorByAlarmIdAndDoorId(DoorSensorStateDto dto) {
+    public DoorSensorState getLastDoorStateByAlarmIdAndSensorId(DoorSensorStateDto dto) {
         DoorSensorState doorSensorState = new DoorSensorState();
         Query query = new Query();
         query.addCriteria(Criteria.where("alarm_id").is(dto.alarmId));
-        query.addCriteria(Criteria.where("door_id").is(dto.doorId));
+        query.addCriteria(Criteria.where("sensor_id").is(dto.sensorId));
         query.with(new org.springframework.data.domain.Sort(Direction.DESC, "updated_utc"));
         List<DoorSensorState> list = mongoTemplate.find(query, DoorSensorState.class);
         if(list.size() > 0)
@@ -96,7 +96,7 @@ public class DoorSensorStateServiceImpl implements DoorSensorStateService {
 
     @Override
     public void saveBatteryVoltage(DoorSensorStateDto doorSensorStateDto) {
-        DoorSensorState doorSensorState = getLastDoorByAlarmIdAndDoorId(doorSensorStateDto);
+        DoorSensorState doorSensorState = getLastDoorStateByAlarmIdAndSensorId(doorSensorStateDto);
 
         doorSensorState.mapFromDto(doorSensorStateDto);
         doorSensorStateRepository.save(doorSensorState);
