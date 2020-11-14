@@ -2,7 +2,6 @@ package com.interactivehome.main_service.controller.device;
 
 import com.interactivehome.main_service.model.device.dto.AlarmSystemDto;
 import com.interactivehome.main_service.model.device.entity.AlarmSystem;
-import com.interactivehome.main_service.model.device.entity.DoorSensor;
 import com.interactivehome.main_service.service.device.AlarmSystemService;
 import org.springframework.web.bind.annotation.*;
 

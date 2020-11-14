@@ -56,7 +56,7 @@ public class DoorSensorServiceImpl implements DoorSensorService {
 
     @Override
     public void modifyDoorSensor(DoorSensorDto doorSensorDto) {
-        DoorSensor doorSensor = new DoorSensor();
+        DoorSensor doorSensor;
         Query query = new Query();
         query.addCriteria(Criteria.where("alarm_id").is(doorSensorDto.alarmId));
         query.addCriteria(Criteria.where("sensor_id").is(doorSensorDto.sensorId));
@@ -67,6 +67,7 @@ public class DoorSensorServiceImpl implements DoorSensorService {
         doorSensor.setDescription(doorSensorDto.getDescription());
         doorSensor.setDeviceIdentifier(doorSensorDto.getDeviceIdentifier());
         doorSensor.setBatteryPowered(doorSensorDto.getBatteryPowered());
+        doorSensor.setTriggerVerificationProcess((doorSensorDto.getTriggerVerificationProcess()));
         doorSensor.setArmIn(doorSensorDto.getArmIn());
         doorSensor.setArmAway(doorSensorDto.getArmAway());
         mongoTemplate.save(doorSensor);

@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.interactivehome</groupId>
 	<artifactId>main_service</artifactId>
-	<version>2020.11.01-0</version>
+	<version>2020.11.13-0</version>
 	<name>main_service</name>
 	<description>Main REST service for IoT</description>
 

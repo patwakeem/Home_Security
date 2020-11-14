@@ -17,6 +17,8 @@ public class DoorSensorDto {
     @JsonProperty("battery_powered")
     public Boolean batteryPowered;
     public Boolean enabled;
+    @JsonProperty("trigger_verification_process")
+    public Boolean triggerVerificationProcess;
     @JsonProperty("arm_in")
     public Boolean armIn;
     @JsonProperty("arm_away")

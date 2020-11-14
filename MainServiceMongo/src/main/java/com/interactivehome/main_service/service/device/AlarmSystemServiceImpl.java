@@ -2,6 +2,7 @@ package com.interactivehome.main_service.service.device;
 
 import com.interactivehome.main_service.model.device.dto.AlarmSystemDto;
 import com.interactivehome.main_service.model.device.entity.AlarmSystem;
+import com.interactivehome.main_service.model.device.entity.DoorSensor;
 import com.interactivehome.main_service.repository.device.AlarmSystemRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -55,6 +56,9 @@ public class AlarmSystemServiceImpl implements AlarmSystemService {
     @Override
     public void modifyAlarmSystem(AlarmSystemDto dto) {
         AlarmSystem alarmSystem = new AlarmSystem();
+        Query query = new Query();
+        query.addCriteria(Criteria.where("alarm_id").is(dto.getAlarmId()));
+        alarmSystem = mongoTemplate.findOne(query, AlarmSystem.class);
         alarmSystem.setAlarmId(dto.alarmId);
         alarmSystem.setEnabled(dto.enabled);
         alarmSystem.setDescription(dto.description);
