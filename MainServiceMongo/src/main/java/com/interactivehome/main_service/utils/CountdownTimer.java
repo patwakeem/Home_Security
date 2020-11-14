@@ -1,7 +1,7 @@
 package com.interactivehome.main_service.utils;
 
-import com.interactivehome.main_service.model.dto.AlarmStateDto;
-import com.interactivehome.main_service.service.AlarmService;
+import com.interactivehome.main_service.model.events.dto.AlarmStateDto;
+import com.interactivehome.main_service.service.events.AlarmService;
 import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;

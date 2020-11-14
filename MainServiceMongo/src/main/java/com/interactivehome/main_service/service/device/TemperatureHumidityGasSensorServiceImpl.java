@@ -2,13 +2,12 @@ package com.interactivehome.main_service.service.device;
 
 import com.interactivehome.main_service.model.device.dto.TemperatureHumidityGasSensorDto;
 import com.interactivehome.main_service.model.device.entity.TemperatureHumidityGasSensor;
-import com.interactivehome.main_service.model.entity.TemperatureHumidityGasSensorState;
+import com.interactivehome.main_service.model.events.entity.TemperatureHumidityGasSensorState;
 import com.interactivehome.main_service.repository.device.TemperatureHumidityGasSensorRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

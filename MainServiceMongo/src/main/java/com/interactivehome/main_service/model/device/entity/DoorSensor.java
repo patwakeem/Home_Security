@@ -36,6 +36,9 @@ public class DoorSensor {
     @Field("battery_powered")
     private Boolean batteryPowered;
 
+    @Field("trigger_verification_process")
+    private Boolean triggerVerificationProcess;
+
     @Field("arm_in")
     private Boolean armIn;
 
@@ -52,6 +55,7 @@ public class DoorSensor {
         description = dto.description;
         deviceIdentifier = dto.deviceIdentifier;
         batteryPowered = dto.batteryPowered;
+        triggerVerificationProcess = dto.triggerVerificationProcess;
         armIn = dto.armIn;
         armAway = dto.armAway;
         createdUtc = new Date(System.currentTimeMillis());

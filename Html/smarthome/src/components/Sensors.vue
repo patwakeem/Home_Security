@@ -35,7 +35,7 @@
       <v-tabs-slider color="grey"></v-tabs-slider>
       <v-tab @click="getSensors('t_h_g_sensors', false)">Temperature-Humidity-Gas</v-tab>
       <v-tab @click="getSensors('door_sensors', false)">Door</v-tab>
-      <v-tab @click="getSensors('movement_sensors', false)">Movement</v-tab>
+      <v-tab @click="getSensors('movement_sensors', false)">Motion</v-tab>
     </v-tabs>
       <v-row v-for="(sensor, index) of sensors" :key="index">
         <v-col>
@@ -54,21 +54,7 @@
               </v-col>
             </v-row>
             <v-row>
-            <!-- <v-col>
-              <label>Sensor Id </label>
-              <br>
-              <label for="description">Description </label>
-              <br>
-              <label for="identifier">Identifier </label>
-              <br>
-              <label>Enabled </label>
-              <br>
-              <label>Battery Powered </label>
-              <br>
-              <label>Created (UTC) </label>
-            </v-col> -->
             <v-col>
-              <!-- <label id="sensor_id">{{sensor.sensor_id}}</label> -->
               <v-text-field
                 label="Sensor Id"
                 class="text-field"
@@ -83,7 +69,7 @@
                 readonly
                 dense
                 disabled
-                :value="sensor.created_utc"
+                :value="Date(sensor.created_utc).toString()"
               ></v-text-field>
               <v-text-field
                 label="Description"
@@ -93,14 +79,6 @@
                 :value="sensor.description"
                 v-model="sensor.description"
               ></v-text-field>
-              <!-- <input
-              class="input"
-              type="text"
-              maxlength="30"
-              id="description"
-              :value="sensor.description"
-              @change="updateDescription"
-              @input="updateDescription"> -->
               <v-text-field
                 label="Device Identifier"
                 class="text-field"
@@ -123,6 +101,14 @@
                 dense
                 class="vswitch"
                 :checked="sensor.battery_powered">
+              </v-switch>
+              <v-switch v-if="activeTab == 'door_sensors'"
+                label="Trigger verification process"
+                v-model="sensor.trigger_verification_process"
+                dense
+                reverse
+                class="vswitch"
+                :checked="sensor.trigger_verification_process">
               </v-switch>
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
@@ -152,29 +138,6 @@
                 </template>
                 <span>Enable/Disable when Alarm is in 'Alarm In' state</span>
               </v-tooltip>
-              <!-- <label class="switch">
-                <input
-                type="checkbox"
-                id="enabled"
-                :checked="sensor.enabled"
-                @change="updateEnabled(sensor.sensorId, this.value)">
-                <span class="slider round"></span>
-              </label>
-              <br>
-              <label class="switch">
-                <input
-                type="checkbox"
-                id="battery_powered"
-                :checked="sensor.battery_powered"
-                @change="updateBatteryPowered(sensor.sensorId, this.value)">
-                <span class="slider round"></span>
-              </label> -->
-              <!-- <br>
-              <label
-                class="label"
-                id="created">
-                {{sensor.created_utc}}
-              </label> -->
             </v-col>
             </v-row>
             <v-row justify="end">
@@ -258,8 +221,16 @@ export default {
   },
 
   async created() {
-    this.$vuetify.theme.dark = true;
     await this.getSensors(this.activeTab, true);
+  },
+
+  computed: {
+    loggedIn() {
+      return this.$store.state.loggedIn;
+    },
+    alarmId() {
+      return this.$store.state.activeAlarm;
+    },
   },
 
   methods: {
@@ -277,38 +248,39 @@ export default {
 
       this.sensors = null;
       this.activeTab = tab;
-      fetch('http://interactivehome.ddns.net:8080/active_alarm_system')
+      // fetch('http://interactivehome.ddns.net:8080/active_alarm_system')
+      //   .then(async (response) => {
+      //     const data = await response.json();
+
+      //     // check for error response
+      //     if (!response.ok) {
+      //     // get error message from body or default to response statusText
+      //       const error = (data && data.message) || response.statusText;
+      //       alert(error);
+      //     }
+
+      //     return data.alarm_id;
+      //   })
+      //   .then((alarmId) => {
+      const aId = parseInt(this.alarmId, 10);
+      fetch(`http://interactivehome.ddns.net:8080/${tab}/${aId}`)
         .then(async (response) => {
           const data = await response.json();
 
           // check for error response
           if (!response.ok) {
-          // get error message from body or default to response statusText
+            // get error message from body or default to response statusText
             const error = (data && data.message) || response.statusText;
             alert(error);
           }
 
-          return data.alarm_id;
+          this.sensors = data;
         })
-        .then((alarmId) => {
-          fetch(`http://interactivehome.ddns.net:8080/${tab}/${alarmId}`)
-            .then(async (response) => {
-              const data = await response.json();
-
-              // check for error response
-              if (!response.ok) {
-              // get error message from body or default to response statusText
-                const error = (data && data.message) || response.statusText;
-                alert(error);
-              }
-
-              this.sensors = data;
-            })
-            .catch((error) => {
-              this.errorMessage = error;
-              console.error('There was an error!', error);
-            });
+        .catch((error) => {
+          this.errorMessage = error;
+          console.error('There was an error!', error);
         });
+      // });
     },
 
     undoChanges() {
@@ -326,21 +298,29 @@ export default {
         device_identifier: editedSensor.device_identifier,
         enabled: editedSensor.enabled,
         battery_powered: editedSensor.battery_powered,
+        trigger_verification_process: editedSensor.trigger_verification_process,
         arm_in: editedSensor.arm_in,
         arm_away: editedSensor.arm_away,
         created_utc: editedSensor.created,
       };
 
-      fetch(
-        'http://interactivehome.ddns.net:8080/modify_t_h_g_sensor',
+      let resource = null;
+      if (this.activeTab === 't_h_g_sensors') {
+        resource = 'modify_t_h_g_sensor';
+      } else if (this.activeTab === 'door_sensors') {
+        resource = 'modify_door_sensor';
+      } else if (this.activeTab === 'movement_sensors') {
+        resource = 'modify_movement_sensor';
+      }
+
+      fetch(`http://interactivehome.ddns.net:8080/${resource}`,
         {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(requestBody),
-        },
-      )
+        })
         .then(async (response) => {
           const data = await response.json();
 

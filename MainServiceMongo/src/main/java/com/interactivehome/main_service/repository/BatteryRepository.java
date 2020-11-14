@@ -1,6 +1,6 @@
 package com.interactivehome.main_service.repository;
 
-import com.interactivehome.main_service.model.entity.Battery;
+import com.interactivehome.main_service.model.events.entity.Battery;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

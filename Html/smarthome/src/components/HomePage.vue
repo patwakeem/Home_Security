@@ -64,19 +64,20 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col>
-        <v-card
-          height="100%"
-          >
-            <v-card-title class="justify-center">
-              <h2>
-                Kitchen Sensors
-              </h2>
-            </v-card-title>
-        </v-card>
-      </v-col>
-    </v-row>
+    <!-- <v-row v-for="(sensor, index) of sensors" :key="index"> -->
+      <v-row>
+        <v-col>
+          <v-card
+            height="100%"
+            >
+              <v-card-title class="justify-center">
+                <h2>
+                  Kitchen Sensors
+                </h2>
+              </v-card-title>
+          </v-card>
+        </v-col>
+      </v-row>
     <v-row>
       <v-col cols="6" lg="3" md="4" sm="12" xs="12">
         <v-card
@@ -173,6 +174,7 @@
         </v-card>
       </v-col>
     </v-row>
+    <!-- </v-row> -->
   </v-container>
 </template>
 
@@ -180,13 +182,12 @@
 import alarmStateObjects from '../data/alarmState';
 
 export default {
-  name: 'Dashboard',
+  name: 'Main',
   data() {
     return {
-      alarmId: 0,
       sensorId: 0,
-      alarmOn: null,
-      alarmState: null,
+      // alarmOn: null,
+      // alarmState: null,
       temperature: null,
       humidity: null,
       air: null,
@@ -201,11 +202,26 @@ export default {
   },
 
   async created() {
-    this.$vuetify.theme.dark = true;
-    this.getAlarm();
-    setInterval(this.getActiveAlarm, 1000);
-    setInterval(this.getAlarm, 1000);
+    // if (!this.loggedIn()) {
+    //   return;
+    // }
+    // this.getAlarm();
+    this.getSensorValues();
+    // setInterval(this.getAlarm, 1000);
     setInterval(this.getSensorValues, 1000);
+    setInterval(this.setSelectedAlarmState, 1000);
+  },
+
+  computed: {
+    loggedIn() {
+      return this.$store.state.loggedIn;
+    },
+    alarmId() {
+      return this.$store.state.activeAlarm;
+    },
+    alarmState() {
+      return this.$store.state.alarmState;
+    },
   },
 
   methods: {
@@ -232,50 +248,29 @@ export default {
       }
     },
 
-    getActiveAlarm() {
-      fetch('http://interactivehome.ddns.net:8080/active_alarm_system')
-        .then(async (response) => {
-          const data = await response.json();
+    // getActiveAlarm() {
+    //   fetch('http://interactivehome.ddns.net:8080/active_alarm_system')
+    //     .then(async (response) => {
+    //       const data = await response.json();
 
-          // check for error response
-          if (!response.ok) {
-          // get error message from body or default to response statusText
-            const error = (data && data.message) || response.statusText;
-            alert(error);
-          }
+    //       // check for error response
+    //       if (!response.ok) {
+    //       // get error message from body or default to response statusText
+    //         const error = (data && data.message) || response.statusText;
+    //         alert(error);
+    //       }
 
-          this.alarmId = data.alarm_id;
-        })
-        .catch((error) => {
-          this.errorMessage = error;
-          console.error('There was an error!', error);
-        });
-    },
-
-    getAlarm() {
-      fetch(`http://interactivehome.ddns.net:8080/alarm/${this.alarmId}`)
-        .then(async (response) => {
-          const data = await response.json();
-
-          // check for error response
-          if (!response.ok) {
-          // get error message from body or default to response statusText
-            const error = (data && data.message) || response.statusText;
-            alert(error);
-          }
-
-          this.alarmOn = data[0].alarm_on;
-          this.alarmState = data[0].alarm_state;
-          this.setSelectedAlarmState();
-        })
-        .catch((error) => {
-          this.errorMessage = error;
-          console.error('There was an error!', error);
-        });
-    },
+    //       this.alarmId = data.alarm_id;
+    //     })
+    //     .catch((error) => {
+    //       this.errorMessage = error;
+    //       console.error('There was an error!', error);
+    //     });
+    // },
 
     getSensorValues() {
-      fetch(`http://interactivehome.ddns.net:8080/temperature_humidity_gas_state/${this.alarmId}/${this.sensorId}`)
+      const aId = parseInt(this.alarmId, 10);
+      fetch(`http://interactivehome.ddns.net:8080/temperature_humidity_gas_state/${aId}/${this.sensorId}`)
         .then(async (response) => {
           const data = await response.json();
 
