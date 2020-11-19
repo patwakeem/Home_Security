@@ -16,10 +16,9 @@ public class DoorSensorController {
         this.doorSensorService = doorSensorService;
     }
 
-    @PostMapping("/door_sensor/{alarmId}")
-    public void registerDoorSensor(@PathVariable Integer alarmId,
-                                   @RequestBody DoorSensorDto dto) {
-        doorSensorService.registerDoorSensor(alarmId, dto);
+    @PostMapping("/door_sensor")
+    public void registerDoorSensor(@RequestBody DoorSensorDto dto) {
+        doorSensorService.registerDoorSensor(dto);
     }
 
     @PutMapping("/door_sensor/{alarmId}/{id}")
