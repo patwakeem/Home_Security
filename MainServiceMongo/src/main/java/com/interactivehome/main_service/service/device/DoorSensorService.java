@@ -6,7 +6,7 @@ import com.interactivehome.main_service.model.device.entity.DoorSensor;
 import java.util.List;
 
 public interface DoorSensorService {
-    void registerDoorSensor(Integer alarmId, DoorSensorDto doorSensorDto);
+    void registerDoorSensor(DoorSensorDto doorSensorDto);
     DoorSensor modifyDoorSensorByAlarmIdAndId(Integer alarmId, Integer id, DoorSensorDto doorSensorDto);
     DoorSensor getDoorSensorByAlarmIdAndId(Integer alarmId, Integer id);
     List<DoorSensor> getAllDoorSensorsByAlarmId(Integer alarmId);

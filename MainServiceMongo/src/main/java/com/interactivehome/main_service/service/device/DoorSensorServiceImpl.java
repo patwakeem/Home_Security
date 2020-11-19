@@ -25,7 +25,7 @@ public class DoorSensorServiceImpl implements DoorSensorService {
     }
 
     @Override
-    public void registerDoorSensor(Integer alarmId, DoorSensorDto dto) {
+    public void registerDoorSensor(DoorSensorDto dto) {
         DoorSensor doorSensor = new DoorSensor();
         Integer id = getNextId();
         doorSensor.createDoorSensorFromDto(id, dto);
