@@ -3,7 +3,7 @@ package com.interactivehome.main_service.service.events;
 import com.interactivehome.main_service.config.AppProperties;
 import com.interactivehome.main_service.model.events.dto.DoorSensorStateDto;
 import com.interactivehome.main_service.model.events.entity.DoorSensorState;
-import com.interactivehome.main_service.repository.DoorSensorStateRepository;
+import com.interactivehome.main_service.repository.events.DoorSensorStateRepository;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;

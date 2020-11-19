@@ -1,8 +1,8 @@
 package com.interactivehome.main_service.service.events;
 
-import com.interactivehome.main_service.model.events.dto.MovementSensorStateDto;
-import com.interactivehome.main_service.model.events.entity.MovementSensorState;
-import com.interactivehome.main_service.repository.MovementSensorStateRepository;
+import com.interactivehome.main_service.model.events.dto.MotionSensorStateDto;
+import com.interactivehome.main_service.model.events.entity.MotionSensorState;
+import com.interactivehome.main_service.repository.events.MovementSensorStateRepository;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -27,17 +27,17 @@ public class MovementSensorStateServiceImpl implements MovementSensorStateServic
   }
 
   @Override
-  public void saveState(MovementSensorStateDto dto) {
-    MovementSensorState movementSensorState = new MovementSensorState();
-    movementSensorState.mapFromDto(dto);
-    mongoTemplate.save(movementSensorState);
+  public void saveState(MotionSensorStateDto dto) {
+    MotionSensorState motionSensorState = new MotionSensorState();
+    motionSensorState.mapFromDto(dto);
+    mongoTemplate.save(motionSensorState);
 
     // If a movement is caught and the alarm is armed, then buzz the alarm
     buzzAlarm();
   }
 
   @Override
-  public List<MovementSensorState> getSensorActivityByAlarmIdAndSensorId(
+  public List<MotionSensorState> getSensorActivityByAlarmIdAndSensorId(
           Integer alarmId,
           Integer sensorId,
           Date fromDate,
@@ -61,14 +61,14 @@ public class MovementSensorStateServiceImpl implements MovementSensorStateServic
     if((fromDate != null && toDate != null) && (!fromDate.toString().isEmpty() && !toDate.toString().isEmpty())) {
       query.addCriteria(Criteria.where("updated_utc").gte(fromDate).lte(toDate));
       query.with(new Sort(Direction.DESC, "updated_utc"));
-      return mongoTemplate.find(query, MovementSensorState.class);
+      return mongoTemplate.find(query, MotionSensorState.class);
     }
     // If the dates are not present then get the latest movement sensor activity
     query.with(new Sort(Direction.DESC, "updated_utc"));
-    List<MovementSensorState> movementSensorStateList = new ArrayList<>();
-    if(mongoTemplate.find(query, MovementSensorState.class).size() > 0)
-      movementSensorStateList.add(mongoTemplate.find(query, MovementSensorState.class).get(0));
-    return movementSensorStateList;
+    List<MotionSensorState> motionSensorStateList = new ArrayList<>();
+    if(mongoTemplate.find(query, MotionSensorState.class).size() > 0)
+      motionSensorStateList.add(mongoTemplate.find(query, MotionSensorState.class).get(0));
+    return motionSensorStateList;
   }
 
   @Override

@@ -16,33 +16,29 @@ public class AlarmSystemController {
         this.alarmSystemService = alarmSystemService;
     }
 
-    @GetMapping("/active_alarm_system")
-    public AlarmSystem getDefaultAlarmSystem() {
-        return alarmSystemService.getActiveAlarmSystem();
-    }
-
-    @PostMapping("/register_alarm_system")
+    @PostMapping("/alarm_system")
     public void registerAlarmSystem(@RequestBody AlarmSystemDto dto) {
-        alarmSystemService.addAlarmSystem(dto);
+        alarmSystemService.registerAlarmSystem(dto);
     }
 
-    @PutMapping("/modify_alarm_system")
-    public void modifyAlarmSystem(@RequestBody AlarmSystemDto dto) {
-        alarmSystemService.modifyAlarmSystem(dto);
+    @PutMapping("/alarm_system/{id}")
+    public AlarmSystem modifyAlarmSystem(@PathVariable Integer id,
+                                  @RequestBody AlarmSystemDto dto) {
+        return alarmSystemService.modifyAlarmSystemById(id, dto);
     }
 
-    @PutMapping("/set_active_alarm_system")
-    public void setActiveAlarmSystem(@RequestBody AlarmSystemDto dto) {
-        alarmSystemService.setActiveAlarmSystem(dto);
+    @GetMapping("alarm_system/{id}")
+    public AlarmSystem getAlarmSystemById(@PathVariable Integer id) {
+        return alarmSystemService.getAlarmSystemById(id);
     }
 
-    @DeleteMapping("/delete_alarm_system")
-    public void deleteAlarmSystem(@RequestBody AlarmSystemDto dto) {
-        alarmSystemService.deleteAlarmSystem(dto);
-    }
-
-    @GetMapping("alarm_systems")
+    @GetMapping("alarm_system")
     public List<AlarmSystem> getAllAlarmSystems() {
         return alarmSystemService.getAllAlarmSystems();
+    }
+
+    @DeleteMapping("/alarm_system/{id}")
+    public void deleteAlarmSystem(@PathVariable Integer id) {
+        alarmSystemService.deleteAlarmSystem(id);
     }
 }

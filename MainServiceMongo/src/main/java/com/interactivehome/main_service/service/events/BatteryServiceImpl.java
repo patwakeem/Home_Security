@@ -2,7 +2,7 @@ package com.interactivehome.main_service.service.events;
 
 import com.interactivehome.main_service.model.events.dto.BatteryDto;
 import com.interactivehome.main_service.model.events.entity.Battery;
-import com.interactivehome.main_service.repository.BatteryRepository;
+import com.interactivehome.main_service.repository.events.BatteryRepository;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package com.interactivehome.main_service.controller.events;
 
-import com.interactivehome.main_service.model.events.dto.MovementSensorStateDto;
-import com.interactivehome.main_service.model.events.entity.MovementSensorState;
+import com.interactivehome.main_service.model.events.dto.MotionSensorStateDto;
+import com.interactivehome.main_service.model.events.entity.MotionSensorState;
 import com.interactivehome.main_service.service.events.AlarmService;
 import com.interactivehome.main_service.service.events.MovementSensorStateService;
 import java.util.Date;
@@ -36,21 +36,21 @@ public class MovementSensorStateController {
   }
 
   @PostMapping("/movement_sensor")
-  public ResponseEntity<String> postMovementSensorState(@RequestBody MovementSensorStateDto movementSensorStateDto)
+  public ResponseEntity<String> postMovementSensorState(@RequestBody MotionSensorStateDto motionSensorStateDto)
   {
-    Integer alarmState = alarmService.getAlarmStateByAlarmId(movementSensorStateDto.alarmId);
+    Integer alarmState = alarmService.getAlarmStateByAlarmId(motionSensorStateDto.alarmId);
     System.out.println("Alarm state is : " + alarmState.toString());
     if(alarmState == 0) {
       System.out.println("The alarm is deactivated.");
       return ResponseEntity.ok("200");
     }
 
-    movementSensorStateService.saveState(movementSensorStateDto);
+    movementSensorStateService.saveState(motionSensorStateDto);
     return ResponseEntity.ok("201");
   }
 
   @GetMapping("movement_sensor_state/{alarmId}/{sensorId}")
-  public List<MovementSensorState> getSensorActivityByAlarmIdAndSensorIdFromDateToDate(
+  public List<MotionSensorState> getSensorActivityByAlarmIdAndSensorIdFromDateToDate(
       @PathVariable Integer alarmId,
       @PathVariable Integer sensorId,
       @RequestParam(value = "fromDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate,

@@ -6,13 +6,13 @@ import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class MovementSensorStateDto {
+public class MotionSensorStateDto {
     @JsonProperty("sensor_id")
     public Integer sensorId;
     @JsonProperty("alarm_id")
     public Integer alarmId;
-    @JsonProperty("movement_caught")
-    public Boolean movementCaught;
+    @JsonProperty("motion_caught")
+    public Boolean motionCaught;
     @JsonProperty("battery_voltage")
     public Float batteryVoltage;
     @JsonProperty("battery_percentage")

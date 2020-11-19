@@ -16,10 +16,7 @@ import java.util.Date;
 public class DoorSensor {
     @Id
     @Field("_id")
-    private String id;
-
-    @Field("sensor_id")
-    private Integer sensorId;
+    private Integer _id;
 
     @Field("alarm_id")
     private Integer alarmId;
@@ -45,12 +42,15 @@ public class DoorSensor {
     @Field("arm_away")
     private Boolean armAway;
 
+    @Field("updated_utc")
+    private Date updatedUtc;
+
     @Field("created_utc")
     private Date createdUtc;
 
-    public void mapFromDto(DoorSensorDto dto) {
+    public void createDoorSensorFromDto(Integer id, DoorSensorDto dto) {
+        _id = id;
         alarmId = dto.alarmId;
-        sensorId = dto.sensorId;
         enabled = dto.enabled;
         description = dto.description;
         deviceIdentifier = dto.deviceIdentifier;
@@ -59,5 +59,16 @@ public class DoorSensor {
         armIn = dto.armIn;
         armAway = dto.armAway;
         createdUtc = new Date(System.currentTimeMillis());
+    }
+
+    public void updateDoorSensorFromDto(DoorSensorDto dto) {
+        enabled = dto.enabled;
+        description = dto.description;
+        deviceIdentifier = dto.deviceIdentifier;
+        batteryPowered = dto.batteryPowered;
+        triggerVerificationProcess = dto.triggerVerificationProcess;
+        armIn = dto.armIn;
+        armAway = dto.armAway;
+        updatedUtc = new Date(System.currentTimeMillis());
     }
 }

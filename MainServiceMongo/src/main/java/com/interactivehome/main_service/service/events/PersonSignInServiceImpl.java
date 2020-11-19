@@ -2,7 +2,7 @@ package com.interactivehome.main_service.service.events;
 
 import com.interactivehome.main_service.model.events.dto.PersonSignInDto;
 import com.interactivehome.main_service.model.events.entity.PersonSignIn;
-import com.interactivehome.main_service.repository.PersonSignInRepository;
+import com.interactivehome.main_service.repository.events.PersonSignInRepository;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;

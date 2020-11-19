@@ -3,7 +3,7 @@ package com.interactivehome.main_service.service.events;
 import com.interactivehome.main_service.model.events.dto.PersonSignInDto;
 import com.interactivehome.main_service.model.events.dto.RegisteredPersonDto;
 import com.interactivehome.main_service.model.events.entity.RegisteredPerson;
-import com.interactivehome.main_service.repository.RegisteredPersonRepository;
+import com.interactivehome.main_service.repository.events.RegisteredPersonRepository;
 import java.util.List;
 import java.util.Objects;
 

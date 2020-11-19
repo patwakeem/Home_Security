@@ -2,7 +2,7 @@ package com.interactivehome.main_service.service.events;
 
 import com.interactivehome.main_service.model.events.dto.TemperatureHumidiryGasSensorStateDto;
 import com.interactivehome.main_service.model.events.entity.TemperatureHumidityGasSensorState;
-import com.interactivehome.main_service.repository.TemperatureHumidityGasSensorStateRepository;
+import com.interactivehome.main_service.repository.events.TemperatureHumidityGasSensorStateRepository;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
