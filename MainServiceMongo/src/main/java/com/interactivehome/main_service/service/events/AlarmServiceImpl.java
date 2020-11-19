@@ -2,7 +2,7 @@ package com.interactivehome.main_service.service.events;
 
 import com.interactivehome.main_service.model.events.dto.AlarmStateDto;
 import com.interactivehome.main_service.model.events.entity.Alarm;
-import com.interactivehome.main_service.repository.AlarmRepository;
+import com.interactivehome.main_service.repository.events.AlarmRepository;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;

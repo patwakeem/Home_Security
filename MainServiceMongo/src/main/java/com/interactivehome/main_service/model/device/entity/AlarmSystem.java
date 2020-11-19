@@ -16,10 +16,7 @@ import java.util.Date;
 public class AlarmSystem {
     @Id
     @Field("_id")
-    private String id;
-
-    @Field("alarm_id")
-    private Integer alarmId;
+    private Integer _id;
 
     @Field("enabled")
     private Boolean enabled;
@@ -27,17 +24,22 @@ public class AlarmSystem {
     @Field("description")
     private String description;
 
-    @Field("active_alarm")
-    private Boolean activeAlarm;
+    @Field("updated_utc")
+    private Date updatedUtc;
 
     @Field("created_utc")
     private Date createdUtc;
 
-    public void mapFromDto(AlarmSystemDto dto) {
-        alarmId = dto.alarmId;
+    public void updateAlarmFromDto(AlarmSystemDto dto) {
         enabled = dto.enabled;
         description = dto.description;
-        activeAlarm = dto.activeAlarm;
+        updatedUtc = new Date(System.currentTimeMillis());
+    }
+
+    public void createAlarmFromDto(Integer id, AlarmSystemDto dto) {
+        _id = id;
+        enabled = dto.enabled;
+        description = dto.description;
         createdUtc = new Date(System.currentTimeMillis());
     }
 }

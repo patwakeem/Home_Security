@@ -1,4 +1,4 @@
-package com.interactivehome.main_service.repository;
+package com.interactivehome.main_service.repository.events;
 
 import com.interactivehome.main_service.model.events.entity.TemperatureHumidityGasSensorState;
 import org.springframework.data.mongodb.repository.MongoRepository;

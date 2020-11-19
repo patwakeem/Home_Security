@@ -7,10 +7,8 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AlarmSystemDto {
-    @JsonProperty("alarm_id")
-    public Integer alarmId;
+    @JsonProperty("_id")
+    public Integer _id;
     public String description;
     public Boolean enabled;
-    @JsonProperty("active_alarm")
-    public Boolean activeAlarm;
 }

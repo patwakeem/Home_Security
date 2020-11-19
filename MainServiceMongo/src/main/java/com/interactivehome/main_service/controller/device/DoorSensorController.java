@@ -16,30 +16,34 @@ public class DoorSensorController {
         this.doorSensorService = doorSensorService;
     }
 
-    @GetMapping("/door_sensor/{alarmId}/{sensorId}")
-    public DoorSensor getDoorSensorByAlarmIdAndSensorId(
+    @PostMapping("/door_sensor/{alarmId}")
+    public void registerDoorSensor(@PathVariable Integer alarmId,
+                                   @RequestBody DoorSensorDto dto) {
+        doorSensorService.registerDoorSensor(alarmId, dto);
+    }
+
+    @PutMapping("/door_sensor/{alarmId}/{id}")
+    public DoorSensor modifyDoorSensorByAlarmIdAndId(@PathVariable Integer alarmId,
+                                                     @PathVariable Integer id,
+                                                     @RequestBody DoorSensorDto dto) {
+        return doorSensorService.modifyDoorSensorByAlarmIdAndId(alarmId, id, dto);
+    }
+
+    @GetMapping("/door_sensor/{alarmId}/{id}")
+    public DoorSensor getDoorSensorByAlarmIdAndId(
             @PathVariable Integer alarmId,
-            @PathVariable Integer sensorId) {
-        return doorSensorService.getDoorSensorByAlarmIdAndSensorId(alarmId, sensorId);
+            @PathVariable Integer id) {
+        return doorSensorService.getDoorSensorByAlarmIdAndId(alarmId, id);
     }
 
-    @PostMapping("/register_door_sensor")
-    public void registerDoorSensor(@RequestBody DoorSensorDto dto) {
-        doorSensorService.addDoorSensor(dto);
-    }
-
-    @PutMapping("/modify_door_sensor")
-    public void modifyDoorSensor(@RequestBody DoorSensorDto dto) {
-        doorSensorService.modifyDoorSensor(dto);
-    }
-
-    @DeleteMapping("/delete_door_sensor")
-    public void deleteDoorSensor(@RequestBody DoorSensorDto dto) {
-        doorSensorService.deleteDoorSensor(dto);
-    }
-
-    @GetMapping("door_sensors/{alarmId}")
-    public List<DoorSensor> getDoorSensorsByAlarmId(@PathVariable Integer alarmId) {
+    @GetMapping("door_sensor/{alarmId}")
+    public List<DoorSensor> getAllDoorSensorsByAlarmId(@PathVariable Integer alarmId) {
         return doorSensorService.getAllDoorSensorsByAlarmId(alarmId);
+    }
+
+    @DeleteMapping("/door_sensor/{alarmId}/{id}")
+    public void deleteDoorSensorByAlarmIdAndId(@PathVariable Integer alarmId,
+                                     @PathVariable Integer id) {
+        doorSensorService.deleteDoorSensorByAlarmIdAndId(alarmId, id);
     }
 }
