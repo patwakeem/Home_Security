@@ -65,19 +65,19 @@
       </v-col>
     </v-row>
     <!-- <v-row v-for="(sensor, index) of sensors" :key="index"> -->
-      <v-row>
-        <v-col>
-          <v-card
-            height="100%"
-            >
-              <v-card-title class="justify-center">
-                <h2>
-                  Kitchen Sensors
-                </h2>
-              </v-card-title>
-          </v-card>
-        </v-col>
-      </v-row>
+    <v-row>
+      <v-col>
+        <v-card
+          height="100%"
+          >
+            <v-card-title class="justify-center">
+              <h2>
+                Kitchen Sensors
+              </h2>
+            </v-card-title>
+        </v-card>
+      </v-col>
+    </v-row>
     <v-row>
       <v-col cols="6" lg="3" md="4" sm="12" xs="12">
         <v-card
@@ -201,14 +201,10 @@ export default {
     };
   },
 
-  async created() {
-    // if (!this.loggedIn()) {
-    //   return;
-    // }
-    // this.getAlarm();
-    this.getSensorValues();
-    // setInterval(this.getAlarm, 1000);
-    setInterval(this.getSensorValues, 1000);
+  created() {
+    this.setSelectedAlarmState();
+    this.getSensorsValues();
+    setInterval(this.getSensorsValues, 1000);
     setInterval(this.setSelectedAlarmState, 1000);
   },
 
@@ -227,6 +223,10 @@ export default {
   methods: {
 
     setSelectedAlarmState() {
+      if (this.alarmId === null) {
+        return;
+      }
+
       this.unselectedAlarmObjects = [];
       switch (this.alarmState) {
         case 0:
@@ -248,29 +248,9 @@ export default {
       }
     },
 
-    // getActiveAlarm() {
-    //   fetch('http://interactivehome.ddns.net:8080/active_alarm_system')
-    //     .then(async (response) => {
-    //       const data = await response.json();
-
-    //       // check for error response
-    //       if (!response.ok) {
-    //       // get error message from body or default to response statusText
-    //         const error = (data && data.message) || response.statusText;
-    //         alert(error);
-    //       }
-
-    //       this.alarmId = data.alarm_id;
-    //     })
-    //     .catch((error) => {
-    //       this.errorMessage = error;
-    //       console.error('There was an error!', error);
-    //     });
-    // },
-
-    getSensorValues() {
+    getSensorsValues() {
       const aId = parseInt(this.alarmId, 10);
-      fetch(`http://interactivehome.ddns.net:8080/temperature_humidity_gas_state/${aId}/${this.sensorId}`)
+      fetch(`http://interactivehome.ddns.net:8080/environment_sensor_state/${this.sensorId}?alarmId=${aId}`)
         .then(async (response) => {
           const data = await response.json();
 
@@ -282,7 +262,7 @@ export default {
           }
 
           this.temperature = data[0].temperature;
-          this.humidity = data[0].humidity;
+          this.humidity = parseInt(data[0].humidity, 10);
           this.air = data[0].gas_value;
           this.airPercent = (100 * this.air) / 1024;
         })
@@ -296,9 +276,9 @@ export default {
       if (state === this.alarmState) {
         return;
       }
-      const data = { alarm_id: 1, alarm_on: 0, alarm_state: state };
+      const data = { verification_activated: false, alarm_on: 0, alarm_state: state };
 
-      fetch('http://interactivehome.ddns.net:8080/alarm', {
+      fetch(`http://interactivehome.ddns.net:8080/alarm_system_state/${this.alarmId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -334,12 +314,15 @@ export default {
 }
 .v-progress-circular.temperature-progress {
   color:green;
+  font-size: 170%;
 }
 .v-progress-circular.humidity-progress {
   color:aqua;
+  font-size: 170%;
 }
 .v-progress-circular.air-progress {
   color:yellow;
+  font-size: 170%;
 }
 .title-text {
   font-size: 5vmin;

@@ -5,7 +5,7 @@ import Activity from '../components/Activity.vue';
 import UsersGroups from '../components/UsersGroups.vue';
 import Sensors from '../components/Sensors.vue';
 import Cameras from '../components/Cameras.vue';
-import Settings from '../components/Settings.vue';
+import Configuration from '../components/Configuration.vue';
 
 Vue.use(VueRouter);
 
@@ -36,9 +36,9 @@ const routes = [
     component: Cameras,
   },
   {
-    path: '/settings',
-    name: 'Settings',
-    component: Settings,
+    path: '/configuration',
+    name: 'Configuration',
+    component: Configuration,
   },
 ];
 
