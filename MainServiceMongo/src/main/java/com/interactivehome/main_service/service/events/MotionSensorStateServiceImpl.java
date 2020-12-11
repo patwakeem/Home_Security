@@ -2,7 +2,7 @@ package com.interactivehome.main_service.service.events;
 
 import com.interactivehome.main_service.model.events.dto.MotionSensorStateDto;
 import com.interactivehome.main_service.model.events.entity.MotionSensorState;
-import com.interactivehome.main_service.repository.events.MovementSensorStateRepository;
+import com.interactivehome.main_service.repository.events.MotionSensorStateRepository;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -16,20 +16,20 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MovementSensorStateServiceImpl implements MovementSensorStateService {
-  private final MovementSensorStateRepository movementSensorStateRepository;
+public class MotionSensorStateServiceImpl implements MotionSensorStateService {
+  private final MotionSensorStateRepository motionSensorStateRepository;
   private final MongoTemplate mongoTemplate;
 
-  public MovementSensorStateServiceImpl(MovementSensorStateRepository movementSensorStateRepository,
-                                        MongoTemplate mongoTemplate) {
-    this.movementSensorStateRepository = movementSensorStateRepository;
+  public MotionSensorStateServiceImpl(MotionSensorStateRepository motionSensorStateRepository,
+                                      MongoTemplate mongoTemplate) {
+    this.motionSensorStateRepository = motionSensorStateRepository;
     this.mongoTemplate = mongoTemplate;
   }
 
   @Override
-  public void saveState(MotionSensorStateDto dto) {
+  public void saveStateBySensorId(Integer id, MotionSensorStateDto dto) {
     MotionSensorState motionSensorState = new MotionSensorState();
-    motionSensorState.mapFromDto(dto);
+    motionSensorState.mapFromDto(id, dto);
     mongoTemplate.save(motionSensorState);
 
     // If a movement is caught and the alarm is armed, then buzz the alarm
@@ -50,14 +50,14 @@ public class MovementSensorStateServiceImpl implements MovementSensorStateServic
     }
 
     String messageOut;
-    messageOut = "Get movement activity by movement sensor id: " + sensorId;
+    messageOut = "Get movement activity by alarm id: " + alarmId + " and motion sensor id: " + sensorId;
     if(fromDate != null && toDate != null)
       messageOut += " from date: " + fromDate.toString() + ", to date : " + toDate.toString();
     System.out.println(messageOut);
 
     Query query = new Query();
     query.addCriteria(Criteria.where("alarm_id").is(alarmId));
-    query.addCriteria(Criteria.where("sensor_id").is(sensorId));
+    query.addCriteria(Criteria.where("_id").is(sensorId));
     if((fromDate != null && toDate != null) && (!fromDate.toString().isEmpty() && !toDate.toString().isEmpty())) {
       query.addCriteria(Criteria.where("updated_utc").gte(fromDate).lte(toDate));
       query.with(new Sort(Direction.DESC, "updated_utc"));

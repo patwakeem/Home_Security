@@ -5,8 +5,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    activeAlarm: 0,
-    activeAlarmName: null,
+    activeAlarm: null,
     alarmOn: false,
     alarmState: null,
     loggedIn: false,
@@ -25,11 +24,8 @@ export default new Vuex.Store({
     setUsername(state, user) {
       state.username = user;
     },
-    setActiveAlarm(state, activeAlarm) {
+    storeActiveAlarm(state, activeAlarm) {
       state.activeAlarm = activeAlarm;
-    },
-    setActiveAlarmName(state, activeAlarmName) {
-      state.activeAlarmName = activeAlarmName;
     },
   },
   actions: {

@@ -3,12 +3,7 @@
 #ifndef _HTTPCLIENTCOMMANDS_h
 #define _HTTPCLIENTCOMMANDS_h
 
-#if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
-#else
-#include "WProgram.h"
-#endif
-
 #include <HTTPClient.h>
 
 /*
@@ -38,7 +33,7 @@ int httpGet(const char* host, int port, const char* resource, String &payload)
 {
   HTTPClient http;
 
-  http.begin(String("http://") + host + ":" + String(port) + String(resource));
+  http.begin(String("http://") + String(host) + ":" + String(port) + String(resource));
   //Send the request
   int httpCode = http.GET();
   payload = "";

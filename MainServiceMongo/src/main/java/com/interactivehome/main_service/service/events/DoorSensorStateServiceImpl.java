@@ -1,6 +1,7 @@
 package com.interactivehome.main_service.service.events;
 
 import com.interactivehome.main_service.config.AppProperties;
+import com.interactivehome.main_service.model.events.dto.AlarmSystemStateDto;
 import com.interactivehome.main_service.model.events.dto.DoorSensorStateDto;
 import com.interactivehome.main_service.model.events.entity.DoorSensorState;
 import com.interactivehome.main_service.repository.events.DoorSensorStateRepository;
@@ -9,13 +10,18 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
+
+import com.interactivehome.main_service.utils.CountdownTimer;
+import io.micrometer.core.instrument.util.StringEscapeUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,9 +30,13 @@ public class DoorSensorStateServiceImpl implements DoorSensorStateService {
 
     private final DoorSensorStateRepository doorSensorStateRepository;
     private final MongoTemplate mongoTemplate;
+    private final AlarmSystemStateService alarmSystemStateService;
 
     @Autowired
     private AppProperties appProperties;
+
+    @Autowired
+    CountdownTimer countdownTimer;
 
     @Value("$(verification_process_endpoint)")
     private String verificationProcessEndpoint;
@@ -34,19 +44,72 @@ public class DoorSensorStateServiceImpl implements DoorSensorStateService {
     private String verificationProcessTimeoutSec;
 
     private RestTemplate restTemplate;
-    private Timer timer;
 
     public DoorSensorStateServiceImpl(DoorSensorStateRepository doorSensorStateRepository,
-                                      MongoTemplate mongoTemplate) {
+                                      MongoTemplate mongoTemplate, AlarmSystemStateService alarmSystemStateService) {
         this.doorSensorStateRepository = doorSensorStateRepository;
         this.mongoTemplate = mongoTemplate;
+        this.alarmSystemStateService = alarmSystemStateService;
     }
 
     @Override
-    public void saveState(DoorSensorStateDto dto) {
+    public ResponseEntity<String> saveStateByDoorSensorId(Integer id, Integer alarmState, DoorSensorStateDto dto) {
         DoorSensorState doorSensorState = new DoorSensorState();
+        doorSensorState.set_id(id);
         doorSensorState.mapFromDto(dto);
+        // If we reach at this point, the alarm is armed and the door sensor is enabled and for this alarm state.
+        // If the door opens, the verification process should be triggered
+        if(dto.getDoorState()) {
+            AlarmSystemStateDto alarmSystemStateDto = new AlarmSystemStateDto();
+            alarmSystemStateDto.set_id(dto.getAlarmId());
+            alarmSystemStateDto.setAlarmOn(false);
+            alarmSystemStateDto.setAlarmState(alarmState);
+            alarmSystemStateDto.setVerificationActivated(true);
+            alarmSystemStateService.saveAlarmStateById(dto.getAlarmId(), alarmSystemStateDto);
+        }
+
         doorSensorStateRepository.save(doorSensorState);
+
+        // If the door opens and the alarm is armed then trigger the initiation of the verification process
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+            System.out.println("Security controller verification process endpoint: " +
+                    appProperties.getSecurityControllerIpPort() + appProperties.getVerificationProcessEndpoint());
+            ResponseEntity<String> responseEntity =
+                    restTemplate.exchange(
+                            appProperties.getSecurityControllerIpPort()
+                                    + appProperties.getVerificationProcessEndpoint(),
+                            HttpMethod.GET,
+                            entity,
+                            String.class);
+
+            if(responseEntity.getStatusCode() == HttpStatus.OK)
+            {
+                countdownTimer.verificationTimerStart(dto.getAlarmId(), appProperties.getVerificationProcessTimeoutSec());
+                return ResponseEntity.ok("201");
+            }
+            else
+            {
+                System.out.println("Error response from security controller. " +
+                        responseEntity.getStatusCode() + ": " + responseEntity.getBody());
+            }
+
+            return ResponseEntity.ok("201");
+        }
+        catch (RuntimeException exception) {
+            System.out.println("Runtime exception: " + exception.getMessage());
+            JSONObject payload = new JSONObject();
+            try {
+                payload.put("message", "The door opened but the verification process could not get started!");
+                payload.put("error", StringEscapeUtils.escapeJson(exception.toString()));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(payload.toString());
+        }
     }
 
     @Override
@@ -58,16 +121,15 @@ public class DoorSensorStateServiceImpl implements DoorSensorStateService {
         }
 
         String messageOut;
-        messageOut = "Get door state by door id: " + sensorId;
+        messageOut = "Get door state by alarm id: " + alarmId + " and door id: " + sensorId;
         if(fromDate != null && toDate != null)
             messageOut += " from date: " + fromDate.toString() + ", to date : " + toDate.toString();
         System.out.println(messageOut);
 
         Query query = new Query();
         query.addCriteria(Criteria.where("alarm_id").is(alarmId));
-        query.addCriteria(Criteria.where("sensor_id").is(sensorId));
-        if((fromDate != null && toDate != null) && (!fromDate.toString().isEmpty() && !toDate.toString().isEmpty()))
-        {
+        query.addCriteria(Criteria.where("_id").is(sensorId));
+        if((fromDate != null && toDate != null) && (!fromDate.toString().isEmpty() && !toDate.toString().isEmpty())) {
             query.addCriteria(Criteria.where("updated_utc").gte(fromDate).lte(toDate));
             query.with(new org.springframework.data.domain.Sort(Direction.DESC, "updated_utc"));
             return mongoTemplate.find(query, DoorSensorState.class);
@@ -78,27 +140,5 @@ public class DoorSensorStateServiceImpl implements DoorSensorStateService {
         if(mongoTemplate.find(query, DoorSensorState.class) != null && mongoTemplate.find(query, DoorSensorState.class).size() > 0)
             doorSensorStateList.add(mongoTemplate.find(query, DoorSensorState.class).get(0));
         return doorSensorStateList;
-    }
-
-    @Override
-    public DoorSensorState getLastDoorStateByAlarmIdAndSensorId(DoorSensorStateDto dto) {
-        DoorSensorState doorSensorState = new DoorSensorState();
-        Query query = new Query();
-        query.addCriteria(Criteria.where("alarm_id").is(dto.alarmId));
-        query.addCriteria(Criteria.where("sensor_id").is(dto.sensorId));
-        query.with(new org.springframework.data.domain.Sort(Direction.DESC, "updated_utc"));
-        List<DoorSensorState> list = mongoTemplate.find(query, DoorSensorState.class);
-        if(list.size() > 0)
-            doorSensorState = list.get(0);
-
-        return doorSensorState;
-    }
-
-    @Override
-    public void saveBatteryVoltage(DoorSensorStateDto doorSensorStateDto) {
-        DoorSensorState doorSensorState = getLastDoorStateByAlarmIdAndSensorId(doorSensorStateDto);
-
-        doorSensorState.mapFromDto(doorSensorStateDto);
-        doorSensorStateRepository.save(doorSensorState);
     }
 }

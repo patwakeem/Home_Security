@@ -6,11 +6,13 @@ import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PersonSignInDto {
-  @JsonProperty("rfid_card_id")
-  public String rfidCardId;
+public class BatteryStateDto {
+  @JsonProperty("_id")
+  public Integer _id;
   @JsonProperty("alarm_id")
   public Integer alarmId;
-  @JsonProperty("rfid_card_id_signed")
-  public Boolean rfidCardIdSigned;
+  @JsonProperty("battery_voltage")
+  public Float batteryVoltage;
+  @JsonProperty("battery_percentage")
+  public Integer batteryPercentage;
 }

@@ -7,14 +7,10 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MotionSensorStateDto {
-    @JsonProperty("sensor_id")
-    public Integer sensorId;
+    @JsonProperty("_id")
+    public Integer _id;
     @JsonProperty("alarm_id")
     public Integer alarmId;
     @JsonProperty("motion_caught")
     public Boolean motionCaught;
-    @JsonProperty("battery_voltage")
-    public Float batteryVoltage;
-    @JsonProperty("battery_percentage")
-    public Integer batteryPercentage;
 }

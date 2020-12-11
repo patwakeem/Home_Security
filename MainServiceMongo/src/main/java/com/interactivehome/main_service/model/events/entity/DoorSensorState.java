@@ -16,10 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class DoorSensorState {
     @Id
     @Field("_id")
-    private String id;
-
-    @Field("sensor_id")
-    private Integer sensorId;
+    private Integer _id;
 
     @Field("alarm_id")
     private Integer alarmId;
@@ -32,7 +29,6 @@ public class DoorSensorState {
 
     public void mapFromDto(DoorSensorStateDto dto) {
         alarmId = dto.alarmId;
-        sensorId = dto.sensorId;
         doorState = dto.doorState;
         updatedUtc = new Date(System.currentTimeMillis());
     }

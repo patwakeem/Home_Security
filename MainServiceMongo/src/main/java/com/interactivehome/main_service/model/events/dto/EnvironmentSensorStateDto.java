@@ -6,14 +6,15 @@ import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class AlarmStateDto {
+public class EnvironmentSensorStateDto {
+    @JsonProperty("_id")
+    public Integer _id;
     @JsonProperty("alarm_id")
     public Integer alarmId;
-    public String name; // i.e. "House Alarm" or "Office Alarm"
-    @JsonProperty("default_alarm")
-    public Boolean defaultAlarm;
-    @JsonProperty("alarm_on")
-    public Boolean alarmOn;
-    @JsonProperty("alarm_state")
-    public Integer alarmState;
+    public Float temperature;
+    public Float humidity;
+    public Float pressure;
+    public Float altitude;
+    @JsonProperty("gas_value")
+    public Integer gasValue;
 }

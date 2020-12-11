@@ -5,7 +5,7 @@
       app
       clipped
     >
-      <v-list dense>
+      <v-list class="list-item" dense>
         <v-list-item to="/">
           <v-list-item-action>
             <v-icon>mdi-home</v-icon>
@@ -13,26 +13,6 @@
           <v-list-item-content>
             <v-list-item-title>
               Main
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item to="/activity">
-          <v-list-item-action>
-            <v-icon>mdi-poll</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>
-              Activity
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item to="/users">
-          <v-list-item-action>
-            <v-icon>mdi-account-multiple</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>
-              Users/Groups
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -56,13 +36,33 @@
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item to="/settings">
+        <v-list-item to="/activity">
+          <v-list-item-action>
+            <v-icon>mdi-poll</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>
+              Activity
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item to="/users">
+          <v-list-item-action>
+            <v-icon>mdi-account-multiple</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>
+              Users/Groups
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item to="/configuration">
           <v-list-item-action>
             <v-icon>mdi-cog</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>
-              Settings
+              Configuration
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -180,6 +180,7 @@ export default {
   data: () => ({
     drawer: null,
     dialog: true,
+    alarmSystems: [],
     username: null,
     password: null,
   }),
@@ -208,8 +209,7 @@ export default {
       this.$store.commit('setActiveAlarm', 0);
     }
 
-    this.getAlarm();
-    setInterval(this.getAlarm, 1000);
+    this.getAlarmSystems();
   },
 
   computed: {
@@ -234,9 +234,69 @@ export default {
       }
     },
 
-    getAlarm() {
+    getAlarmSystems() {
+      this.alarmSystems = null;
+      fetch('http://interactivehome.ddns.net:8080/alarm_system')
+        .then(async (response) => {
+          const data = await response.json();
+
+          // check for error response
+          if (!response.ok) {
+            // get error message from body or default to response statusText
+            const error = (data && data.message) || response.statusText;
+            alert(error);
+          }
+
+          this.alarmSystems = data;
+        })
+        .then(() => {
+          this.setActiveAlarm();
+          this.storeActiveAlarm();
+          this.getAlarmSystemState();
+          setInterval(this.getAlarmSystemState, 1000);
+        })
+        .catch((error) => {
+          this.errorMessage = error;
+          console.error('There was an error!', error);
+        });
+    },
+
+    setActiveAlarm() {
+      let i = 0; // The alarm Ids start from 1
+      let alarmIdTmp = null;
+      const storedActiveAlarm = localStorage.getItem('activeAlarm');
+      // alert(`storedActiveAlarm: ${storedActiveAlarm}`);
+
+      if (this.alarmId === null && storedActiveAlarm != null) {
+        this.$store.commit('storeActiveAlarm', storedActiveAlarm);
+      }
+
+      // alert(`setActiveAlarm - alarmId: ${this.alarmId}`);
+      for (; i < this.alarmSystems.length; i += 1) {
+        alarmIdTmp = 0;
+        if (this.alarmId === null) {
+          this.$store.commit('storeActiveAlarm', this.alarmSystems[i].id);
+          break;
+        }
+        if (this.alarmId === this.alarmSystems[i].id) {
+          // The radio button is zero-based, the alarm_id starts from 1
+          alarmIdTmp = this.alarmId;
+          break;
+        }
+      }
+      this.alarmId = alarmIdTmp;
+    },
+
+    storeActiveAlarm() {
+      // alert(`storeActiveAlarm - alarmId: ${this.alarmId}`);
+      localStorage.removeItem('activeAlarm');
+      localStorage.setItem('activeAlarm', this.alarmId);
+      this.$store.commit('storeActiveAlarm', this.alarmId);
+    },
+
+    getAlarmSystemState() {
       const aId = parseInt(this.alarmId, 10);
-      fetch(`http://interactivehome.ddns.net:8080/alarm/${aId}`)
+      fetch(`http://interactivehome.ddns.net:8080/alarm_system_state/${aId}`)
         .then(async (response) => {
           const data = await response.json();
 
@@ -264,5 +324,8 @@ export default {
 .nav-link {
   text-decoration: none;
   color: inherit;
+}
+.list-item :hover {
+  color:dodgerblue;
 }
 </style>
