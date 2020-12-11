@@ -416,19 +416,19 @@ export default {
     },
 
     onButtonClick() {
-      let filters = [];
+      const filters = [];
 
-      let filterName = document.querySelector('#name').value;
+      const filterName = document.querySelector('#name').value;
       if (filterName) {
-        filters.push({name: filterName});
+        filters.push({ name: filterName });
       }
 
-      let filterNamePrefix = document.querySelector('#namePrefix').value;
+      const filterNamePrefix = document.querySelector('#namePrefix').value;
       if (filterNamePrefix) {
-        filters.push({namePrefix: filterNamePrefix});
+        filters.push({ namePrefix: filterNamePrefix });
       }
 
-      let options = {};
+      const options = {};
       if (document.querySelector('#allAdvertisements').checked) {
         options.acceptAllAdvertisements = true;
       } else {
@@ -436,38 +436,37 @@ export default {
       }
 
       try {
-        log('Requesting Bluetooth Scan with options: ' + JSON.stringify(options));
-        const scan = await navigator.bluetooth.requestLEScan(options);
+        alert(`Requesting Bluetooth Scan with options: ${JSON.stringify(options)}`);
+        const scan = navigator.bluetooth.requestLEScan(options);
 
-        log('Scan started with:');
-        log(' acceptAllAdvertisements: ' + scan.acceptAllAdvertisements);
-        log(' active: ' + scan.active);
-        log(' keepRepeatedDevices: ' + scan.keepRepeatedDevices);
-        log(' filters: ' + JSON.stringify(scan.filters));
+        alert('Scan started with:');
+        alert(` acceptAllAdvertisements: ${scan.acceptAllAdvertisements}`);
+        alert(` active: ${scan.active}`);
+        alert(` keepRepeatedDevices: ${scan.keepRepeatedDevices}`);
+        alert(` filters: ${JSON.stringify(scan.filters)}`);
 
-        navigator.bluetooth.addEventListener('advertisementreceived', event => {
-          log('Advertisement received.');
-          log('  Device Name: ' + event.device.name);
-          log('  Device ID: ' + event.device.id);
-          log('  RSSI: ' + event.rssi);
-          log('  TX Power: ' + event.txPower);
-          log('  UUIDs: ' + event.uuids);
+        navigator.bluetooth.addEventListener('advertisementreceived', (event) => {
+          alert('Advertisement received.');
+          alert(`  Device Name: ${event.device.name}`);
+          alert(`  Device ID: ${event.device.id}`);
+          alert(`  RSSI: ${event.rssi}`);
+          alert(`  TX Power: ${event.txPower}`);
+          alert(`  UUIDs: ${event.uuids}`);
           event.manufacturerData.forEach((valueDataView, key) => {
-            logDataView('Manufacturer', key, valueDataView);
+            alert(`Manufacturer ${key} ${valueDataView}`);
           });
           event.serviceData.forEach((valueDataView, key) => {
-            logDataView('Service', key, valueDataView);
+            alert(`Service ${key} ${valueDataView}`);
           });
         });
 
-        setTimeout(stopScan, 10000);
-        function stopScan() {
-          log('Stopping scan...');
+        stopScan() {
+          alert('Stopping scan...');
           scan.stop();
-          log('Stopped.  scan.active = ' + scan.active);
+          alert(`Stopped.  scan.active = ${scan.active}`);
         }
-      } catch(error)  {
-        log('Argh! ' + error);
+      } catch (error) {
+        alert(`Argh! ${error}`);
       }
     },
 
