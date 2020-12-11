@@ -22,27 +22,27 @@ public class MotionSensorController {
         motionSensorService.registerMotionSensor(dto);
     }
 
-    @PutMapping("/motion_sensor/{alarmId}/{id}")
-    public MotionSensor modifyMotionSensorByAlarmIdAndId(@PathVariable Integer alarmId,
-                                           @PathVariable Integer id,
-                                           @RequestBody MotionSensorDto dto) {
+    @PutMapping("/motion_sensor/{id}")
+    public MotionSensor modifyMotionSensorByAlarmIdAndId(@PathVariable Integer id,
+                                                         @RequestParam(value = "alarmId") Integer alarmId,
+                                                         @RequestBody MotionSensorDto dto) {
         return motionSensorService.modifyMotionSensorByAlarmIdAndId(alarmId, id, dto);
     }
 
-    @GetMapping("/motion_sensor/{alarmId}/{id}")
-    public MotionSensor getMotionSensorByAlarmIdAndId(@PathVariable Integer alarmId,
-                                                      @PathVariable Integer id) {
+    @GetMapping("/motion_sensor/{id}")
+    public MotionSensor getMotionSensorByAlarmIdAndId(@PathVariable Integer id,
+                                                      @RequestParam(value = "alarmId") Integer alarmId) {
         return motionSensorService.getMotionSensorByAlarmIdAndId(alarmId, id);
     }
 
-    @GetMapping("/motion_sensor/{alarmId}")
-    public List<MotionSensor> getAllMotionSensorsByAlarmId(@PathVariable Integer alarmId) {
+    @GetMapping("/motion_sensor")
+    public List<MotionSensor> getAllMotionSensorsByAlarmId( @RequestParam(value = "alarmId") Integer alarmId) {
         return motionSensorService.getAllMotionSensorsByAlarmId(alarmId);
     }
 
-    @DeleteMapping("/motion_sensor/{alarmId}/{id}")
-    public void deleteMotionSensorByAlarmIdAndId(@PathVariable Integer alarmId,
-                                                 @PathVariable Integer id) {
+    @DeleteMapping("/motion_sensor/{id}")
+    public void deleteMotionSensorByAlarmIdAndId(@PathVariable Integer id,
+                                                 @RequestParam(value = "alarmId") Integer alarmId) {
         motionSensorService.deleteMotionSensor(alarmId, id);
     }
 }

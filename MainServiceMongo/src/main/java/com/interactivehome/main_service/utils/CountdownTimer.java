@@ -1,10 +1,11 @@
 package com.interactivehome.main_service.utils;
 
-import com.interactivehome.main_service.model.events.dto.AlarmStateDto;
-import com.interactivehome.main_service.service.events.AlarmService;
+import com.interactivehome.main_service.model.events.dto.AlarmSystemStateDto;
+import com.interactivehome.main_service.service.events.AlarmSystemStateService;
 import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 public class CountdownTimer extends Timer
 {
     @Autowired
-    private AlarmService alarmService;
+    private AlarmSystemStateService alarmSystemStateService;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -31,6 +32,7 @@ public class CountdownTimer extends Timer
     }
 
     private timer_state timerState;
+    private Integer alarmId;
 
     class TimerExpired extends TimerTask {
         public void run() {
@@ -38,7 +40,8 @@ public class CountdownTimer extends Timer
         }
     }
 
-    public void verificationTimerStart(int seconds) {
+    public void verificationTimerStart(Integer id, int seconds) {
+        alarmId = id;
         schedule(new TimerExpired(),seconds * 1000);
         timerState = timer_state.started;
         System.out.println("The verification timer is initiated. Timeout = " + seconds + " sec.");
@@ -66,14 +69,13 @@ public class CountdownTimer extends Timer
 
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-            HttpEntity<String> entity = new HttpEntity<>(headers);
-            AlarmStateDto alarmStateDTO = new AlarmStateDto();
-            alarmStateDTO.setAlarmId(1);
-            alarmStateDTO.setAlarmState(2);
-            alarmStateDTO.setAlarmOn(true);
-            alarmService.saveAlarmState(alarmStateDTO);
+            AlarmSystemStateDto alarmSystemStateDTO = new AlarmSystemStateDto();
+            alarmSystemStateDTO.set_id(alarmId);
+            alarmSystemStateDTO.setAlarmState(2);
+            alarmSystemStateDTO.setAlarmOn(true);
+            alarmSystemStateService.saveAlarmStateById(alarmId, alarmSystemStateDTO);
 
-            HttpEntity<AlarmStateDto> requestUpdate = new HttpEntity<>(alarmStateDTO, headers);
+            HttpEntity<AlarmSystemStateDto> requestUpdate = new HttpEntity<>(alarmSystemStateDTO, headers);
 
             ResponseEntity<Void> response =
                 restTemplate.exchange(alarmControllerTriggerAlarm, HttpMethod.POST, requestUpdate, Void.class);

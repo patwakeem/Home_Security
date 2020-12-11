@@ -53,7 +53,6 @@ public class MotionSensor {
 
     public void updateMotionSensorFromDto(MotionSensorDto dto)
     {
-        alarmId = dto.alarmId;
         description = dto.description;
         deviceIdentifier = dto.deviceIdentifier;
         enabled = dto.enabled;

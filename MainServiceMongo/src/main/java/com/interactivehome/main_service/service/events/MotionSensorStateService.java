@@ -5,8 +5,8 @@ import com.interactivehome.main_service.model.events.entity.MotionSensorState;
 import java.util.Date;
 import java.util.List;
 
-public interface MovementSensorStateService {
-  void saveState(MotionSensorStateDto dto);
+public interface MotionSensorStateService {
+  void saveStateBySensorId(Integer id, MotionSensorStateDto dto);
   List<MotionSensorState> getSensorActivityByAlarmIdAndSensorId(Integer alarmId, Integer sensorId, Date fromDate, Date toDate);
 
   void buzzAlarm();

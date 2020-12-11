@@ -12,7 +12,7 @@ import java.util.Date;
 
 @Data
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-@Document(collection = "temperature_humidity_gas_sensor")
+@Document(collection = "environment_sensor")
 public class EnvironmentSensor {
     @Id
     @Field("_id")
@@ -52,7 +52,6 @@ public class EnvironmentSensor {
     }
 
     public void updateEnvironmentSensorFromDto(EnvironmentSensorDto dto) {
-        alarmId = dto.alarmId;
         enabled = dto.enabled;
         description = dto.description;
         deviceIdentifier = dto.deviceIdentifier;

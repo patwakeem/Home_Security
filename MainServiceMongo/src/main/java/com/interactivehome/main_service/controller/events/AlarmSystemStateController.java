@@ -1,9 +1,9 @@
 package com.interactivehome.main_service.controller.events;
 
 import com.interactivehome.main_service.config.AppProperties;
-import com.interactivehome.main_service.model.events.dto.AlarmStateDto;
-import com.interactivehome.main_service.model.events.entity.Alarm;
-import com.interactivehome.main_service.service.events.AlarmService;
+import com.interactivehome.main_service.model.events.dto.AlarmSystemStateDto;
+import com.interactivehome.main_service.model.events.entity.AlarmSystemState;
+import com.interactivehome.main_service.service.events.AlarmSystemStateService;
 import io.micrometer.core.instrument.util.StringEscapeUtils;
 import java.util.Date;
 import java.util.List;
@@ -29,8 +29,8 @@ import org.springframework.web.client.RestTemplate;
 
 @CrossOrigin(origins = "*")
 @RestController
-public class AlarmController {
-  private final AlarmService alarmService;
+public class AlarmSystemStateController {
+  private final AlarmSystemStateService alarmSystemStateService;
   private final RestTemplate restTemplate;
 
   @Autowired
@@ -43,14 +43,15 @@ public class AlarmController {
   @Value("$(stopAlarmEndpoint)")
   private String stopAlarmEndpoint;
 
-  public AlarmController(AlarmService alarmService,
-                          RestTemplate restTemplate) {
-    this.alarmService = alarmService;
+  public AlarmSystemStateController(AlarmSystemStateService alarmSystemStateService,
+                                    RestTemplate restTemplate) {
+    this.alarmSystemStateService = alarmSystemStateService;
     this.restTemplate = restTemplate;
   }
 
-  @PostMapping("/alarm")
-  public ResponseEntity postAlarmState(@RequestBody AlarmStateDto dto) {
+  @PostMapping("/alarm_system_state/{id}")
+  public ResponseEntity postAlarmStateById(@PathVariable Integer id,
+                                           @RequestBody AlarmSystemStateDto dto) {
     System.out.println("Got request for postAlarmState: " + dto.toString());
     try {
       HttpHeaders requestHeaders = new HttpHeaders();
@@ -76,7 +77,7 @@ public class AlarmController {
       {
         // Update the alarm state in the database only when the security controller has been updated successfully
         System.out.println("The alarm state in the security controller has been updated successfully");
-        alarmService.saveAlarmState(dto);
+        alarmSystemStateService.saveAlarmStateById(id, dto);
         return ResponseEntity.ok("200");
       }
       else
@@ -99,29 +100,18 @@ public class AlarmController {
     }
   }
 
-  @GetMapping("/alarm/{alarmId}")
-  public List<Alarm> getAlarmByProfileIdFromDateToDate(
-      @PathVariable Integer alarmId,
+  @GetMapping("/alarm_system_state/{id}")
+  public List<AlarmSystemState> getAlarmStateByIdFromDateToDate(
+      @PathVariable Integer id,
       @RequestParam(value = "fromDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date fromDate,
       @RequestParam(value = "toDate", required = false) @DateTimeFormat(pattern="yyyy-MM-dd") Date toDate)
   {
-    return alarmService.getAlarmByAlarmIdFromDateToDate(alarmId, fromDate, toDate);
+    return alarmSystemStateService.getAlarmStateByIdFromDateToDate(id, fromDate, toDate);
   }
 
-  @GetMapping("/alarm_state/{alarmId}")
-  public Integer getAlarmStateByProfileId(@PathVariable Integer alarmId)
-  {
-    return alarmService.getAlarmStateByAlarmId(alarmId);
-  }
-
-  @GetMapping("/alarm_on/{alarmId}")
-  public Boolean getAlarmOnByProfileId(@PathVariable Integer alarmId)
-  {
-    return alarmService.getAlarmOnByAlarmId(alarmId);
-  }
-
-  @PostMapping("/stop_alarm/{alarmId}")
-  public ResponseEntity postStopAlarm(@RequestBody AlarmStateDto dto) {
+  @PostMapping("/stop_alarm/{id}")
+  public ResponseEntity postStopAlarm(@PathVariable Integer id,
+                                      @RequestBody AlarmSystemStateDto dto) {
 
     // First stop the alarm at the security controller
     try {
@@ -141,8 +131,8 @@ public class AlarmController {
       {
         System.out.println("The alarm stopped successfully in the security controller");
         System.out.println("Saving stop alarm");
-        //alarmService.stopAlarm(dto);
-        postAlarmState(dto);
+        //alarmSystemStateService.stopAlarm(dto);
+        postAlarmStateById(id, dto);
         return ResponseEntity.ok("200");
       }
       else

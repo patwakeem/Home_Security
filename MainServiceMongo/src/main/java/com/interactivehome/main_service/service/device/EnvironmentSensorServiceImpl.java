@@ -2,8 +2,6 @@ package com.interactivehome.main_service.service.device;
 
 import com.interactivehome.main_service.model.device.dto.EnvironmentSensorDto;
 import com.interactivehome.main_service.model.device.entity.EnvironmentSensor;
-import com.interactivehome.main_service.model.device.entity.MotionSensor;
-import com.interactivehome.main_service.model.events.entity.TemperatureHumidityGasSensorState;
 import com.interactivehome.main_service.repository.device.TemperatureHumidityGasSensorRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -11,7 +9,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,11 +25,12 @@ public class EnvironmentSensorServiceImpl implements EnvironmentSensorService {
     }
 
     @Override
-    public void registerEnvironmentSensor(EnvironmentSensorDto dto) {
+    public Integer registerEnvironmentSensor(EnvironmentSensorDto dto) {
         EnvironmentSensor environmentSensor = new EnvironmentSensor();
         Integer id = getNextId();
         environmentSensor.createEnvironmentSensorFromDto(id, dto);
         mongoTemplate.save(environmentSensor);
+        return environmentSensor.get_id();
     }
 
     private Integer getNextId() {

@@ -16,10 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class MotionSensorState {
   @Id
   @Field("_id")
-  private String id;
-
-  @Field("sensor_id")
-  private Integer sensorId;
+  private Integer _id;
 
   @Field("alarm_id")
   private Integer alarmId;
@@ -27,21 +24,14 @@ public class MotionSensorState {
   @Field("motion_caught")
   private Boolean motionCaught;
 
-  @Field("battery_voltage")
-  private Float batteryVoltage;
-  @Field("battery_percentage")
-  private Integer batteryPercentage;
-
   @Field("updated_utc")
   private Date updatedUtc;
 
-  public void mapFromDto(MotionSensorStateDto dto)
+  public void mapFromDto(Integer id, MotionSensorStateDto dto)
   {
+    _id = id;
     alarmId = dto.alarmId;
-    sensorId = dto.sensorId;
     motionCaught = dto.motionCaught;
-    batteryVoltage = dto.batteryVoltage;
-    batteryPercentage = dto.batteryPercentage;
     updatedUtc = new Date(System.currentTimeMillis());
   }
 }
