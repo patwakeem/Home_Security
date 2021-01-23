@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 
+
 @Service
 public class MotionSensorServiceImpl implements MotionSensorService {
 
@@ -34,6 +35,11 @@ public class MotionSensorServiceImpl implements MotionSensorService {
 
     private Integer getNextId() {
         Query query = new Query();
+
+        // The code in these services (device package and events package) looks very clean and nice.
+        // The only thing I can suggest is always running intellij's code cleanup and it will automatically
+        // catch things like missing spaces (seen in the line below). You can run code cleanup by using the "Code"
+        // option menu and click "Reformat Code". Try to run it before you save and commit.
         query.with(new org.springframework.data.domain.Sort(Sort.Direction.DESC, "_id"));
         if(mongoTemplate.findOne(query, MotionSensor.class) != null)
             return mongoTemplate.findOne(query, MotionSensor.class).get_id() + 1;
@@ -47,6 +53,10 @@ public class MotionSensorServiceImpl implements MotionSensorService {
         query.addCriteria(Criteria.where("_id").is(id));
         query.addCriteria(Criteria.where("alarm_id").is(alarmId));
         MotionSensor motionSensor = mongoTemplate.findOne(query, MotionSensor.class);
+
+//        good checking if the motion sensor is not found.
+//        if its not found do you want to throw an exception and
+//        return a 404?
         if(motionSensor != null) {
             motionSensor.updateMotionSensorFromDto(dto);
             mongoTemplate.save(motionSensor);

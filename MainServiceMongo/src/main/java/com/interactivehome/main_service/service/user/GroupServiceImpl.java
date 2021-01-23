@@ -12,8 +12,11 @@ import java.util.List;
 
 @Service
 public class GroupServiceImpl implements GroupService {
+
     private final MongoTemplate mongoTemplate;
 
+//    As long as your fields are final you can annotate the class with @RequiredArgsConstructor
+//    and not have the constructor here, its ok though if you like it this way.
     public GroupServiceImpl(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
     }
@@ -30,6 +33,10 @@ public class GroupServiceImpl implements GroupService {
     private Integer getNextId() {
         Query query = new Query();
         query.with(new org.springframework.data.domain.Sort(Sort.Direction.DESC, "_id"));
+
+//      try to always have the curly braces after if statements, its just a bit cleaner in my opinion
+//        if you like it like this it's ok it can cause simple bugs though if someone else works on the code
+//        they might miss that there's no curly braces
         if(mongoTemplate.findOne(query, Group.class) != null)
             return mongoTemplate.findOne(query, Group.class).get_id() + 1;
 
@@ -39,6 +46,10 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group modifyGroup(Integer id, GroupDto dto) {
         Group group = mongoTemplate.findById(id, Group.class);
+
+//        if group isn't found by the id you will get a null pointer exception here.
+//        what you can do is try checking if group is null then throw a custom exception
+//        which will be mapped to the 404 status.
         group.setName(dto.getName());
         mongoTemplate.save(group);
         return group;

@@ -20,8 +20,12 @@ public class GroupController {
         this.groupService = groupService;
     }
 
+//    instead of ResponseEntity<String> you could return ResponseEntity<ResponseDto>
+//    Have a data object thats very simple when returning a response, just success = true with
+//    an optional message, if an error happens then success = false.
     @PostMapping("/group")
     public ResponseEntity<String> CreateGroup(@RequestBody GroupDto dto) {
+
         groupService.createGroup(dto);
         String body = "";
         try {

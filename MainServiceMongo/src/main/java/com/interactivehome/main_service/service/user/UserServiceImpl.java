@@ -42,6 +42,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User modifyUser(Integer id, UserDto dto) {
         User user = mongoTemplate.findById(id, User.class);
+
+//        user could be null see group service impl comment
         user.updateUserFromDto(dto);
         mongoTemplate.save(user);
         return user;

@@ -8,6 +8,8 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootApplication
 public class MainServiceApplication {
 
+//	Put beans in a class in the config package
+//	You could call it HttpClientConfiguration
 	@Bean
 	public RestTemplate getRestTemplate() {
 		return new RestTemplate();

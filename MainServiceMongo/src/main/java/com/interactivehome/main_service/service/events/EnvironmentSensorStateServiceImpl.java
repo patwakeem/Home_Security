@@ -43,6 +43,10 @@ public class EnvironmentSensorStateServiceImpl implements EnvironmentSensorState
 
     String messageOut;
     messageOut = "Get temperature humidity gas values by alarm id: " + alarmId + " and sensor id: " + sensorId;
+
+//    there's some duplicated code here,
+//    you could create a convenience util to construct your query
+//    you could also have one for your logging if you want.
     if(fromDate != null && toDate != null)
       messageOut += " from date: " + fromDate.toString() + ", to date : " + toDate.toString();
     System.out.println(messageOut);

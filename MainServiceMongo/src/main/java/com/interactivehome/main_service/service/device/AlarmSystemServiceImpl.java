@@ -13,6 +13,12 @@ import java.util.List;
 
 @Service
 public class AlarmSystemServiceImpl implements AlarmSystemService {
+
+//    This repository isn't used, if you want to use MongoTemplate for mongo operations you can
+//    Using the repository is easier with Intellij pro because it will autocomplete your methods for you
+//    With community edition it might be tough though.
+//
+//    When you have the new job try to have them get pro for you so you can use repositories.
     private final AlarmSystemRepository alarmSystemRepository;
     private final MongoTemplate mongoTemplate;
 

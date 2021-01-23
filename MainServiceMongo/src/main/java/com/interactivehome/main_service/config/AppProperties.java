@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("iot")
 @Data
 public class AppProperties {
+
+//  Try to keep your fields private by default.
+//  You have the @Data annotation so you have get methods for everything.
   public String securityControllerIpPort;
   public String verificationProcessEndpoint;
   public Integer verificationProcessTimeoutSec;

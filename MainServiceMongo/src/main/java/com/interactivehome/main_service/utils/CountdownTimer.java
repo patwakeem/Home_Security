@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +20,11 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class CountdownTimer extends Timer
 {
+
+//    Don't use the Autowired annotation here, instead of this
+//    try to use constructor injection, annotate the class with @RequiredArgsConstructor
+//    and make the fields final, the reason you do this is so you can set mocks in your
+//    unit tests.
     @Autowired
     private AlarmSystemStateService alarmSystemStateService;
 
@@ -47,6 +53,9 @@ public class CountdownTimer extends Timer
         System.out.println("The verification timer is initiated. Timeout = " + seconds + " sec.");
     }
 
+//    This method isn't used, try to keep the code free of all unused functions/fields
+//    It may be used in the future but in the meantime it could be confusing
+//    for someone working on your code.
     public void verificationTimerStop() {
         if(timerState == timer_state.started) {
             this.cancel();

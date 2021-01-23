@@ -20,6 +20,7 @@ public class UserController {
         this.userService = userService;
     }
 
+//    See group controller comment
     @PostMapping("/user")
     public ResponseEntity<String> RegisterUser(@RequestBody UserDto dto) {
         userService.registerUser(dto);
